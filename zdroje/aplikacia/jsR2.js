@@ -59,7 +59,7 @@
     const PST = { up: ['ok', 'Aktívny'], exp: ['bad', 'Expirovaný'], no: ['grey', 'Nenahratý'] };
     const pcProb = (p) => p.n > 0 && (!p.on || p.st === 'exp');
     const pcOk = (p, f) => f === 'all' || (f === 'prob' ? pcProb(p) : f === 'off' ? p.n > 0 && !p.on : f === 'none' ? p.n === 0 : p.st === f);
-    const pcChips = [['all', 'Všetky'], ['prob', 'Problémy'], ['up', 'Aktívne'], ['exp', 'Expirované'], ['no', 'Nenahraté'], ['off', 'Offline'], ['none', 'Bez zariadenia']].map((c) => ({ label: c[1], n: vPlaces.filter((p) => pcOk(p, c[0])).length, on: s.pcF === c[0], pick: () => set({ pcF: c[0] }) }));
+    const pcChips = [['all', 'Všetky'], ['prob', 'Hlásenia'], ['up', 'Aktívne'], ['exp', 'Expirované'], ['no', 'Nenahraté'], ['off', 'Offline'], ['none', 'Bez zariadenia']].map((c) => ({ label: c[1], n: vPlaces.filter((p) => pcOk(p, c[0])).length, on: s.pcF === c[0], pick: () => set({ pcF: c[0] }) }));
     const pql = s.pq.trim().toLowerCase();
     const pcList = vPlaces.filter((p) => pcOk(p, s.pcF) && (!pql || p.name.toLowerCase().indexOf(pql) >= 0));
     const devLine = (p) => p.n === 0 ? 'Bez zariadenia' : DEV[p.dev][1] + (p.g >= 0 ? ' · ' + GRP[p.g] : '');

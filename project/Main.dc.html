@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<link rel="icon" href="./ikony/ikona.svg" type="image/svg+xml">
+<link rel="icon" href="./ikony/ikona-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./ikony/apple-touch-icon.png">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#F3F6F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1313" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Info Designer">
+<meta name="application-name" content="Info Designer">
 <title>Info Designer – mobilná aplikácia</title>
 <script src="./support.js"></script>
 <script src="./i18n.js"></script>
@@ -1078,7 +1088,7 @@ class Component extends DCLogic {
     const PST = { up: ['ok', 'Aktívny'], exp: ['bad', 'Expirovaný'], no: ['grey', 'Nenahratý'] };
     const pcProb = (p) => p.n > 0 && (!p.on || p.st === 'exp');
     const pcOk = (p, f) => f === 'all' || (f === 'prob' ? pcProb(p) : f === 'off' ? p.n > 0 && !p.on : f === 'none' ? p.n === 0 : p.st === f);
-    const pcChips = [['all', 'Všetky'], ['prob', 'Problémy'], ['up', 'Aktívne'], ['exp', 'Expirované'], ['no', 'Nenahraté'], ['off', 'Offline'], ['none', 'Bez zariadenia']].map((c) => ({ label: c[1], n: vPlaces.filter((p) => pcOk(p, c[0])).length, on: s.pcF === c[0], pick: () => set({ pcF: c[0] }) }));
+    const pcChips = [['all', 'Všetky'], ['prob', 'Hlásenia'], ['up', 'Aktívne'], ['exp', 'Expirované'], ['no', 'Nenahraté'], ['off', 'Offline'], ['none', 'Bez zariadenia']].map((c) => ({ label: c[1], n: vPlaces.filter((p) => pcOk(p, c[0])).length, on: s.pcF === c[0], pick: () => set({ pcF: c[0] }) }));
     const pql = s.pq.trim().toLowerCase();
     const pcList = vPlaces.filter((p) => pcOk(p, s.pcF) && (!pql || p.name.toLowerCase().indexOf(pql) >= 0));
     const devLine = (p) => p.n === 0 ? 'Bez zariadenia' : DEV[p.dev][1] + (p.g >= 0 ? ' · ' + GRP[p.g] : '');

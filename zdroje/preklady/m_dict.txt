@@ -507,7 +507,7 @@ Vozidlo: LED čelná tabuľa 288 × 48 ||| Vozidlo: LED čelní tabule 288 × 48
 55″ nedotykový ||| 55″ nedotykový ||| 55″ niedotykowy ||| 55″ non-touch ||| 55″ ohne Touch
 LED tabuľa 192 × 64 ||| LED tabule 192 × 64 ||| Tablica LED 192 × 64 ||| LED display 192 × 64 ||| LED-Anzeige 192 × 64
 Vozidlo: LED 288 × 48 ||| Vozidlo: LED 288 × 48 ||| Pojazd: LED 288 × 48 ||| Vehicle: LED 288 × 48 ||| Fahrzeug: LED 288 × 48
-# ===== v27: účty a roly, zverejnenie, prepnutie na viac miest, problémy, vzhľad =====
+# ===== v27: účty a roly, zverejnenie, prepnutie na viac miest, hlásenia, vzhľad =====
 Dobrý deň, Jana ||| Dobrý den, Jano ||| Dzień dobry, Jana ||| Hello, Jana ||| Guten Tag, Jana
 Dobrý deň, Peter ||| Dobrý den, Petře ||| Dzień dobry, Peter ||| Hello, Peter ||| Guten Tag, Peter
 Dobrý deň ||| Dobrý den ||| Dzień dobry ||| Hello ||| Guten Tag
@@ -519,7 +519,7 @@ Playlist schvaľuje správca DP Riečany. ||| Playlist schvaluje správce DP Rie
 Odoslané na schválenie. Dáme vám vedieť, keď ho správca DP Riečany schváli. ||| Odesláno ke schválení. Dáme vám vědět, až ho správce DP Riečany schválí. ||| Wysłano do zatwierdzenia. Damy znać, gdy administrator DP Riečany ją zatwierdzi. ||| Sent for approval. We will let you know when the DP Riečany administrator approves it. ||| Zur Freigabe gesendet. Wir informieren Sie, sobald der Administrator von DP Riečany sie freigibt.
 Pridané do playlistu „{0}“. Nezabudnite ho zverejniť. ||| Přidáno do playlistu „{0}“. Nezapomeňte ho zveřejnit. ||| Dodano do playlisty „{0}”. Nie zapomnij jej opublikować. ||| Added to playlist “{0}”. Do not forget to publish it. ||| Zur Playlist „{0}“ hinzugefügt. Vergessen Sie nicht, sie zu veröffentlichen.
 Súbor sa používa v playlistoch vypísaných vyššie. Po zmazaní v nich zostane prázdne miesto. ||| Soubor se používá v playlistech uvedených výše. Po smazání v nich zůstane prázdné místo. ||| Plik jest używany w playlistach wymienionych powyżej. Po usunięciu zostanie w nich puste miejsce. ||| The file is used in the playlists listed above. After deleting it, an empty spot will remain in them. ||| Die Datei wird in den oben genannten Playlists verwendet. Nach dem Löschen bleibt dort eine leere Stelle.
-Problémy ||| Problémy ||| Problemy ||| Problems ||| Probleme
+Hlásenia ||| Hlášení ||| Zgłoszenia ||| Alerts ||| Meldungen
 Vyberte jedno alebo viac miest, alebo celú skupinu. ||| Vyberte jedno nebo více míst, nebo celou skupinu. ||| Wybierz jedno lub więcej miejsc albo całą grupę. ||| Choose one or more places, or a whole group. ||| Wählen Sie einen oder mehrere Orte oder eine ganze Gruppe.
 Všetky (#) ||| Vše (#) ||| Wszystkie (#) ||| All (#) ||| Alle (#)
 Prepnúť účet ||| Přepnout účet ||| Przełącz konto ||| Switch account ||| Konto wechseln
