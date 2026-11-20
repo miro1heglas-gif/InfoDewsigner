@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Snímka – vykreslenie (komponent)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+@keyframes wzmarq{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+</style>
+</helmet>
+<div translate="no" style="{{ wrapS }}">
+  <div style="{{ innerS }}">
+    <sc-if value="{{ isInfo }}" hint-placeholder-val="{{ true }}">
+      <div style="{{ infoS }}"><div style="{{ tS }}">{{ title }}</div><div style="{{ xS }}">{{ text }}</div></div>
+    </sc-if>
+    <sc-if value="{{ isPhoto }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ photoS }}"><div style="{{ sunS }}"></div><div style="{{ capS }}">{{ title }}</div></div>
+    </sc-if>
+    <sc-if value="{{ isDeps }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ depsS }}">
+        <div style="{{ dhS }}">{{ title }}</div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+          <div style="{{ rowS }}"><span style="{{ r.bS }}">{{ r.line }}</span><span style="{{ r.dS }}">{{ r.dest }}</span><span style="{{ r.tS }}">{{ r.min }}</span></div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isLedText }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ ledS }}"><span style="{{ ledTxS }}">{{ ledTxt }}</span></div>
+    </sc-if>
+    <sc-if value="{{ isLedClock }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ clkS }}"><span style="{{ clkTimeS }}">{{ clkTime }}</span><sc-if value="{{ clkHasDate }}" hint-placeholder-val="{{ true }}"><span style="{{ clkDateS }}">{{ clkDate }}</span></sc-if></div>
+    </sc-if>
+    <sc-if value="{{ isLedDeps }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ ledDepsS }}">
+        <sc-for list="{{ ledRows }}" as="r" hint-placeholder-count="3">
+          <div style="{{ ledRowS }}"><span style="{{ ledNumS }}">{{ r.line }}</span><span style="{{ ledDestS }}">{{ r.dest }}</span><span style="{{ ledMinS }}">{{ r.min }}</span></div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isLed }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ dotS }}"></div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":342,"height":192},"kind":{"editor":"text","default":"info"},"dev":{"editor":"text","default":"lcd"},"title":{"editor":"text","default":"Úvod"},"text":{"editor":"text","default":""},"bg":{"editor":"color","default":"#0E8080"},"img":{"editor":"color","default":"#F2A65A"},"w":{"editor":"text","default":"342"},"r":{"editor":"text","default":"8"},"ledsize":{"editor":"text","default":"M"},"ledalign":{"editor":"text","default":"left"},"ledcol":{"editor":"text","default":""},"ledbg":{"editor":"text","default":""}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props || {};
+    const dev = p.dev || 'lcd';
+    const D = { lcd: [480, 270], portrait: [270, 480], p31: [270, 480], epaper: [270, 480], vehicle: [576, 96], stop: [384, 128], ledclock: [384, 192], ledtall: [384, 480] }[dev] || [480, 270];
+    const W = D[0], H = D[1];
+    const w = parseFloat(p.w) || 342;
+    const k = w / W;
+    const led = dev === 'vehicle' || dev === 'stop' || dev === 'ledclock' || dev === 'ledtall';
+    const ep = dev === 'epaper'; const tall = dev === 'ledtall';
+    const kind = p.kind || 'info';
+    const bg = p.bg || '#0E8080';
+    const port = dev === 'portrait' || dev === 'p31' || ep;
+    const FONT = "'Source Sans 3', system-ui, sans-serif";
+    const MONO = "'JetBrains Mono', ui-monospace, monospace";
+    const DEST = { '3': 'Železničná stanica', '5': 'Vlčince', '14': 'Sídlisko Sever', '25': 'Letisko', '31': 'Univerzita', 'N1': 'Centrum' };
+    const LC = { '3': '#0E8080', '5': '#C8322B', '14': '#2F62B0', '25': '#E07A2B', '31': '#5B2A86', 'N1': '#1F2323' };
+    const MIN = ['2 min', '6 min', '9 min', '14 min', '18 min', '23 min'];
+    let lines = String(p.text || '').match(/N?\d+/g) || [];
+    if (!lines.length) lines = ['3', '5', '14', '25'];
+    const all = lines.map((l, i) => ({ line: l, dest: DEST[l] || 'Centrum', min: MIN[i % MIN.length], col: LC[l] || '#0E8080' }));
+    const rows = all.slice(0, port ? 6 : 4).map((r) => ({
+      line: r.line, dest: r.dest, min: r.min,
+      bS: 'min-width:' + (port ? 34 : 44) + 'px;height:' + (port ? 28 : 34) + 'px;border-radius:6px;background:' + r.col + ';color:#fff;font-weight:700;font-size:' + (port ? 18 : 22) + 'px;display:flex;align-items:center;justify-content:center',
+      dS: 'flex:1;min-width:0;font-size:' + (port ? 16 : 22) + 'px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis',
+      tS: 'font-size:' + (port ? 16 : 22) + 'px;font-weight:700;color:#FFD27A;white-space:nowrap'
+    }));
+    const FS = { XS: 16, S: 22, M: 30, L: 40, XL: 52 }[p.ledsize || 'M'] || 30;
+    const col = p.ledcol || '';
+    const fld = p.ledbg || '';
+    const amber = '#FFB000';
+    const txtCol = col || (fld ? '#050505' : amber);
+    const al = p.ledalign || 'left';
+    const lt = p.title || '';
+    const glow = (c) => '0 0 6px ' + c + '99';
+    const one = dev === 'vehicle';
+    const mq = one && lt.length * (FS * 0.62 + 1) > W - 28;
+    const isLedClock = led && kind === 'clock';
+    const isLedDeps = led && kind === 'deps';
+    const now = new Date(); const p2 = (n) => ('0' + n).slice(-2); const fl = String(p.text || '');
+    const clkSec = fl.indexOf('s') >= 0;
+    const ABS = [1, 3, 6, 9, 12, 16, 21, 25, 31, 38];
+    const tallRows = ABS.map((m, i) => { const r = all[i % all.length]; const d = new Date(now.getTime() + m * 60000); return { line: r.line, dest: r.dest.replace('Železničná stanica', 'Žel. stanica'), min: p2(d.getHours()) + ':' + p2(d.getMinutes()) }; });
+    return {
+      title: p.title || '', text: p.text || '', rows, ledTxt: lt, ledRows: tall ? tallRows : all.slice(0, 3).map((r) => ({ line: r.line, dest: r.dest.replace('Železničná stanica', 'Žel. stanica'), min: r.min.replace(' min', '′') })),
+      isInfo: !led && (kind === 'info' || kind === 'led'), isPhoto: !led && kind === 'photo', isDeps: !led && kind === 'deps', isLed: led, isLedDeps, isLedClock, isLedText: led && !isLedDeps && !isLedClock,
+      clkTime: p2(now.getHours()) + ':' + p2(now.getMinutes()) + (clkSec ? ':' + p2(now.getSeconds()) : ''), clkHasDate: fl.indexOf('n') < 0, clkDate: (fl.indexOf('w') >= 0 ? ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'][now.getDay()] + ' ' : '') + now.getDate() + '. ' + (now.getMonth() + 1) + '.' + (fl.indexOf('y') >= 0 ? ' ' + now.getFullYear() : ''),
+      clkS: 'position:absolute;inset:0;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:' + MONO + ';font-weight:700;color:' + (col || amber) + ';text-shadow:' + glow(col || amber), clkTimeS: 'font-size:' + (clkSec ? 68 : 96) + 'px;line-height:1;letter-spacing:2px', clkDateS: 'font-size:34px;line-height:1;letter-spacing:1px',
+      wrapS: 'width:' + w + 'px;height:' + Math.round(H * k) + 'px;overflow:hidden;position:relative;border-radius:' + (parseFloat(p.r) || 0) + 'px;background:#000;flex:none',
+      innerS: 'width:' + W + 'px;height:' + H + 'px;transform:scale(' + k + ');transform-origin:0 0;position:relative;font-family:' + FONT + ';overflow:hidden',
+      infoS: 'position:absolute;inset:0;background:' + bg + ';display:flex;flex-direction:column;justify-content:center;gap:10px;padding:' + (port ? '24px' : '28px 36px') + ';box-sizing:border-box',
+      tS: 'color:#fff' + ';font-weight:700;font-size:' + (port ? 32 : 40) + 'px;line-height:1.1',
+      xS: 'color:rgba(255,255,255,.9)' + ';font-size:' + (port ? 18 : 22) + 'px;line-height:1.25',
+      photoS: 'position:absolute;inset:0;background:radial-gradient(circle at 72% 30%, rgba(255,255,255,.38), rgba(255,255,255,0) 38%), linear-gradient(135deg,' + (p.img || '#F2A65A') + ',#1A1F1F 160%)',
+      sunS: 'position:absolute;left:0;right:0;bottom:0;height:38%;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.25))',
+      capS: 'position:absolute;left:0;right:0;bottom:0;padding:14px 20px;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:' + (port ? 24 : 28) + 'px',
+      depsS: 'position:absolute;inset:0;background:' + bg + ';display:flex;flex-direction:column;gap:' + (port ? 12 : 8) + 'px;padding:' + (port ? '24px 20px' : '22px 30px') + ';box-sizing:border-box',
+      dhS: 'color:#fff;font-weight:700;font-size:' + (port ? 26 : 30) + 'px;margin-bottom:4px',
+      rowS: 'display:flex;align-items:center;gap:12px',
+      ledS: 'position:absolute;inset:0;background:#050505;display:flex;align-items:center;padding:8px 14px;box-sizing:border-box;overflow:hidden;text-align:' + al + ';justify-content:' + (one && !mq ? (al === 'center' ? 'center' : al === 'right' ? 'flex-end' : 'flex-start') : 'flex-start'),
+      ledTxS: 'font-family:' + MONO + ';font-weight:700;font-size:' + FS + 'px;line-height:1.15;letter-spacing:1px;color:' + txtCol + ';text-shadow:' + (fld ? 'none' : glow(col || amber)) + ';' + (fld ? 'background:' + fld + ';padding:2px 8px;box-sizing:border-box;' : '') + (one ? 'display:inline-block;white-space:nowrap;' + (mq ? 'padding-left:100%;animation:wzmarq ' + Math.max(6, Math.round(lt.length * FS * 0.62 / 55)) + 's linear infinite;' : '') : 'display:block;width:100%;overflow:hidden;max-height:' + (H - 16) + 'px;'),
+      ledDepsS: 'position:absolute;inset:0;background:#050505;display:flex;flex-direction:column;justify-content:center;gap:' + (tall ? 3 : 4) + 'px;padding:6px ' + (tall ? 8 : 12) + 'px;box-sizing:border-box;font-family:' + MONO + ';font-weight:700;font-size:' + (tall ? 25 : 26) + 'px;line-height:1.1;letter-spacing:' + (tall ? 0 : 1) + 'px',
+      ledRowS: 'display:flex;align-items:center;gap:' + (tall ? 8 : 12) + 'px;height:' + (tall ? 43 : 36) + 'px',
+      ledNumS: 'min-width:' + (tall ? 44 : 52) + 'px;height:' + (tall ? 36 : 32) + 'px;display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box;background:' + (fld || amber) + ';color:#050505',
+      ledDestS: 'flex:1;min-width:0;white-space:nowrap;overflow:hidden;color:' + (col || amber) + ';text-shadow:' + glow(col || amber),
+      ledMinS: 'white-space:nowrap;color:' + (col || amber) + ';text-shadow:' + glow(col || amber),
+      dotS: 'position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle, rgba(5,5,5,0) 1.25px, #050505 1.75px) 0 0/4px 4px'
+    };
+  }
+}
+</script>
+</body>
+</html>

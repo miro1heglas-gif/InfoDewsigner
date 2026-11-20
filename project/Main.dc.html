@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Info Designer – mobilná aplikácia</title>
+<script src="./support.js"></script>
+<script src="./i18n.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0}
+.stage{width:100%;height:100vh;background:#121616;display:flex;justify-content:center}
+.app{width:100%;max-width:480px;height:100%;position:relative;overflow:hidden;background:#F3F6F6;font-family:'Source Sans 3',system-ui,sans-serif;color:#1A1F1F;font-size:15px;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;color:inherit}
+input,textarea,select{font-family:inherit;font-size:16px;color:#1A1F1F}
+button:focus-visible,input:focus-visible,textarea:focus-visible,[role=button]:focus-visible{outline:3px solid #2BD0D0;outline-offset:1px}
+.hd{height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 4px 0 4px}
+.logo{width:30px;height:30px;border-radius:8px;background:#0E8080;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;margin-left:10px;flex:none}
+.t1{font-size:19px;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t2{font-size:12px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{min-width:44px;height:44px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;border-radius:12px;position:relative;flex:none;padding:0}
+.ib[data-text="true"]{padding:0 12px;font-size:16px;font-weight:700;color:#0E8080}
+.ib[data-k="d"],.ib[data-k="d2"]{color:#B42318}
+.ib[disabled]{opacity:.3}
+.ibadge{position:absolute;top:4px;right:3px;min-width:18px;height:18px;border-radius:9px;background:#C8322B;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
+.sc{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px}
+.sc::-webkit-scrollbar{width:0}
+.sc>*{flex-shrink:0}
+.filters{flex:none;background:#fff;border-bottom:1px solid #DDE2E2;padding:10px 16px 10px;display:flex;flex-direction:column;gap:10px}
+.srch{height:44px;border-radius:12px;background:#F0F4F4;display:flex;align-items:center;gap:8px;padding:0 12px}
+.srch input{flex:1;min-width:0;border:none;outline:none;background:transparent;height:100%}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 0 2px}
+.chips::-webkit-scrollbar{height:0}
+.chip{height:44px;padding:0 16px;border-radius:999px;border:1px solid #C9D2D2;background:#fff;font-size:14px;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:6px;flex:none}
+.chip[aria-pressed="true"]{background:#0E8080;border-color:#0E8080;color:#fff}
+.chip.more{border-style:dashed;border-color:#0E8080;color:#0B6E6E;font-weight:700}
+.chip.dk{background:transparent;border-color:#4A5252;color:#E3E8E8}
+.chip.dk[aria-pressed="true"]{background:#2BD0D0;border-color:#2BD0D0;color:#0B1F1F}
+.cn{font-size:12px;font-weight:700;opacity:.9}
+.card{background:#fff;border:1px solid #DDE2E2;border-radius:14px;padding:14px}
+.card.tap{text-align:left;font-size:15px}
+.apc{display:flex;flex-direction:column;align-items:stretch;width:100%}
+.card.form{display:flex;flex-direction:column;gap:10px}
+.h2{font-size:12.5px;font-weight:700;color:#5B6566;text-transform:uppercase;letter-spacing:.05em;margin:0}
+.sec{display:flex;flex-direction:column;gap:8px}
+.mut{color:#5B6566}
+.sm{font-size:13px}
+.nm{font-size:16px;font-weight:600;display:block;line-height:1.25;overflow-wrap:anywhere}
+.list{background:#fff;border:1px solid #DDE2E2;border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;background:#fff;border:none;border-bottom:1px solid #EBEFEF;width:100%;text-align:left;font-size:15px}
+.list>.row:last-child,.list>*:last-child.row{border-bottom:none}
+.rowmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:48px;border:none;background:transparent;padding:0;text-align:left;font-size:15px}
+.mv{display:flex;flex:none}
+.btn{height:48px;border-radius:12px;border:1px solid #C9D2D2;background:#fff;color:#1A1F1F;font-size:15px;font-weight:700;padding:0 16px;display:flex;align-items:center;justify-content:center;gap:8px;flex:none}
+.btn[data-k="p"]{background:#0E8080;border-color:#0E8080;color:#fff}
+.btn[data-k="p2"]{border-color:#0E8080;color:#0B6E6E;background:#E8F5F5}
+.btn[data-k="d"]{color:#B42318;border-color:#F0C2BE;background:#fff}
+.btn.sm{height:44px;font-size:14px;padding:0 14px}
+.row.wrap{flex-wrap:wrap}
+.acts{display:flex;gap:8px;flex:0 0 100%;min-width:0}
+.acts .btn{flex:1 1 0;min-width:0;height:auto;min-height:44px;padding:6px 10px;line-height:1.2;text-align:center;white-space:normal}
+.btn[disabled]{opacity:.45}
+.lnk{border:none;background:transparent;color:#0E8080;font-weight:700;font-size:14px;height:44px;padding:0 6px;min-width:44px}
+.lnk.clr{display:inline-flex;align-items:center;gap:4px;color:#3F4848;padding:0 4px 0 10px}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;background:#EDF1F1;color:#4A5252;flex:none}
+.pill[data-k="ok"]{background:#E3F4F1;color:#0B6E6E}
+.pill[data-k="warn"]{background:#FFF1DF;color:#8A4A00}
+.pill[data-k="bad"]{background:#FDECEA;color:#B42318}
+.pill[data-k="blue"]{background:#E6EEF9;color:#2F62B0}
+.pill[data-k="dark"]{background:#1F2323;color:#fff}
+.pill[data-k="grey"]{background:#EDF1F1;color:#4A5252}
+.dot{width:12px;height:12px;border-radius:50%;background:#8A9696;flex:none}
+.dot[data-k="ok"]{background:#2E9E4F}.dot[data-k="bad"]{background:#C8322B}.dot[data-k="warn"]{background:#E07A2B}
+.offr{display:flex;align-items:center;gap:8px;font-size:14px;padding:3px 0}
+.cta{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;border:none;border-radius:16px;padding:12px 16px;background:linear-gradient(135deg,#0E8080,#0B6E6E);color:#fff;box-shadow:0 6px 16px rgba(14,128,128,.3)}
+.cta-i{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex:none}
+.ico{width:40px;height:40px;border-radius:12px;background:#E8F5F5;color:#0B6E6E;display:flex;align-items:center;justify-content:center;flex:none}
+.cnt{min-width:30px;height:30px;border-radius:15px;background:#C8322B;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 8px}
+.avatar{width:52px;height:52px;border-radius:50%;background:#0E8080;color:#fff;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;flex:none}
+.empty{padding:36px 20px;text-align:center;color:#5B6566;font-size:15px}
+.note{display:flex;gap:10px;padding:12px 14px;border-radius:12px;background:#FFF6E6;color:#6B4A0E;font-size:14px;line-height:1.35}
+.fab{position:absolute;right:16px;bottom:16px;width:56px;height:56px;border-radius:18px;border:none;background:#0E8080;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(14,128,128,.4);z-index:5}
+.prv{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.12);flex:none;align-self:center}
+.playov{position:absolute;right:12px;bottom:12px;width:48px;height:48px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;padding-left:3px}
+.bar{flex:none;display:flex;gap:10px;padding:10px 16px 12px;background:#fff;border-top:1px solid #DDE2E2}
+.tabs{height:64px;flex:none;display:flex;background:#fff;border-top:1px solid #DDE2E2}
+.tab{flex:1;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;color:#5B6566;position:relative;padding:0}
+.tab[aria-current="page"]{color:#0B6E6E}
+.badge{position:absolute;top:5px;left:calc(50% + 4px);min-width:18px;height:18px;border-radius:9px;background:#C8322B;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.sheetbg{position:absolute;left:0;right:0;top:0;bottom:64px;background:rgba(18,22,22,.55);display:flex;flex-direction:column;justify-content:flex-end;z-index:20}
+.sheet{background:#fff;border-radius:22px 22px 0 0;max-height:86%;display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+.grab{width:40px;height:4px;border-radius:2px;background:#C9D2D2;margin:8px auto 0;flex:none}
+.sheet-h{display:flex;align-items:center;gap:4px;padding:4px 6px 2px 14px;flex:none}
+.shh{flex:1;min-width:0;font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet-b{overflow-y:auto;padding:8px 16px 16px;display:flex;flex-direction:column;gap:14px;min-height:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sheet-b>*{flex-shrink:0}
+.sheet-f{padding:10px 16px 18px;display:flex;gap:10px;border-top:1px solid #EBEFEF;flex:none}
+.inp{width:100%;height:48px;border:1px solid #C9D2D2;border-radius:12px;padding:0 14px;background:#fff}
+textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
+.lbl{font-size:13px;font-weight:700;color:#3F4848}
+.seg{display:flex;border:1px solid #C9D2D2;border-radius:12px;overflow:hidden;background:#fff;flex:none}
+.seg button{flex:1;min-width:0;height:44px;border:none;border-right:1px solid #C9D2D2;background:#fff;font-size:13.5px;font-weight:700;padding:0 4px}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:#0E8080;color:#fff}
+/* prepínač: dotyková plocha 56 × 44 px, viditeľná dráha 52 × 32 px */
+.sw{width:56px;height:44px;border:none;background:transparent;position:relative;flex:none;padding:0}
+.sw::before{content:'';position:absolute;left:2px;top:6px;width:52px;height:32px;border-radius:16px;background:#C9D2D2;transition:background .15s}
+.sw::after{content:'';position:absolute;top:9px;left:5px;width:26px;height:26px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw[aria-checked="true"]::before{background:#0E8080}
+.sw[aria-checked="true"]::after{left:25px}
+.sws{display:flex;gap:2px;flex-wrap:wrap}
+.swt{width:44px;height:44px;border-radius:50%;border:2px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center;padding:0}
+.swt[aria-pressed="true"]{border-color:#0E8080}
+.step{display:flex;align-items:center;gap:6px;align-self:flex-start;border:1px solid #C9D2D2;border-radius:12px;padding:2px}
+.stv{min-width:64px;text-align:center;font-size:18px;font-weight:700}
+.acc{display:flex;align-items:center;gap:10px;border:none;background:transparent;padding:0;min-height:44px;width:100%}
+.rad{width:22px;height:22px;border-radius:50%;border:2px solid #8A9696;flex:none;position:relative}
+[aria-checked="true"]>.rad{border-color:#0E8080}
+[aria-checked="true"]>.rad::after{content:'';position:absolute;inset:3px;border-radius:50%;background:#0E8080}
+.chk{width:22px;height:22px;border-radius:6px;border:2px solid #8A9696;flex:none;position:relative}
+[aria-checked="true"]>.chk{border-color:#0E8080;background:#0E8080}
+[aria-checked="true"]>.chk::after{content:'';position:absolute;left:5px;top:1px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.opt{display:flex;align-items:center;gap:14px;width:100%;min-height:68px;border:1px solid #DDE2E2;border-radius:14px;background:#fff;padding:10px 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gt{display:flex;flex-direction:column;gap:5px;border:none;background:transparent;padding:0;text-align:left}
+.gdur{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:6px}
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.strip::-webkit-scrollbar{height:0}
+.chg{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:15px}
+.chgi{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;background:#EDF1F1;color:#4A5252}
+.chgi[data-k="add"]{background:#E3F4F1;color:#0B6E6E}.chgi[data-k="del"]{background:#FDECEA;color:#B42318}.chgi[data-k="mod"]{background:#E6EEF9;color:#2F62B0}.chgi[data-k="ord"]{background:#FFF1DF;color:#A85A00}
+.pvb{flex:1;min-height:0;background:#121616;display:flex;flex-direction:column;gap:14px;padding-top:12px;color:#fff}
+.ctl{width:52px;height:52px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+.ctl.big{width:68px;height:68px;background:#2BD0D0;color:#0B1F1F}
+.sndprev{display:flex;align-items:center;gap:12px;background:#F3F6F6;border-radius:12px;padding:10px 12px}
+.playb{width:48px;height:48px;border-radius:50%;border:none;background:#0E8080;color:#fff;display:flex;align-items:center;justify-content:center;flex:none;padding:0}
+.playb.sm{width:44px;height:44px;background:#E8F5F5;color:#0B6E6E}
+/* hlásenie je nad spodnými tlačidlami (lišta akcií, pätička panela, tlačidlo +) a neblokuje ťuknutia */
+.toast{position:absolute;left:12px;right:12px;bottom:150px;pointer-events:none;background:#1F2323;color:#fff;border-radius:14px;padding:13px 14px;font-size:14.5px;z-index:40;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.push{position:absolute;left:10px;right:10px;top:8px;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #DDE2E2;border-radius:16px;background:#fff;color:#1A1F1F;box-shadow:0 10px 30px rgba(0,0,0,.3);min-height:60px}
+.pickrow{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;border:1px solid #C9D2D2;border-radius:12px;background:#fff;padding:8px 8px 8px 12px}
+.cta span{color:#fff}
+</style>
+</helmet>
+<div class="stage">
+<div class="app">
+  <sc-if value="{{ hasPush }}" hint-placeholder-val="{{ false }}">
+    <button class="push" onClick="{{ closePush }}" aria-label="Zavrieť upozornenie"><span class="logo" aria-hidden="true" style="margin: 0">W</span><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 700; font-size: 14px">{{ pushTitle }}</span><span style="display: block; font-size: 14px; line-height: 1.3">{{ pushText }}</span></span><span style="font-size: 12px; color: #5B6566; flex: none">teraz</span></button>
+  </sc-if>
+
+  <div class="hd" style="{{ hdS }}">
+    <sc-if value="{{ hasBack }}" hint-placeholder-val="{{ false }}"><button class="ib" onClick="{{ goBack }}" aria-label="Späť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.back }}"></path></svg></button></sc-if>
+    <sc-if value="{{ hdLogo }}" hint-placeholder-val="{{ true }}"><span class="logo" aria-hidden="true">W</span></sc-if>
+    <div style="flex: 1; min-width: 0; padding-left: 6px"><div class="t1">{{ hdTitle }}</div><sc-if value="{{ hasSub }}" hint-placeholder-val="{{ true }}"><div class="t2" style="{{ subS }}">{{ hdSub }}</div></sc-if></div>
+    <sc-for list="{{ hdActs }}" as="a" hint-placeholder-count="1">
+      <button class="ib" data-text="{{ a.isText }}" onClick="{{ a.fn }}" aria-label="{{ a.label }}"><sc-if value="{{ a.isIcon }}" hint-placeholder-val="{{ true }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg></sc-if><sc-if value="{{ a.isText }}" hint-placeholder-val="{{ false }}"><span>{{ a.label }}</span></sc-if><sc-if value="{{ a.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="ibadge">{{ a.badge }}</span></sc-if></button>
+    </sc-for>
+  </div>
+
+  <div class="body">
+
+    <!-- ===== DOMOV ===== -->
+    <sc-if value="{{ s_home }}" hint-placeholder-val="{{ true }}">
+      <div class="sc">
+        <div><div style="font-size: 23px; font-weight: 700">Dobrý deň, Miroslav</div><div class="mut">{{ homeDate }}</div></div>
+        <button class="cta" onClick="{{ openQuick }}">
+          <span class="cta-i"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.msg }}"></path></svg></span>
+          <span style="flex: 1; text-align: left"><span style="display: block; font-size: 17px; font-weight: 700">Nová rýchla správa</span><span style="display: block; font-size: 13px">Na displejoch do pár sekúnd</span></span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.next }}"></path></svg>
+        </button>
+        <sc-if value="{{ hasQa }}" hint-placeholder-val="{{ true }}">
+          <div class="sec"><h2 class="h2">Práve zobrazené správy</h2>
+            <div class="list"><sc-for list="{{ qa }}" as="m" hint-placeholder-count="1">
+              <div class="row" style="align-items: flex-start">
+                <span class="pill" data-k="{{ m.k }}">{{ m.prioT }}</span>
+                <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ m.text }}</span><span class="mut sm" style="display: block">{{ m.meta }}</span></span>
+                <button class="btn sm" data-k="d" onClick="{{ m.cancel }}">Zrušiť</button>
+              </div>
+            </sc-for></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasPend }}" hint-placeholder-val="{{ true }}">
+          <button class="card tap" onClick="{{ goApprovals }}" style="display: flex; align-items: center; gap: 12px; text-align: left; width: 100%">
+            <span class="ico" style="background: #FFF1DF; color: #8A4A00"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.check }}"></path></svg></span>
+            <span style="flex: 1; min-width: 0"><span class="nm">Čaká na schválenie</span><span class="mut sm" style="display: block">{{ pendT }}</span></span>
+            <span class="cnt">{{ pendN }}</span>
+          </button>
+        </sc-if>
+        <div class="sec"><h2 class="h2">Čo sa teraz prehráva</h2>
+          <div class="list"><sc-for list="{{ nowRows }}" as="n" hint-placeholder-count="4">
+            <div class="row wrap">
+              <span style="{{ n.thS }}"></span>
+              <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ n.place }}</span><span class="mut sm" style="display: block" translate="no">{{ n.plName }}</span><sc-if value="{{ n.temp }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="blue" style="margin-top: 4px">Dočasne · {{ n.until }}</span></sc-if></span>
+              <span class="acts">
+                <sc-if value="{{ n.canEdit }}" hint-placeholder-val="{{ true }}"><button class="btn sm" data-k="p2" aria-label="{{ n.editA }}" onClick="{{ n.edit }}">Upraviť playlist</button></sc-if>
+                <button class="btn sm" aria-label="{{ n.changeA }}" onClick="{{ n.change }}">Prepnúť playlist</button>
+              </span>
+            </div>
+          </sc-for></div>
+        </div>
+        <div class="card">
+          <div style="display: flex; align-items: center; gap: 10px"><div style="flex: 1"><div class="h2">Miesta</div><div style="font-size: 24px; font-weight: 700">{{ pcOn }} <span class="mut" style="font-size: 15px; font-weight: 600">z {{ pcDev }} online</span></div></div><button class="btn sm" onClick="{{ goPlaces }}">Zobraziť</button></div>
+          <div style="height: 8px; border-radius: 4px; background: #EDF1F1; margin: 10px 0 8px; overflow: hidden"><div style="{{ pcBarS }}"></div></div>
+          <sc-for list="{{ pcOff }}" as="d" hint-placeholder-count="2"><div class="offr"><span class="dot" data-k="bad"></span><span>{{ d.name }}<span class="mut"> · offline {{ d.since }}</span></span></div></sc-for>
+          <sc-if value="{{ pcHasExp }}" hint-placeholder-val="{{ true }}"><div class="offr"><span class="dot" data-k="warn"></span><span>{{ pcExpT }}</span></div></sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== PLAYLISTY ===== -->
+    <sc-if value="{{ s_pls }}" hint-placeholder-val="{{ false }}">
+      <div class="filters">
+        <label class="srch"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B6566" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.search }}"></path></svg><input value="{{ q }}" onInput="{{ setQ }}" placeholder="Hľadať playlist" aria-label="Hľadať playlist"></label>
+        <div class="chips"><sc-for list="{{ plChips }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}<span class="cn">{{ c.n }}</span></button></sc-for></div>
+      </div>
+      <div class="sc" style="padding-top: 12px; padding-bottom: 88px">
+        <div class="list"><sc-for list="{{ plRows }}" as="p" hint-placeholder-count="6">
+          <button class="row" onClick="{{ p.open }}">
+            <span style="{{ p.thS }}">{{ p.nSl }}</span>
+            <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ p.name }}</span><span class="sm" style="display: block; font-weight: 600; color: #3F4848">{{ p.devT }}</span><span class="mut sm" style="display: block">{{ p.meta }}</span><span style="display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap"><span class="pill" data-k="{{ p.stK }}">{{ p.stT }}</span><sc-if value="{{ p.touch }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="dark">Dotykový</span></sc-if><sc-if value="{{ p.hasFlow }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="{{ p.flowK }}">{{ p.flowT }}</span></sc-if></span></span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7777" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.next }}"></path></svg>
+          </button>
+        </sc-for></div>
+        <sc-if value="{{ plEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">Nič sa nenašlo. Skúste zmeniť filter alebo hľadaný text.</div></sc-if>
+      </div>
+      <button class="fab" onClick="{{ newPl }}" aria-label="Nový playlist"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.plus }}"></path></svg></button>
+    </sc-if>
+
+    <!-- ===== DETAIL PLAYLISTU ===== -->
+    <sc-if value="{{ s_pl }}" hint-placeholder-val="{{ false }}">
+      <div class="sc">
+        <sc-if value="{{ hasSlides }}" hint-placeholder-val="{{ true }}">
+          <div class="prv">
+            <div style="{{ prvS }}"><sc-for list="{{ prvParts }}" as="q" hint-placeholder-count="1"><dc-import name="Slide" kind="{{ q.kind }}" title="{{ q.title }}" text="{{ q.text }}" bg="{{ q.bg }}" img="{{ q.img }}" dev="{{ q.dev }}" w="{{ q.w }}" r="{{ q.r }}" ledsize="{{ q.ledSize }}" ledalign="{{ q.ledAlign }}" ledcol="{{ q.ledCol }}" ledbg="{{ q.ledBg }}" hint-size="358px,201px"></dc-import></sc-for></div>
+            <sc-if value="{{ plNotLed }}" hint-placeholder-val="{{ true }}"><button class="playov" onClick="{{ openPrev }}" aria-label="Spustiť náhľad playlistu"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ ic.play }}"></path></svg></button></sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noSlides }}" hint-placeholder-val="{{ false }}"><div class="empty">{{ noSlidesT }}</div></sc-if>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center"><span class="pill" data-k="{{ plStK }}">{{ plStT }}</span><sc-if value="{{ plTouch }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="dark">Dotykový</span></sc-if><sc-if value="{{ plHasFlow }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="{{ plFlowK }}">{{ plFlowT }}</span></sc-if><span class="mut sm" style="margin-left: auto">{{ plMeta }}</span></div>
+        <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+          <div class="note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ ic.info }}"></path></svg><span>{{ lockT }}</span></div>
+        </sc-if>
+        <div class="card" style="display: flex; align-items: center; gap: 12px">
+          <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.monitor }}"></path></svg></span>
+          <span style="flex: 1; min-width: 0"><span class="h2" style="display: block">Vytvorený pre zariadenie</span><span class="nm">{{ plDevT }}</span><span class="mut sm" style="display: block">Upravovať a prehrávať sa dá len na tomto type zariadenia.</span></span>
+        </div>
+        <div class="card">
+          <div style="display: flex; align-items: center"><div class="h2" style="flex: 1">Kde sa prehráva</div><button class="lnk" onClick="{{ swFromPl }}">Prepnúť na mieste</button></div>
+          <div style="margin-top: 6px; line-height: 1.35">{{ whereT }}</div>
+          <div class="mut sm" style="margin-top: 4px">{{ planT }}</div>
+        </div>
+        <div style="display: flex; align-items: center"><h2 class="h2" style="flex: 1">Snímky · {{ slCount }}</h2><sc-if value="{{ canReorder }}" hint-placeholder-val="{{ true }}"><button class="lnk" onClick="{{ toggleReorder }}">{{ reorderT }}</button></sc-if></div>
+        <sc-if value="{{ hasSlides }}" hint-placeholder-val="{{ true }}">
+          <div class="list"><sc-for list="{{ slRows }}" as="r" hint-placeholder-count="3">
+            <div class="row" style="padding-right: 6px">
+              <button class="rowmain" onClick="{{ r.open }}" aria-label="{{ r.aria }}">
+                <dc-import name="Slide" kind="{{ r.kind }}" title="{{ r.title }}" text="{{ r.text }}" bg="{{ r.bg }}" img="{{ r.img }}" dev="{{ r.dev }}" w="{{ r.w }}" r="6" ledsize="{{ r.ledSize }}" ledalign="{{ r.ledAlign }}" ledcol="{{ r.ledCol }}" ledbg="{{ r.ledBg }}" hint-size="92px,52px"></dc-import>
+                <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ r.title }}</span><span class="mut sm" style="display: block">{{ r.meta }}</span></span>
+              </button>
+              <sc-if value="{{ r.showMove }}" hint-placeholder-val="{{ false }}">
+                <div class="mv"><button class="ib" aria-label="Posunúť vyššie" onClick="{{ r.up }}" disabled="{{ r.upOff }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.up }}"></path></svg></button><button class="ib" aria-label="Posunúť nižšie" onClick="{{ r.down }}" disabled="{{ r.downOff }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.down }}"></path></svg></button></div>
+                <button class="ib" data-k="{{ r.delK }}" aria-label="{{ r.delLbl }}" onClick="{{ r.del }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.trash }}"></path></svg></button>
+              </sc-if>
+              <sc-if value="{{ r.showChev }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7777" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right: 8px; flex: none"><path d="{{ ic.next }}"></path></svg></sc-if>
+            </div>
+          </sc-for></div>
+        </sc-if>
+        <sc-if value="{{ canAddLcd }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; gap: 10px">
+            <button class="btn" style="flex: 1" data-k="p2" onClick="{{ openAdd }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.camera }}"></path></svg>Pridať fotku</button>
+            <button class="btn" style="flex: 1" onClick="{{ openLib }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.list }}"></path></svg>Pridať snímku</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ canAddTotem }}" hint-placeholder-val="{{ false }}">
+          <button class="btn" data-k="p2" onClick="{{ openLib }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.list }}"></path></svg>Pridať snímku</button>
+        </sc-if>
+        <sc-if value="{{ canAddLed }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; gap: 10px">
+            <button class="btn" style="flex: 1" data-k="p2" onClick="{{ addLed }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.plus }}"></path></svg>Pridať text</button>
+            <button class="btn" style="flex: 1" onClick="{{ openLib }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.list }}"></path></svg>Pridať snímku</button>
+          </div>
+        </sc-if>
+      </div>
+      <div class="bar">
+        <button class="btn" onClick="{{ openPrev }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.eye }}"></path></svg>Náhľad</button>
+        <button class="btn" style="flex: 1" data-k="{{ mainAct.k }}" onClick="{{ mainAct.fn }}">{{ mainAct.label }}</button>
+      </div>
+    </sc-if>
+
+    <!-- ===== EDITOR SNÍMKY ===== -->
+    <sc-if value="{{ s_sl }}" hint-placeholder-val="{{ false }}">
+      <div class="sc">
+        <div class="card" style="padding: 10px; display: flex; flex-direction: column; gap: 8px; align-items: center">
+          <dc-import name="Slide" kind="{{ ed.kind }}" title="{{ ed.title }}" text="{{ ed.text }}" bg="{{ ed.bg }}" img="{{ ed.img }}" dev="{{ edRdev }}" w="{{ edW }}" r="10" ledsize="{{ ed.ledSize }}" ledalign="{{ ed.ledAlign }}" ledcol="{{ ed.ledCol }}" ledbg="{{ ed.ledBg }}" hint-size="338px,190px"></dc-import>
+          <div class="mut sm" style="text-align: center">{{ edDevT }}</div>
+        </div>
+        <div class="card form">
+          <sc-if value="{{ edLcd }}" hint-placeholder-val="{{ true }}"><label class="lbl" for="ed-title">Názov snímky</label><input id="ed-title" class="inp" value="{{ ed.title }}" onInput="{{ setTitle }}"></sc-if>
+          <sc-if value="{{ edClock }}" hint-placeholder-val="{{ false }}">
+            <div class="lbl">Čo sa má zobraziť</div>
+            <div class="list"><sc-for list="{{ clkOpts }}" as="x" hint-placeholder-count="3"><div class="row" style="min-height: 52px"><span class="nm" style="flex: 1">{{ x.title }}</span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div></sc-for></div>
+            <div class="mut sm">Tento displej zobrazuje len čas a dátum.</div>
+          </sc-if>
+          <sc-if value="{{ edLedText }}" hint-placeholder-val="{{ false }}"><label class="lbl" for="ed-led">Text na LED tabuli</label><textarea id="ed-led" class="inp" rows="2" value="{{ ed.title }}" onInput="{{ setTitle }}"></textarea><div class="mut sm">{{ edLedLen }}</div></sc-if>
+          <sc-if value="{{ edHasText }}" hint-placeholder-val="{{ true }}"><label class="lbl" for="ed-text">{{ edTextLbl }}</label><textarea id="ed-text" class="inp" rows="{{ edTextRows }}" value="{{ ed.text }}" onInput="{{ setText }}"></textarea></sc-if>
+          <sc-if value="{{ edIsPhoto }}" hint-placeholder-val="{{ false }}">
+            <div class="lbl">Obrázok</div>
+            <div style="display: flex; align-items: center; gap: 12px"><span style="{{ edImgS }}"></span><span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ edImgName }}</span><span class="mut sm" style="display: block">Z galérie</span></span><button class="btn sm" onClick="{{ openPickReplace }}">Zmeniť</button></div>
+          </sc-if>
+          <sc-if value="{{ edHasBg }}" hint-placeholder-val="{{ true }}"><div class="lbl">Farba pozadia</div><div class="sws"><sc-for list="{{ bgSw }}" as="c" hint-placeholder-count="8"><button class="swt" aria-pressed="{{ c.on }}" aria-label="{{ c.label }}" onClick="{{ c.pick }}"><span style="{{ c.s }}"></span></button></sc-for></div></sc-if>
+          <sc-if value="{{ edLedText }}" hint-placeholder-val="{{ false }}">
+            <div class="lbl">Veľkosť písma</div>
+            <div class="seg"><sc-for list="{{ ledSizes }}" as="c" hint-placeholder-count="5"><button aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div>
+            <div class="lbl">Zarovnanie</div>
+            <div class="seg"><sc-for list="{{ ledAligns }}" as="c" hint-placeholder-count="3"><button aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div>
+          </sc-if>
+          <sc-if value="{{ edLed }}" hint-placeholder-val="{{ false }}">
+            <div class="lbl">Farba textu</div>
+            <div class="sws"><sc-for list="{{ ledColSw }}" as="c" hint-placeholder-count="5"><button class="swt" aria-pressed="{{ c.on }}" aria-label="{{ c.label }}" onClick="{{ c.pick }}"><span style="{{ c.s }}"></span></button></sc-for></div>
+            <sc-if value="{{ edLedField }}" hint-placeholder-val="{{ true }}"><div class="lbl">{{ edFieldLbl }}</div>
+            <div class="sws"><sc-for list="{{ ledBgSw }}" as="c" hint-placeholder-count="6"><button class="swt" aria-pressed="{{ c.on }}" aria-label="{{ c.label }}" onClick="{{ c.pick }}"><span style="{{ c.s }}"></span></button></sc-for></div>
+            <div class="mut sm">{{ ledHint }}</div></sc-if>
+          </sc-if>
+          <sc-if value="{{ edHasDur }}" hint-placeholder-val="{{ true }}"><div class="lbl">Trvanie zobrazenia</div>
+          <div class="step"><button class="ib" aria-label="Skrátiť o 5 sekúnd" onClick="{{ durMinus }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button><span class="stv">{{ ed.dur }} s</span><button class="ib" aria-label="Predĺžiť o 5 sekúnd" onClick="{{ durPlus }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.plus }}"></path></svg></button></div></sc-if>
+        </div>
+        <button class="btn" data-k="d" onClick="{{ delSlideEd }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.trash }}"></path></svg>{{ delEdT }}</button>
+      </div>
+    </sc-if>
+
+    <!-- ===== MIESTA ===== -->
+    <sc-if value="{{ s_plc }}" hint-placeholder-val="{{ false }}">
+      <div class="filters">
+        <label class="srch"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B6566" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.search }}"></path></svg><input value="{{ pq }}" onInput="{{ setPq }}" placeholder="Hľadať miesto" aria-label="Hľadať miesto"></label>
+        <div class="chips"><sc-for list="{{ pcChips }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}<span class="cn">{{ c.n }}</span></button></sc-for></div>
+      </div>
+      <div class="sc" style="padding-top: 12px">
+        <div class="list"><sc-for list="{{ pcRows }}" as="p" hint-placeholder-count="6">
+          <div class="row wrap" style="align-items: flex-start">
+            <span class="dot" data-k="{{ p.dotK }}" style="margin-top: 7px"></span>
+            <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ p.name }}</span><span class="sm" style="display: block; font-weight: 600; color: #3F4848">{{ p.devT }}</span><span class="mut sm" style="display: block">{{ p.plName }}</span><sc-if value="{{ p.hasDev }}" hint-placeholder-val="{{ true }}"><span style="display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; align-items: center"><span class="pill" data-k="{{ p.stK }}">{{ p.stT }}</span><sc-if value="{{ p.offline }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="bad">Offline</span></sc-if><sc-if value="{{ p.temp }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="blue">Dočasne · {{ p.until }}</span><button class="lnk" onClick="{{ p.revert }}">Vrátiť pôvodný</button></sc-if></span></sc-if></span>
+            <sc-if value="{{ p.hasDev }}" hint-placeholder-val="{{ true }}"><span class="acts">
+              <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ true }}"><button class="btn sm" data-k="p2" aria-label="{{ p.editA }}" onClick="{{ p.edit }}">Upraviť playlist</button></sc-if>
+              <button class="btn sm" aria-label="{{ p.changeA }}" onClick="{{ p.change }}">Prepnúť playlist</button>
+            </span></sc-if>
+          </div>
+        </sc-for></div>
+        <sc-if value="{{ pcEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">Nič sa nenašlo.</div></sc-if>
+        <div class="mut sm" style="text-align: center">{{ pcFootT }}</div>
+      </div>
+    </sc-if>
+
+    <!-- ===== GALÉRIA ===== -->
+    <sc-if value="{{ s_gal }}" hint-placeholder-val="{{ false }}">
+      <div class="filters">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #5B6566"><span style="flex: 1; height: 8px; border-radius: 4px; background: #EDF1F1; overflow: hidden"><span style="display: block; width: 6%; height: 100%; background: #0E8080"></span></span><span style="font-weight: 600">57 MB z 1 GB</span></div>
+        <div class="chips"><sc-for list="{{ galChips }}" as="c" hint-placeholder-count="5"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}<span class="cn">{{ c.n }}</span></button></sc-for></div>
+      </div>
+      <div class="sc" style="padding-top: 12px; padding-bottom: 88px">
+        <div class="grid"><sc-for list="{{ galRows }}" as="g" hint-placeholder-count="6">
+          <button class="gt" onClick="{{ g.open }}" aria-label="{{ g.aria }}">
+            <span style="{{ g.thS }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ g.d }}"></path></svg><sc-if value="{{ g.hasDur }}" hint-placeholder-val="{{ false }}"><span class="gdur">{{ g.dur }}</span></sc-if></span>
+            <span class="nm" style="font-size: 14px" translate="no">{{ g.name }}</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span class="mut sm">{{ g.size }}</span><sc-if value="{{ g.unused }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="grey">Nepoužité</span></sc-if></span>
+          </button>
+        </sc-for></div>
+        <sc-if value="{{ galEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">V tomto filtri nie je žiadny súbor.</div></sc-if>
+      </div>
+      <button class="fab" onClick="{{ openUpload }}" aria-label="Nahrať súbor"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.upload }}"></path></svg></button>
+    </sc-if>
+
+    <!-- ===== VIAC ===== -->
+    <sc-if value="{{ s_more }}" hint-placeholder-val="{{ false }}">
+      <div class="sc">
+        <div class="card" style="display: flex; align-items: center; gap: 14px"><span class="avatar" aria-hidden="true">{{ meIni }}</span><span style="flex: 1; min-width: 0"><span class="nm" style="font-size: 17px" translate="no">{{ meName }}</span><span class="mut sm" style="display: block">{{ meRole }}</span></span></div>
+        <div class="list"><sc-for list="{{ moreRows }}" as="m" hint-placeholder-count="2">
+          <button class="row" onClick="{{ m.open }}"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ m.d }}"></path></svg></span><span style="flex: 1; min-width: 0"><span class="nm">{{ m.title }}</span><span class="mut sm" style="display: block">{{ m.sub }}</span></span><sc-if value="{{ m.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="cnt">{{ m.badge }}</span></sc-if><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7777" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.next }}"></path></svg></button>
+        </sc-for></div>
+        <button class="btn" onClick="{{ logout }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.logout }}"></path></svg>Odhlásiť sa</button>
+      </div>
+    </sc-if>
+
+    <!-- ===== SCHVAĽOVANIE ===== -->
+    <sc-if value="{{ s_apv }}" hint-placeholder-val="{{ false }}">
+      <div class="filters"><div class="seg"><sc-for list="{{ apvTabs }}" as="t" hint-placeholder-count="2"><button aria-pressed="{{ t.on }}" onClick="{{ t.pick }}">{{ t.label }}</button></sc-for></div></div>
+      <div class="sc" style="padding-top: 12px">
+        <sc-for list="{{ apvRows }}" as="a" hint-placeholder-count="3">
+          <button class="card tap apc" onClick="{{ a.open }}">
+            <span style="display: flex; align-items: flex-start; gap: 10px; width: 100%"><span style="flex: 1; min-width: 0; text-align: left"><span class="nm" translate="no">{{ a.name }}</span><span class="mut sm" style="display: block">{{ a.by }}</span></span><span class="pill" data-k="{{ a.k }}">{{ a.stT }}</span></span>
+            <span style="display: flex; gap: 14px; font-size: 13px; color: #3F4848; margin-top: 8px; text-align: left; flex-wrap: wrap"><span>{{ a.devT }}</span><span>{{ a.nChg }}</span><span>{{ a.nPl }}</span></span>
+          </button>
+        </sc-for>
+        <sc-if value="{{ apvEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">{{ apvEmptyT }}</div></sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ===== DETAIL SCHVÁLENIA ===== -->
+    <sc-if value="{{ s_ad }}" hint-placeholder-val="{{ false }}">
+      <div class="sc">
+        <div class="card" style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: flex-start; gap: 10px"><div style="flex: 1; min-width: 0"><div class="nm" style="font-size: 17px" translate="no">{{ ad.name }}</div><div class="mut sm">{{ ad.by }}</div><div class="sm" style="font-weight: 600; color: #3F4848">{{ ad.devT }}</div></div><span class="pill" data-k="{{ ad.k }}">{{ ad.stT }}</span></div>
+          <div class="h2">Náhľad snímok</div>
+          <div class="strip"><sc-for list="{{ adSlides }}" as="r" hint-placeholder-count="3"><div style="{{ r.itemS }}"><dc-import name="Slide" kind="{{ r.kind }}" title="{{ r.title }}" text="{{ r.text }}" bg="{{ r.bg }}" img="{{ r.img }}" dev="{{ r.dev }}" w="{{ r.w }}" r="8" ledsize="{{ r.ledSize }}" ledalign="{{ r.ledAlign }}" ledcol="{{ r.ledCol }}" ledbg="{{ r.ledBg }}" hint-size="150px,84px"></dc-import><div class="mut sm" style="margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" translate="no">{{ r.title }}</div></div></sc-for></div>
+        </div>
+        <div class="card">
+          <div class="h2" style="margin-bottom: 8px">Zmeny v playliste</div>
+          <sc-for list="{{ adChanges }}" as="c" hint-placeholder-count="3"><div class="chg"><span class="chgi" data-k="{{ c.k }}" aria-hidden="true">{{ c.sym }}</span><span style="flex: 1; min-width: 0; line-height: 1.3">{{ c.text }}</span></div></sc-for>
+        </div>
+        <div class="card">
+          <div class="h2" style="margin-bottom: 6px">Kde sa nahrá</div>
+          <div style="line-height: 1.35">{{ ad.whereT }}</div>
+          <div class="mut sm" style="margin-top: 4px">{{ ad.valid }}</div>
+        </div>
+        <sc-if value="{{ adCanAct }}" hint-placeholder-val="{{ true }}">
+          <div class="card form"><label class="lbl" for="ad-note">Komentár (nepovinný)</label><textarea id="ad-note" class="inp" rows="2" value="{{ apvNote }}" onInput="{{ setApvNote }}" placeholder="Napr. Vyzerá dobre, schvaľujem."></textarea></div>
+        </sc-if>
+        <sc-if value="{{ adDone }}" hint-placeholder-val="{{ false }}">
+          <div class="card"><div class="h2" style="margin-bottom: 6px">Výsledok</div><div style="line-height: 1.35">{{ ad.doneT }}</div><sc-if value="{{ ad.hasNote }}" hint-placeholder-val="{{ false }}"><div class="mut" style="margin-top: 6px" translate="no">„{{ ad.note }}“</div></sc-if></div>
+        </sc-if>
+      </div>
+      <sc-if value="{{ adCanAct }}" hint-placeholder-val="{{ true }}">
+        <div class="bar" style="flex-direction: column; gap: 8px">
+          <button class="btn" data-k="p" style="width: 100%" onClick="{{ apvApprove }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"></path></svg>Schváliť a zverejniť</button>
+          <div style="display: flex; gap: 8px; width: 100%"><button class="btn" style="flex: 1" onClick="{{ apvReturn }}">Vrátiť na úpravu</button><button class="btn" data-k="d" style="flex: 1" onClick="{{ apvReject }}">Zamietnuť</button></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ adOwn }}" hint-placeholder-val="{{ false }}">
+        <div class="bar"><button class="btn" style="flex: 1" onClick="{{ apvWithdraw }}">Vziať späť</button></div>
+      </sc-if>
+    </sc-if>
+
+    <!-- ===== NASTAVENIA ===== -->
+    <!-- ===== HISTÓRIA SPRÁV (Viac › História správ) ===== -->
+    <sc-if value="{{ s_hist }}" hint-placeholder-val="{{ false }}">
+      <div class="sc">
+        <div class="mut sm">Rýchle správy, ktoré už skončili alebo boli zrušené. Správu môžete poslať znova – pred odoslaním ju ešte upravíte.</div>
+        <sc-if value="{{ qhHas }}" hint-placeholder-val="{{ true }}">
+          <div class="list"><sc-for list="{{ qh }}" as="h" hint-placeholder-count="4">
+            <div class="row">
+              <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ h.text }}</span><span class="mut sm" style="display: block">{{ h.meta }}</span></span>
+              <button class="btn sm" aria-label="{{ h.againA }}" onClick="{{ h.again }}">Poslať znova</button>
+            </div>
+          </sc-for></div>
+        </sc-if>
+        <sc-if value="{{ qhEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">V histórii zatiaľ nie je žiadna rýchla správa.</div></sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ s_set }}" hint-placeholder-val="{{ false }}">
+      <div class="sc">
+        <div class="h2">Upozornenia v telefóne</div>
+        <div class="list"><sc-for list="{{ notifRows }}" as="x" hint-placeholder-count="5">
+          <div class="row"><span style="flex: 1; min-width: 0"><span class="nm">{{ x.title }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div>
+        </sc-for></div>
+        <div class="h2">Úložisko</div>
+        <div class="card" style="display: flex; flex-direction: column; gap: 8px"><div style="display: flex; justify-content: space-between"><span class="nm">Cloudové úložisko</span><span class="mut">57 MB z 1 GB</span></div><div style="height: 8px; border-radius: 4px; background: #EDF1F1; overflow: hidden"><div style="width: 6%; height: 100%; background: #0E8080"></div></div></div>
+      </div>
+    </sc-if>
+
+    <!-- ===== AI ASISTENT ===== -->
+    <sc-if value="{{ s_ai }}" hint-placeholder-val="{{ false }}">
+      <div class="sc">
+        <div class="list"><sc-for list="{{ aiRows }}" as="x" hint-placeholder-count="2">
+          <div class="row"><span style="flex: 1; min-width: 0"><span class="nm">{{ x.title }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div>
+        </sc-for></div>
+        <div class="card form">
+          <div class="h2">Navrhnúť text rýchlej správy</div>
+          <div class="lbl">Čo sa stalo</div>
+          <div class="chips" style="flex-wrap: wrap"><sc-for list="{{ aiSits }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div>
+          <button class="btn" data-k="p" disabled="{{ aiBusy }}" onClick="{{ aiRun }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.spark }}"></path></svg>{{ aiBtnT }}</button>
+        </div>
+        <sc-if value="{{ aiHas }}" hint-placeholder-val="{{ false }}">
+          <div class="sec"><h2 class="h2">Návrhy</h2>
+            <div class="list"><sc-for list="{{ aiOut }}" as="o" hint-placeholder-count="3">
+              <div class="row"><span style="flex: 1; min-width: 0; line-height: 1.35">{{ o.text }}</span><button class="btn sm" onClick="{{ o.use }}">Použiť</button></div>
+            </sc-for></div>
+            <div class="mut sm">Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.</div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ===== NÁHĽAD ===== -->
+    <sc-if value="{{ s_pv }}" hint-placeholder-val="{{ false }}">
+      <div class="pvb">
+        <div style="padding: 0 16px; font-size: 14px; color: #C9D2D2; text-align: center">{{ pvDevT }}</div>
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0"><sc-if value="{{ pvHas }}" hint-placeholder-val="{{ true }}"><div style="{{ pvWrapS }}"><sc-for list="{{ pvParts }}" as="q" hint-placeholder-count="1"><dc-import name="Slide" kind="{{ q.kind }}" title="{{ q.title }}" text="{{ q.text }}" bg="{{ q.bg }}" img="{{ q.img }}" dev="{{ q.dev }}" w="{{ q.w }}" r="{{ q.r }}" ledsize="{{ q.ledSize }}" ledalign="{{ q.ledAlign }}" ledcol="{{ q.ledCol }}" ledbg="{{ q.ledBg }}" hint-size="358px,201px"></dc-import></sc-for></div></sc-if><sc-if value="{{ pvNone }}" hint-placeholder-val="{{ false }}"><div style="color: #C9D2D2; padding: 24px; text-align: center">Playlist nemá žiadne snímky.</div></sc-if></div>
+        <div style="padding: 0 20px"><div style="display: flex; gap: 4px"><sc-for list="{{ pvSegs }}" as="g" hint-placeholder-count="3"><span style="{{ g.s }}"><span style="{{ g.f }}"></span></span></sc-for></div>
+          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 14px; color: #C9D2D2"><span style="font-weight: 700; color: #fff; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ pvCap }}</span><span style="flex: none">{{ pvTime }}</span></div></div>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 22px; padding: 4px 0 14px">
+          <button class="ctl" onClick="{{ pvPrev }}" aria-label="Predchádzajúca snímka"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2.5v14H6zM20 5v14L9.5 12z"></path></svg></button>
+          <button class="ctl big" onClick="{{ pvToggle }}" aria-label="{{ pvPlayLbl }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ pvPlayD }}"></path></svg></button>
+          <button class="ctl" onClick="{{ pvNext }}" aria-label="Nasledujúca snímka"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 5h-2.5v14H18zM4 5v14l10.5-7z"></path></svg></button>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <nav class="tabs" aria-label="Hlavná navigácia"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+    <button class="tab" aria-current="{{ t.cur }}" onClick="{{ t.pick }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.d }}"></path></svg><span>{{ t.label }}</span><sc-if value="{{ t.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="badge">{{ t.badge }}</span></sc-if></button>
+  </sc-for></nav>
+
+  <!-- ===== RÝCHLA SPRÁVA ===== -->
+  <sc-if value="{{ sh_quick }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 94%" role="dialog" aria-label="Nová rýchla správa">
+      <div class="grab"></div>
+      <sc-if value="{{ qMain }}" hint-placeholder-val="{{ true }}">
+        <div class="sheet-h"><div class="shh">Nová rýchla správa</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+        <div class="sheet-b">
+          <div style="display: flex; flex-direction: column; gap: 4px"><div style="display: flex; align-items: center; min-height: 44px; margin: -6px 0 -4px"><label class="lbl" for="q-text" style="flex: 1">Text správy</label><sc-if value="{{ qHasText }}" hint-placeholder-val="{{ true }}"><button class="lnk clr" onClick="{{ qClear }}" aria-label="Zmazať text správy"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg>Zmazať text</button></sc-if></div><textarea id="q-text" class="inp" rows="3" value="{{ qText }}" onInput="{{ setQText }}" placeholder="Napíšte text alebo vyberte šablónu"></textarea>
+            <div class="chips" style="flex-wrap: wrap" aria-label="Šablóny"><sc-for list="{{ qTpls }}" as="c" hint-placeholder-count="5"><button class="chip" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for><sc-if value="{{ qTplMore }}" hint-placeholder-val="{{ true }}"><button class="chip more" aria-expanded="{{ qTplAllA }}" onClick="{{ qTplToggle }}">{{ qTplMoreT }}</button></sc-if></div></div>
+          <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Kam sa pošle</div>
+            <button class="pickrow" onClick="{{ qOpenPlaces }}"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.pin }}"></path></svg></span><span style="flex: 1; min-width: 0; text-align: left"><span class="nm">{{ qTgtT }}</span><span class="mut sm" style="display: block">{{ qTgtSub }}</span></span><span class="lnk" style="display: flex; align-items: center">Vybrať</span></button></div>
+          <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Priorita</div><div class="seg"><sc-for list="{{ qPrios }}" as="c" hint-placeholder-count="2"><button aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div></div>
+          <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Kde na obrazovke</div><div class="seg"><sc-for list="{{ qPoss }}" as="c" hint-placeholder-count="3"><button aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div></div>
+          <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Ako dlho</div><div class="chips" style="flex-wrap: wrap"><sc-for list="{{ qDurs }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div></div>
+        </div>
+        <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" disabled="{{ qOff }}" onClick="{{ qSend }}">{{ qSendT }}</button></div>
+      </sc-if>
+      <sc-if value="{{ qPlaces }}" hint-placeholder-val="{{ false }}">
+        <div class="sheet-h"><button class="ib" onClick="{{ qClosePlaces }}" aria-label="Späť na správu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.back }}"></path></svg></button><div class="shh">Kam poslať</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+        <div style="padding: 4px 16px 10px; display: flex; flex-direction: column; gap: 10px; flex: none">
+          <label class="srch"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B6566" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.search }}"></path></svg><input value="{{ qSearch }}" onInput="{{ setQSearch }}" placeholder="Hľadať miesto" aria-label="Hľadať miesto"></label>
+          <div class="chips"><sc-for list="{{ qGrps }}" as="c" hint-placeholder-count="5"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div>
+        </div>
+        <div class="sheet-b" style="padding-top: 0">
+          <div class="list">
+            <sc-if value="{{ qShowAll }}" hint-placeholder-val="{{ true }}"><button class="row" style="min-height: 56px" role="checkbox" aria-checked="{{ qAllOn }}" onClick="{{ qToggleAll }}"><span class="chk" aria-hidden="true"></span><span style="flex: 1; min-width: 0"><span class="nm">{{ qAllT }}</span><span class="mut sm" style="display: block">Každé miesto, ktoré má zariadenie</span></span></button></sc-if>
+            <sc-for list="{{ qPcs }}" as="p" hint-placeholder-count="6"><button class="row" style="min-height: 56px" role="checkbox" aria-checked="{{ p.on }}" onClick="{{ p.pick }}"><span class="chk" aria-hidden="true"></span><span style="flex: 1; min-width: 0"><span class="nm">{{ p.name }}</span><span class="mut sm" style="display: block">{{ p.sub }}</span></span></button></sc-for>
+          </div>
+          <sc-if value="{{ qPcEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">Žiadne miesto nezodpovedá hľadaniu.</div></sc-if>
+        </div>
+        <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" disabled="{{ qPcOff }}" onClick="{{ qClosePlaces }}">{{ qPcBtn }}</button></div>
+      </sc-if>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== PREPNUTIE PLAYLISTU ===== -->
+  <sc-if value="{{ sh_sw }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 92%" role="dialog" aria-label="Prepnúť playlist">
+      <div class="grab"></div>
+      <div class="sheet-h"><sc-if value="{{ swCanBack }}" hint-placeholder-val="{{ false }}"><button class="ib" onClick="{{ swBack }}" aria-label="Späť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.back }}"></path></svg></button></sc-if><div class="shh">{{ swTitle }}</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b">
+        <div><div style="font-weight: 600">{{ swSub }}</div><div class="mut sm">{{ swSub2 }}</div></div>
+        <sc-if value="{{ swIsPl }}" hint-placeholder-val="{{ true }}"><div class="list"><sc-for list="{{ swPls }}" as="p" hint-placeholder-count="4"><button class="row" onClick="{{ p.pick }}" role="radio" aria-checked="{{ p.on }}"><span class="rad" aria-hidden="true"></span><span style="flex: 1; min-width: 0"><span class="nm">{{ p.name }}</span><span class="mut sm" style="display: block">{{ p.meta }}</span></span></button></sc-for></div></sc-if>
+        <sc-if value="{{ swIsPc }}" hint-placeholder-val="{{ false }}"><div class="list"><sc-for list="{{ swPcs }}" as="p" hint-placeholder-count="6"><button class="row" onClick="{{ p.pick }}" role="checkbox" aria-checked="{{ p.on }}"><span class="chk" aria-hidden="true"></span><span style="flex: 1; min-width: 0"><span class="nm">{{ p.name }}</span><span class="mut sm" style="display: block">{{ p.sub }}</span></span></button></sc-for></div></sc-if>
+        <sc-if value="{{ swIsDur }}" hint-placeholder-val="{{ false }}">
+          <div class="card" style="display: flex; flex-direction: column; gap: 6px"><div class="mut sm">Playlist</div><div class="nm">{{ swPlName }}</div><div class="mut sm" style="margin-top: 6px">Kde</div><div style="line-height: 1.35">{{ swPlaces }}</div></div>
+          <div class="lbl">Ako dlho sa má prehrávať</div>
+          <div class="list"><sc-for list="{{ swDurs }}" as="d" hint-placeholder-count="4"><button class="row" style="min-height: 56px" onClick="{{ d.pick }}" role="radio" aria-checked="{{ d.on }}"><span class="rad" aria-hidden="true"></span><span style="flex: 1; min-width: 0"><span class="nm">{{ d.label }}</span><span class="mut sm" style="display: block">{{ d.sub }}</span></span></button></sc-for></div>
+        </sc-if>
+      </div>
+      <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" disabled="{{ swOff }}" onClick="{{ swNext }}">{{ swBtn }}</button></div>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== PRIDANIE FOTKY / NAHRATIE / NOVÝ PLAYLIST ===== -->
+  <sc-if value="{{ sh_add }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" role="dialog" aria-label="{{ addTitle }}">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">{{ addTitle }}</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b" style="gap: 10px">
+        <sc-for list="{{ addOpts }}" as="o" hint-placeholder-count="3"><button class="opt" onClick="{{ o.pick }}"><span class="ico" style="width: 44px; height: 44px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ o.d }}"></path></svg></span><span style="flex: 1; text-align: left"><span class="nm">{{ o.title }}</span><span class="mut sm" style="display: block">{{ o.sub }}</span></span></button></sc-for>
+      </div>
+    </div></div>
+  </sc-if>
+
+  <sc-if value="{{ sh_pick }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 88%" role="dialog" aria-label="Vybrať z galérie">
+      <div class="grab"></div>
+      <div class="sheet-h"><sc-if value="{{ pickFromAdd }}" hint-placeholder-val="{{ false }}"><button class="ib" onClick="{{ pickBack }}" aria-label="Späť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.back }}"></path></svg></button></sc-if><div class="shh">Vybrať z galérie</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b"><div class="grid"><sc-for list="{{ pickRows }}" as="g" hint-placeholder-count="6">
+        <button class="gt" onClick="{{ g.pick }}" aria-label="{{ g.aria }}"><span style="{{ g.thS }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ g.d }}"></path></svg></span><span class="nm" style="font-size: 14px" translate="no">{{ g.name }}</span><span class="mut sm">{{ g.size }}</span></button>
+      </sc-for></div></div>
+    </div></div>
+  </sc-if>
+
+  <sc-if value="{{ sh_gd }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 92%" role="dialog" aria-label="Detail súboru">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh" translate="no">{{ gd.name }}</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b">
+        <div style="{{ gd.bigS }}"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ gd.d }}"></path></svg></div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px"><div class="card" style="padding: 10px 12px"><div class="mut sm">Typ</div><div class="nm">{{ gd.typeT }}</div></div><div class="card" style="padding: 10px 12px"><div class="mut sm">Veľkosť</div><div class="nm">{{ gd.size }}</div></div><div class="card" style="padding: 10px 12px"><div class="mut sm">Priečinok</div><div class="nm">{{ gd.folder }}</div></div><div class="card" style="padding: 10px 12px"><div class="mut sm">Použité</div><div class="nm">{{ gd.usedT }}</div></div></div>
+        <sc-if value="{{ gd.hasUse }}" hint-placeholder-val="{{ false }}"><div class="card"><div class="h2" style="margin-bottom: 4px">Použité v</div><div style="line-height: 1.4">{{ gd.useList }}</div></div></sc-if>
+        <sc-if value="{{ gdDelBlocked }}" hint-placeholder-val="{{ false }}"><div class="note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ ic.info }}"></path></svg><span>Súbor sa používa, preto sa nedá zmazať. Najprv ho odstráňte z playlistov.</span></div></sc-if>
+      </div>
+      <div class="sheet-f"><button class="btn" data-k="d" disabled="{{ gdDelBlocked }}" onClick="{{ gdDelete }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.trash }}"></path></svg>{{ gdDelT }}</button><sc-if value="{{ gdCanUse }}" hint-placeholder-val="{{ false }}"><button class="btn" data-k="p" style="flex: 1" onClick="{{ gdAddToPl }}">Pridať do playlistu</button></sc-if></div>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== ZOZNAM SNÍMOK (pridanie do playlistu) ===== -->
+  <sc-if value="{{ sh_lib }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 92%" role="dialog" aria-label="Zoznam snímok">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">Zoznam snímok</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div style="padding: 4px 16px 10px; display: flex; flex-direction: column; gap: 10px; flex: none">
+        <div><div style="font-weight: 600">{{ libDevT }}</div><div class="mut sm">Ponúkajú sa len snímky vytvorené pre toto zariadenie. Ťuknutím sa snímka pridá na koniec playlistu.</div></div>
+        <label class="srch"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B6566" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.search }}"></path></svg><input value="{{ libQ }}" onInput="{{ setLibQ }}" placeholder="Hľadať snímku" aria-label="Hľadať snímku"></label>
+      </div>
+      <div class="sheet-b" style="padding-top: 0">
+        <div class="list"><sc-for list="{{ libRows }}" as="r" hint-placeholder-count="5">
+          <button class="row" onClick="{{ r.pick }}" aria-label="{{ r.aria }}">
+            <dc-import name="Slide" kind="{{ r.kind }}" title="{{ r.title }}" text="{{ r.text }}" bg="{{ r.bg }}" img="{{ r.img }}" dev="{{ r.dev }}" w="{{ r.w }}" r="6" ledsize="{{ r.ledSize }}" ledalign="{{ r.ledAlign }}" ledcol="{{ r.ledCol }}" ledbg="{{ r.ledBg }}" hint-size="92px,52px"></dc-import>
+            <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ r.title }}</span><span class="mut sm" style="display: block">{{ r.meta }}</span><span class="mut sm" style="display: block">{{ r.from }}</span></span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E8080" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex: none"><path d="{{ ic.plus }}"></path></svg>
+          </button>
+        </sc-for></div>
+        <sc-if value="{{ libEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">{{ libEmptyT }}</div></sc-if>
+      </div>
+    </div></div>
+  </sc-if>
+
+  <sc-if value="{{ sh_list }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 88%" role="dialog" aria-label="{{ lsTitle }}">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">{{ lsTitle }}</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b"><div class="mut">{{ lsSub }}</div><div class="list"><sc-for list="{{ lsRows }}" as="p" hint-placeholder-count="4"><button class="row" onClick="{{ p.pick }}"><span style="flex: 1; min-width: 0"><span class="nm">{{ p.name }}</span><span class="mut sm" style="display: block">{{ p.meta }}</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E8080" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ p.d }}"></path></svg></button></sc-for></div></div>
+    </div></div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}"><div class="toast" role="status"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2BD0D0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 13l4 4L19 7"></path></svg><span>{{ toast }}</span></div></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844},"start":{"editor":"text","default":"home"}}'>
+const IC = {
+  back: 'M15 18l-6-6 6-6', next: 'M9 18l6-6-6-6', plus: 'M12 5v14M5 12h14', close: 'M6 6l12 12M18 6L6 18',
+  play: 'M7 4l13 8-13 8z', pause: 'M7 5h3.5v14H7zM13.5 5H17v14h-3.5z',
+  bell: 'M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
+  msg: 'M3 11v2a1 1 0 0 0 1 1h3l8 5V5L7 10H4a1 1 0 0 0-1 1zM19 8a5 5 0 0 1 0 8',
+  check: 'M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3', home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
+  list: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
+  image: 'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM21 15l-5-5L5 21',
+  more: 'M5 12h.01M12 12h.01M19 12h.01', search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3',
+  info: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16v-4M12 8h.01', up: 'M12 19V5M5 12l7-7 7 7', down: 'M12 5v14M19 12l-7 7-7-7',
+  trash: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6', camera: 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+  eye: 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+  upload: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12', monitor: 'M2 4h20v13H2zM8 21h8M12 17v4',
+  logout: 'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9', warn: 'M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01',
+  pin: 'M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+  speaker: 'M11 5L6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14', gear: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
+  film: 'M3 5h18v14H3zM10 9l5 3-5 3z', music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+  shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', db: 'M12 8c4.4 0 8-1.1 8-2.5S16.4 3 12 3 4 4.1 4 5.5 7.6 8 12 8zM4 5.5v13C4 19.9 7.6 21 12 21s8-1.1 8-2.5v-13M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5',
+  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6'
+};
+const plural = (n, a) => n === 1 ? a[0] : (n >= 2 && n <= 4 ? a[1] : a[2]);
+const mmss = (t) => Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
+const BG = ['#0E8080', '#0B6E6E', '#1E2A5A', '#2F62B0', '#5B2A86', '#E07A2B', '#C8322B', '#1A1F1F'];
+const GRAD = (c) => 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
+const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'gal', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'more', hist: 'more' };
+const ROOT = { home: 'home', pls: 'pls', plc: 'plc', gal: 'gal', more: 'more' };
+const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
+const HM = (add) => { const d = new Date(Date.now() + (add || 0) * 60000); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
+// prihlásený účet – meno a rola sa zobrazujú podľa prihlásenia (rovnaké roly ako vo webovej aplikácii)
+const ME = { name: 'Miroslav Heglas', ini: 'MH', role: 'Admin', org: 'DP Riečany' };
+const DOWN = ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'];
+const MONG = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna', 'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
+const DOWAGO = (n) => DOWN[new Date(Date.now() - n * 864e5).getDay()];
+const DURS = { get m15() { return ['15 minút', 'do ' + HM(15)]; }, get h1() { return ['1 hodinu', 'do ' + HM(60)]; }, day: ['Do konca dňa', 'do 23:59'], rev: ['Do zrušenia', 'do zrušenia'] };
+const SWD = { today: ['Len dnes', 'do 23:59, potom sa vráti pôvodný plán'], get h1() { return ['Na 1 hodinu', 'do ' + HM(60)]; }, get h4() { return ['Na 4 hodiny', 'do ' + HM(240)]; }, rev: ['Do odvolania', 'kým ho nevrátite ručne'] };
+// zariadenie, pre ktoré je playlist vytvorený: [celý názov, krátky názov, šírka náhľadu, šírka miniatúry, šírka v páse]
+const DEV = {
+  portrait: ['32″ kiosk – dotyk, reproduktor, APEX, 4 HW tlačidlá', '32″ kiosk', 210, 44, 84],
+  p31: ['31″ nedotykový', '31″ nedotykový', 210, 44, 84],
+  lcd: ['55″ nedotykový na šírku', '55″ nedotykový', 358, 92, 150],
+  stop: ['LED tabuľa 192 × 64 – zastávka (odchody)', 'LED tabuľa 192 × 64', 358, 96, 180],
+  totem: ['Označník: LED čas a dátum + LED odchody + e-papier', 'Označník LED + e-papier', 104, 44, 84],
+  vehicle: ['Vozidlo: LED čelná tabuľa 288 × 48', 'Vozidlo: LED 288 × 48', 358, 120, 240]
+};
+const isPort = (d) => d === 'portrait' || d === 'p31';
+// zariadenie s viacerými displejmi pod sebou: [id displeja, názov, vykreslenie, šírka miniatúry, šírka v páse, šírka v editore]
+const PARTS = { totem: [['cas', 'LED čas a dátum', 'ledclock', 72, 150, 300], ['odch', 'LED odchody', 'ledtall', 44, 84, 200], ['ep', 'e-papier 31,5″', 'epaper', 40, 84, 190]] };
+const isLedR = (d) => d === 'stop' || d === 'vehicle' || d === 'ledclock' || d === 'ledtall';
+const PDEV = { stop: 'stop', info: 'portrait', bus: 'lcd', park: 'lcd', tram: 'vehicle' };
+const isLedDev = (d) => d === 'stop' || d === 'vehicle';
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    let id = 100;
+    this.nid = () => ++id;
+    this.uid = 'app' + Math.random().toString(36).slice(2, 8);
+    const SL = (kind, title, text, dur, bg, ex) => Object.assign({ id: this.nid(), kind, title, text, dur, bg, img: '', imgName: '', ledSize: 'M', ledAlign: 'left', ledCol: '', ledBg: '', d: '' }, ex || {});
+    const PH = (title, dur, col, name) => SL('photo', title, '', dur, '#1A1F1F', { img: col, imgName: name });
+    const LED = (text, dur, ex) => SL('led', text, '', dur, '#050505', ex);
+    const PL = (pid, name, dev, st, slides, where, ex) => Object.assign({ id: pid, name, dev, st, slides, where, flow: 'none', plan: 'Po–Pi 6:00–22:00 · bez obmedzenia dátumu', touch: false, log: [] }, ex || {});
+    const pls = [
+      PL('p7', 'Aquapark – leto', 'portrait', 'expirovany', [PH('Akcia leto -20 %', 12, '#F2A65A', 'leto-akcia.jpg'), SL('info', 'Otváracie hodiny', 'Denne 9:00 – 21:00', 10, '#2F62B0'), SL('info', 'Cenník', 'Dospelí 8 €, deti 5 €', 10, '#0E8080')], [], { plan: 'Platnosť skončila 31. 8.' }),
+      PL('p2', 'Autobusová stanica – nástupištia', 'lcd', 'nahraty', [SL('deps', 'Odchody – nástupište A', 'Linky 3 · 5 · 14', 20, '#1E2A5A'), PH('Letná akcia – nástupište', 12, '#F2A65A', 'leto-akcia.jpg'), SL('info', 'Výluka linky 5', 'Linka 5 je odklonená cez Bulvár.', 10, '#C8322B')], ['asa', 'asb', 'ash']),
+      PL('p16', 'Autobusy a trolejbusy – vo vozidle', 'vehicle', 'nahraty', [LED('Nasledujúca zastávka: Hlavná stanica', 8, { ledSize: 'L' }), LED('Nezabudnite si označiť lístok', 8, { ledSize: 'L', ledCol: '#34D8FF' }), LED('Prajeme príjemnú cestu', 6, { ledCol: '#4CFF4C', ledSize: 'L', ledAlign: 'center' })], ['tb12', 'a31']),
+      PL('p3', 'Cestovný poriadok – zima', 'portrait', 'nahraty', [SL('info', 'Cestovný poriadok 12', 'Platný od 1. 11. do 31. 3.', 20, '#0B6E6E'), SL('deps', 'Najbližšie odchody', 'Linky 3 · 5 · 14 · 25', 15, '#1E2A5A'), SL('info', 'Info menu – kiosk', 'Dotknite sa obrazovky', 15, '#2F62B0')], ['hsv', 'nema', 'let'], { touch: true }),
+      PL('p4', 'Cyklotrasa – mapa', 'lcd', 'nahraty', [PH('Mapa trasy', 15, '#4F7A5A', 'mala-fatra.jpg'), SL('info', 'Servisné body', 'Požičovňa a servis pri stanici', 10, '#0E8080'), SL('info', 'Počasie – Žilina', 'Dnes 7 °C, zamračené', 10, '#2F62B0')], ['pc']),
+      PL('p10', 'Divadlo – program', 'portrait', 'nenahraty', [SL('info', 'Divadlo – program', 'Piatok 19:00 · Hlavná scéna', 15, '#5B2A86'), SL('info', 'Vstupenky', 'Predaj v pokladnici od 9:00', 10, '#0E8080')], [], { plan: 'Plán ešte nie je nastavený' }),
+      PL('p11', 'Dočasná zastávka Mostná', 'stop', 'nenahraty', [LED('Zastávka je presunutá o 50 m', 10, { ledBg: '#E07A2B', ledSize: 'S' }), SL('deps', 'Najbližšie odchody', 'Linky 5 · 14', 15, '#050505')], ['mos']),
+      PL('p6', 'Električky – vo vozidle', 'vehicle', 'nahraty', [LED('Nasledujúca zastávka: Námestie SNP', 8, { ledSize: 'L' }), LED('Linka 5 je dnes odklonená cez Bulvár', 10, { ledBg: '#E07A2B', ledSize: 'L' }), LED('Prajeme príjemnú cestu', 6, { ledCol: '#4CFF4C', ledSize: 'L', ledAlign: 'center' })], ['t1', 't2', 't3'], { flow: 'pending' }),
+      PL('p8', 'Futbalový štadión', 'lcd', 'expirovany', [SL('info', 'Zápas – program', 'Sobota 15:00 · Štadión mesta', 15, '#1E7A3A'), SL('info', 'Vstupenky', 'Pokladňa otvorená od 13:00', 10, '#0E8080')], ['ps'], { plan: 'Platnosť skončila 30. 10.' }),
+      PL('p9', 'Halloween v meste', 'portrait', 'expirovany', [PH('Halloween v meste', 15, '#2A1B3D', 'halloween.png'), SL('info', 'Program', 'Sprievod o 18:00 z Námestia SNP', 12, '#E07A2B')], [], { plan: 'Platnosť skončila 1. 11.' }),
+      PL('p1', 'Hlavná stanica – odchody', 'stop', 'nahraty', [SL('deps', 'Najbližšie odchody', 'Linky 3 · 5 · 14', 20, '#050505'), LED('Od pondelka platí nový cestovný poriadok', 10, { ledBg: '#E07A2B', ledSize: 'S' }), LED('Vitajte na Hlavnej stanici', 8, { ledAlign: 'center' })], ['hs1', 'hs2', 'hs3']),
+      PL('p12', 'Nová linka 25', 'portrait', 'nenahraty', [SL('info', 'Nová linka 25', 'Od 1. 12. premáva na Letisko', 15, '#0E8080'), SL('deps', 'Najbližšie odchody', 'Linky 25', 15, '#1E2A5A'), SL('info', 'Mapa linky', 'Stanica – Centrum – Letisko', 10, '#2F62B0')], ['let'], { flow: 'pending', plan: 'Platnosť od 1. 12. 2026' }),
+      PL('p5', 'Kultúra – november', 'portrait', 'nahraty', [SL('info', 'Divadlo – program', 'Piatok 19:00 · Hlavná scéna', 15, '#5B2A86'), SL('info', 'Letné kino – program', 'Streda a štvrtok 21:00', 15, '#1E2A5A'), SL('info', 'Kultúrny program', 'Víkendový program v meste', 15, '#0E8080')], ['snpk', 'rad'], { flow: 'pending' }),
+      PL('p13', 'Zastávky – odchody a oznamy', 'stop', 'nahraty', [SL('deps', 'Najbližšie odchody', 'Linky 3 · 5 · 14', 20, '#050505'), LED('Cestujte výhodnejšie s mestskou kartou', 8, { ledSize: 'S' })], ['nem', 'ss', 'bul']),
+      PL('p15', 'Zastávky MHD – zima', 'p31', 'nahraty', [SL('deps', 'Najbližšie odchody', 'Linky 3 · 5 · 14 · 25', 20, '#1E2A5A'), SL('info', 'Zimná údržba', 'Na zastávkach môže byť poľadovica.', 10, '#2F62B0'), SL('info', 'Cestovný poriadok 12', 'Platný od 1. 11. do 31. 3.', 15, '#0B6E6E')], ['uni', 'ocj', 'aq', 'letz']),
+      PL('p14', 'Označníky – centrum', 'totem', 'nahraty', [SL('clock', 'Čas a dátum', 'y', 10, '#050505', { d: 'cas' }), SL('deps', 'Odchody', 'Linky 3 · 5 · 14 · 25 · 31', 20, '#050505', { d: 'odch' }), LED('Linka 5 je dnes odklonená cez Bulvár', 10, { d: 'odch', ledBg: '#E07A2B', ledSize: 'L' }), SL('info', 'Cestovný poriadok – linka 5', 'Platný od 1. 11. do 31. 3.', 30, '#0E8080', { d: 'ep' }), SL('deps', 'Odchody – všetky linky', 'Linky 3 · 5 · 14 · 25 · 31 · N1', 30, '#1E2A5A', { d: 'ep' })], ['snp', 'zst', 'vlc'])
+    ];
+    pls.sort((x, y) => x.name.localeCompare(y.name, 'sk'));
+    // zoznam snímok = snímky zo všetkých playlistov + tieto samostatné (každá je robená pre jeden typ zariadenia)
+    const libX = [
+      ['lcd', SL('info', 'Vitajte v Riečanoch', 'Informácie pre cestujúcich', 10, '#0E8080')], ['lcd', SL('deps', 'Odchody – bus stanica', 'Linky 3 · 5 · 14 · 25', 20, '#1E2A5A')], ['lcd', SL('info', 'Zimná údržba', 'Na zastávkach môže byť poľadovica.', 10, '#2F62B0')], ['lcd', PH('Halloween – reklama', 12, '#2A1B3D', 'halloween.png')],
+      ['portrait', SL('info', 'Počasie Riečany', 'Dnes 7 °C, zamračené', 10, '#2F62B0')], ['portrait', SL('deps', 'Odchody – hlavná stanica', 'Linky 3 · 5 · 14 · 25 · 31', 20, '#1E2A5A')], ['portrait', SL('info', 'Vianočné trhy', 'Od 28. 11. na Námestí SNP', 12, '#C8322B')],
+      ['stop', LED('Mimoriadna udalosť – sledujte hlásenia', 10, { ledBg: '#C8322B', ledSize: 'S' })], ['stop', LED('Nočné linky premávajú od 23:30', 8, { ledSize: 'S' })], ['stop', SL('deps', 'Odchody – všetky linky', 'Linky 3 · 5 · 14 · 25', 20, '#050505')],
+      ['vehicle', LED('Držte sa, prosím, počas jazdy', 8, { ledSize: 'L' })], ['vehicle', LED('Nezabudnite si označiť lístok', 8, { ledSize: 'L', ledCol: '#34D8FF' })],
+      ['totem', LED('Mimoriadna udalosť – sledujte hlásenia', 10, { d: 'odch', ledBg: '#C8322B', ledSize: 'L' })], ['totem', LED('Nočné linky premávajú od 23:30', 8, { d: 'odch', ledSize: 'L' })], ['totem', SL('info', 'Zmena trasy linky 14', 'Od 1. 12. cez Bulvár a Námestie SNP.', 30, '#0E8080', { d: 'ep' })], ['totem', SL('info', 'Cenník cestovného', 'Základný lístok 1 €, zľavnený 0,50 €.', 30, '#0E8080', { d: 'ep' })]
+    ].map((a) => Object.assign({ dev: a[0] }, a[1]));
+    const gal = [
+      { id: 'g1', name: 'leto-akcia.jpg', title: 'Akcia leto', type: 'img', size: '420 kB', used: 2, usedIn: ['Aquapark – leto', 'Autobusová stanica – nástupištia'], folder: 'Reklamy', col: '#F2A65A' },
+      { id: 'g2', name: 'autobus.jpg', title: 'Autobus', type: 'img', size: '610 kB', used: 1, usedIn: ['Futbalový štadión'], folder: 'Reklamy', col: '#0E8080' },
+      { id: 'g3', name: 'namestie.jpg', title: 'Námestie', type: 'img', size: '540 kB', used: 0, usedIn: [], folder: 'Oznamy', col: '#6C8EAD' },
+      { id: 'g4', name: 'mala-fatra.jpg', title: 'Malá Fatra', type: 'img', size: '880 kB', used: 1, usedIn: ['Cyklotrasa – mapa'], folder: 'Sezónne', col: '#4F7A5A' },
+      { id: 'g5', name: 'park.jpg', title: 'Park', type: 'img', size: '470 kB', used: 0, usedIn: [], folder: 'Oznamy', col: '#7FA65A' },
+      { id: 'g6', name: 'halloween.png', title: 'Halloween', type: 'img', size: '1,2 MB', used: 1, usedIn: ['Halloween v meste'], folder: 'Sezónne', col: '#2A1B3D' },
+      { id: 'g7', name: 'spot-tram.mp4', title: 'Spot – električka', type: 'vid', size: '14 MB', dur: '0:20', used: 2, usedIn: ['Cestovný poriadok – zima', 'Kultúra – november'], folder: 'Reklamy', col: '#0E8080' },
+      { id: 'g8', name: 'mesto-timelapse.mp4', title: 'Mesto – timelapse', type: 'vid', size: '38 MB', dur: '0:45', used: 0, usedIn: [], folder: 'Reklamy', col: '#2F62B0' },
+      { id: 'g9', name: 'gong-hlasenie.mp3', title: 'Gong', type: 'aud', size: '60 kB', dur: '0:03', used: 4, usedIn: ['Palubné hlásenia (4 udalosti)'], folder: 'Zvukové hlásenia', col: '#1F2323' },
+      { id: 'g10', name: 'vyluka-linka-5.mp3', title: 'Výluka linky 5', type: 'aud', size: '290 kB', dur: '0:18', used: 1, usedIn: ['Palubné hlásenia – výluka linky 5'], folder: 'Zvukové hlásenia', col: '#1F2323' },
+      { id: 'g11', name: 'znelka-leto.mp3', title: 'Znelka – leto', type: 'aud', size: '190 kB', dur: '0:12', used: 0, usedIn: [], folder: 'Sezónne', col: '#1F2323' }
+    ];
+    // miesta sú rovnaké ako v desktopovej verzii: [id, názov, typ, skupina, počet zariadení, stav, aktuálny playlist]
+    const OFF = { nem: 'od včera 22:10', tb12: 'od dnes 11:05' };
+    const TOT = { snp: 1, zst: 1, vlc: 1 };
+    const P31 = { uni: 1, ocj: 1, aq: 1, letz: 1 };
+    const places = [
+      ['hs1', 'Hlavná stanica – nástupište 1', 'stop', 0, 2, 'up', 'p1'], ['hs2', 'Hlavná stanica – nástupište 2', 'stop', 0, 2, 'up', 'p1'], ['hs3', 'Hlavná stanica – nástupište 3', 'stop', 0, 1, 'exp', 'p1'], ['hsv', 'Hlavná stanica – vestibul', 'info', 0, 1, 'up', 'p3'],
+      ['snp', 'Námestie SNP', 'stop', 1, 1, 'up', 'p13'], ['snpk', 'Námestie SNP – kiosk', 'info', 1, 1, 'up', 'p5'], ['mos', 'Mostná – dočasná zastávka', 'stop', 1, 1, 'no', 'p11'], ['rad', 'Radnica', 'info', 1, 1, 'up', 'p5'], ['div', 'Divadlo', 'stop', 1, 0, '', ''],
+      ['nem', 'Nemocnica – hlavný vchod', 'stop', 4, 1, 'up', 'p13'], ['nema', 'Nemocnica – ambulancie', 'info', 4, 1, 'exp', 'p3'], ['uni', 'Univerzita – kampus', 'stop', 4, 2, 'up', 'p15'], ['unik', 'Univerzita – knižnica', 'info', 4, 0, '', ''],
+      ['ocj', 'Obchodné centrum Juh', 'stop', -1, 1, 'up', 'p15'], ['asa', 'Autobusová stanica – stanovište A', 'bus', -1, 2, 'up', 'p2'], ['asb', 'Autobusová stanica – stanovište B', 'bus', -1, 1, 'no', 'p2'], ['ash', 'Autobusová stanica – hala', 'bus', -1, 1, 'up', 'p2'],
+      ['pc', 'Parkovisko Centrum', 'park', 3, 1, 'up', 'p4'], ['ps', 'Parkovisko Štadión', 'park', 3, 1, 'exp', 'p8'], ['ppr', 'Parkovisko P+R Juh', 'park', 3, 0, '', ''],
+      ['t1', 'Električka T1', 'tram', 2, 1, 'up', 'p6'], ['t2', 'Električka T2', 'tram', 2, 1, 'up', 'p6'], ['t3', 'Električka T3', 'tram', 2, 1, 'no', 'p6'], ['tb12', 'Trolejbus 12', 'tram', -1, 1, 'up', 'p16'], ['a31', 'Autobus 31', 'tram', -1, 1, 'up', 'p16'],
+      ['let', 'Letisko – príchody', 'info', -1, 2, 'up', 'p3'], ['zs', 'Zimný štadión', 'stop', -1, 0, '', ''], ['aq', 'Aquapark', 'stop', -1, 1, 'up', 'p15'], ['cin', 'Cintorín', 'stop', -1, 0, '', ''], ['pp', 'Priemyselný park', 'stop', -1, 0, '', ''],
+      ['ss', 'Sídlisko Sever', 'stop', -1, 1, 'exp', 'p13'], ['zu', 'Železničná ulica', 'stop', -1, 0, '', ''], ['hr', 'Hrádok', 'stop', -1, 0, '', ''], ['bul', 'Bulvár', 'stop', 1, 1, 'up', 'p13'], ['vlc', 'Vlčince', 'stop', -1, 1, 'up', 'p13'], ['zst', 'Železničná stanica', 'stop', -1, 1, 'up', 'p13'], ['letz', 'Letisko – zastávka', 'stop', -1, 1, 'up', 'p15']
+    ].map((a) => ({ id: a[0], name: a[1], dev: TOT[a[0]] ? 'totem' : P31[a[0]] ? 'p31' : PDEV[a[2]], g: a[3], n: a[4], st: a[5], pl: TOT[a[0]] ? 'p14' : a[6], on: !OFF[a[0]], off: OFF[a[0]] || '', temp: null }));
+    const apvs = [
+      { id: 'a1', plId: 'p5', name: 'Kultúra – november', author: 'Jana Mikulová', when: 'pred 2 h', own: false, state: 'pending', note: '', changes: [['mod', 'Upravený text snímky „Divadlo – program“ (začiatok o 19:00)'], ['del', 'Zmazaná snímka „Festival – plagát“']], valid: 'Platnosť: ihneď po schválení, do 30. 11.' },
+      { id: 'a2', plId: 'p12', name: 'Nová linka 25', author: 'Peter Hudák', when: 'pred 5 h', own: false, state: 'pending', note: '', changes: [['add', 'Pridaná snímka „Nová linka 25“'], ['add', 'Pridaná snímka „Najbližšie odchody“ (linka 25)'], ['add', 'Pridaná snímka „Mapa linky“']], valid: 'Platnosť: od 1. 12. 2026' },
+      { id: 'a3', plId: 'p6', name: 'Električky – vo vozidle', author: 'Zuzana Kováčová', when: 'včera 16:10', own: false, state: 'pending', note: '', changes: [['add', 'Pridaný text „Linka 5 je dnes odklonená cez Bulvár“ (oranžové pole)'], ['mod', 'Trvanie textu „Prajeme príjemnú cestu“: 10 s → 6 s']], valid: 'Platnosť: ihneď po schválení, len dnes' },
+      { id: 'a4', plId: 'p9', name: 'Halloween v meste', author: 'Zuzana Kováčová', when: '29. 10.', own: false, state: 'approved', note: 'Vyzerá dobre, schvaľujem.', changes: [['add', 'Pridaná snímka „Halloween v meste“ (halloween.png)']], valid: 'Platnosť: 29. 10. – 1. 11.', doneT: 'Schválil Miroslav Heglas · 29. 10. Playlist bol nahratý na 1 miesto.' },
+      { id: 'a5', plId: 'p11', name: 'Dočasná zastávka Mostná', author: 'Peter Hudák', when: '27. 10.', own: false, state: 'returned', note: 'Doplňte vzdialenosť k novej zastávke.', changes: [['add', 'Pridaný text „Zastávka je presunutá“']], valid: 'Platnosť: od 28. 10.', doneT: 'Vrátil na úpravu Miroslav Heglas · 27. 10.' }
+    ];
+    const qa = [{ id: 'q1', text: 'Linka 5 je dnes odklonená cez Bulvár.', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }];
+    const qh = [
+      { id: 'h1', text: 'Nemocnica: hlavný vchod je uzavretý, použite vchod B.', prio: 'info', pos: 'bottom', dur: 'h1', all: false, ids: ['nem', 'nema', 'uni'], when: 'Včera 14:20' },
+      { id: 'h2', text: 'Električky T1 a T2 nepremávajú, nahrádza ich autobus.', prio: 'warn', pos: 'top', dur: 'day', all: false, ids: ['t1', 't2', 't3'], when: DOWAGO(3) + ' 7:05' },
+      { id: 'h3', text: 'Dnes bezplatná doprava pre deti do 15 rokov.', prio: 'info', pos: 'bottom', dur: 'day', all: true, ids: [], when: DOWAGO(3) + ' 6:30' }
+    ];
+    this.state = {
+      screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
+      apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
+      sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
+      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiSit: 'detour', aiBusy: false, aiOut: [], toast: '', push: null
+    };
+    const st = this.state;
+    const P = (pid) => pls.find((x) => x.id === pid);
+    const start = (p && p.start) || 'home';
+    const S = {
+      home: {}, totem: { screen: 'pl', plId: 'p14', stack: ['pls'] }, totempreview: { screen: 'pv', pvPl: 'p14', stack: ['pls', 'pl'] }, playlists: { screen: 'pls' }, playlist: { screen: 'pl', plId: 'p2', stack: ['pls'] }, ledplaylist: { screen: 'pl', plId: 'p1', stack: ['pls'] },
+      slide: { screen: 'sl', plId: 'p2', slId: P('p2').slides[2].id, stack: ['pls', 'pl'] }, led: { screen: 'sl', plId: 'p1', slId: P('p1').slides[1].id, stack: ['pls', 'pl'] },
+      addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
+      switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pl', from: 'pl', places: ['hsv'], pl: 'p3', dur: 'today' } },
+      approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal' },
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, ai: { screen: 'ai', stack: ['more'], aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
+    };
+    Object.assign(st, S[start] || {});
+    if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }
+  }
+  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} }
+  componentWillUnmount() { try { if (this._unL) this._unL(); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); }
+  tick() {
+    this.setState((st) => {
+      if (st.screen !== 'pv' || !st.pvPlay) return null;
+      const pl = st.pls.find((p) => p.id === st.pvPl);
+      const sl = pl ? pl.slides : [];
+      if (!sl.length) return null;
+      let i = Math.min(st.pvI, sl.length - 1), t = st.pvT + 1;
+      if (t >= sl[i].dur) { i = (i + 1) % sl.length; t = 0; }
+      return { pvT: t, pvI: i, pvE: (st.pvE || 0) + 1 };
+    });
+  }
+  renderVals() {
+    const s = this.state;
+    const self = this;
+    const set = (o) => self.setState(o);
+    const WL = window.WZ_LANG || null;
+    // texty, ktoré aplikácia sama vytvára ako obsah (názov novej snímky, návrh správy), vznikajú v jazyku rozhrania
+    const Tx = (t) => WL ? WL.t(t) : t;
+    const say = (m) => { set({ toast: m }); clearTimeout(self._tt); self._tt = setTimeout(() => self.setState({ toast: '' }), 3800); };
+    // upozornenie v telefóne po doručení playlistu na zariadenie
+    const notify = (text) => {
+      if (!s.notif.n5) return;
+      clearTimeout(self._tp); clearTimeout(self._tp2);
+      self._tp = setTimeout(() => { self.setState({ push: { title: 'Playlist je na zariadení', text } }); self._tp2 = setTimeout(() => self.setState({ push: null }), 4500); }, 2600);
+    };
+    const plById = (id) => s.pls.find((p) => p.id === id);
+    const pl = plById(s.plId) || s.pls[0];
+    const sc = s.screen;
+    // šírka telefónu: náhľady na celú šírku sa jej prispôsobia (úzke aj široké telefóny)
+    const VW = Math.max(300, Math.min(480, (typeof window !== 'undefined' && window.innerWidth) || 390));
+    const fw = (w) => w >= 330 ? Math.round(w + (VW - 390)) : w;
+    // záložka dole ostáva tam, odkiaľ sa prišlo (napr. úprava playlistu otvorená z Miest)
+    const tabOf = TAB_OF[s.stack.length ? s.stack[0] : sc] || TAB_OF[sc] || 'home';
+    const dur = (p) => p.slides.reduce((a, x) => a + x.dur, 0);
+    const slMeta = (p) => p.slides.length + ' ' + plural(p.slides.length, ['snímka', 'snímky', 'snímok']) + ' · ' + mmss(dur(p));
+    const nPlaces = (n) => n + ' ' + plural(n, ['miesto', 'miesta', 'miest']);
+    const nWhere = (n) => n ? nPlaces(n) : 'nikde sa neprehráva';
+    const KIND = { info: 'Text', photo: 'Fotka', deps: 'Odchody', led: 'Text', clock: 'Čas a dátum' };
+    const placeById = (id) => s.places.find((p) => p.id === id);
+    const placeName = (id) => (placeById(id) || {}).name || '';
+    const withDev = s.places.filter((p) => p.n > 0);
+    const names = (ids) => ids.map(placeName);
+    const shortList = (nm) => nm.length ? (nm.length > 3 ? nm.slice(0, 3).join(' · ') + ' a ' + (nm.length - 3) + ' ' + plural(nm.length - 3, ['ďalšie', 'ďalšie', 'ďalších']) : nm.join(' · ')) : '—';
+    const nav = (screen, o) => set(Object.assign({ screen, stack: s.stack.concat(sc), sheet: null, reorder: false, confirm: '' }, o || {}));
+    const goTab = (t) => set({ screen: ROOT[t], stack: [], sheet: null, reorder: false, confirm: '' });
+    const backState = () => s.stack.length ? { screen: s.stack[s.stack.length - 1], stack: s.stack.slice(0, -1) } : { screen: ROOT[tabOf], stack: [] };
+    const goBack = () => set(Object.assign({ sheet: null, reorder: false, confirm: '' }, backState()));
+    const closeSheet = () => set({ sheet: null, confirm: '', qStep: 'main', qSearch: '' });
+    const pendingOthers = s.apvs.filter((a) => a.state === 'pending' && !a.own);
+    const ST = { nahraty: ['ok', 'Nahratý'], expirovany: ['bad', 'Expirovaný'], nenahraty: ['grey', 'Nenahratý'] };
+    const FLOW = { draft: ['blue', 'Neodoslané zmeny'], pending: ['warn', 'Čaká na schválenie'] };
+    const ownApv = (pid) => s.apvs.find((a) => a.plId === pid && a.state === 'pending' && a.own);
+    const tabRoot = ['home', 'pls', 'plc', 'gal', 'more'].indexOf(sc) >= 0;
+    const dark = tabRoot || sc === 'pv';
+    const plLed = isLedDev(pl.dev);
+    // zariadenie s viacerými displejmi: každá snímka patrí jednému displeju (x.d)
+    const partsOf = (p) => PARTS[p.dev] || null;
+    const partBy = (dev, d) => { const ps = PARTS[dev]; return ps ? (ps.find((q) => q[0] === d) || ps[ps.length - 1]) : null; };
+    const rdev = (p, x) => { const q = partBy(p.dev, x.d); return q ? q[2] : p.dev; };
+    const thW = (p, x) => { const q = partBy(p.dev, x.d); return String(q ? q[3] : DEV[p.dev][3]); };
+    const stW = (p, x) => { const q = partBy(p.dev, x.d); return q ? q[4] : DEV[p.dev][4]; };
+    const partName = (p, x) => { const q = partBy(p.dev, x.d); return q ? q[1] : ''; };
+    const plTotem = !!partsOf(pl);
+    const insertSl = (p, sl) => { const ps = partsOf(p); if (!ps || !sl.d) return p.slides.concat([sl]); const ord = (d) => ps.findIndex((q) => q[0] === d); const a = p.slides.slice(); let i = a.length; for (let k = 0; k < a.length; k++) { if (ord(a[k].d) > ord(sl.d)) { i = k; break; } } a.splice(i, 0, sl); return a; };
+    const prvOf = (p, w3) => { const ps = partsOf(p); if (!ps) { const x = p.slides[0]; return x ? [Object.assign({}, x, { dev: p.dev, w: String(fw(DEV[p.dev][2])), r: '14' })] : []; } return ps.map((q) => { const x = p.slides.find((z) => z.d === q[0]); return x ? Object.assign({}, x, { dev: q[2], w: String(w3), r: '3' }) : null; }).filter(Boolean); };
+    const stackS = (p) => partsOf(p) ? 'display:flex;flex-direction:column;gap:4px;padding:6px;background:#1B2020;border-radius:10px' : '';
+    // playlist nahratý na miesta, pre ktoré je určený
+    const deliver = (places, p) => places.map((x) => p.where.indexOf(x.id) >= 0 ? Object.assign({}, x, { pl: p.id, st: 'up', temp: null }) : x);
+    const deliveredT = (p, ids) => '„' + p.name + '“ sa už prehráva: ' + shortList(names(ids)) + '.';
+
+    // ---------- úprava playlistu ----------
+    const logSlide = (lg, sid, title) => {
+      if (lg.some((x) => x[2] === 'a' + sid)) return lg.map((x) => x[2] === 'a' + sid ? [x[0], 'Pridaná snímka „' + title + '“', x[2]] : x);
+      return lg.filter((x) => x[2] !== 'm' + sid).concat([['mod', 'Upravená snímka „' + title + '“', 'm' + sid]]);
+    };
+    const mutate = (pid, fn) => set({ pls: s.pls.map((p) => p.id === pid ? Object.assign({}, fn(p), { flow: 'draft' }) : p) });
+    const updSlide = (sid, patch) => mutate(pl.id, (p) => { const slides = p.slides.map((x) => x.id === sid ? Object.assign({}, x, patch) : x); const t = slides.find((x) => x.id === sid); return Object.assign({}, p, { slides, log: logSlide(p.log, sid, t ? t.title : '') }); });
+    const newSl = (kind, title, text, durn, bg, ex) => Object.assign({ id: self.nid(), kind, title, text, dur: durn, bg, img: '', imgName: '', ledSize: 'M', ledAlign: 'left', ledCol: '', ledBg: '', d: '' }, ex || {});
+    const delSlide = (sid) => {
+      mutate(pl.id, (p) => { const t = p.slides.find((x) => x.id === sid); const added = p.log.some((x) => x[2] === 'a' + sid); const lg = p.log.filter((x) => x[2] !== 'a' + sid && x[2] !== 'm' + sid); return Object.assign({}, p, { slides: p.slides.filter((x) => x.id !== sid), log: added ? lg : lg.concat([['del', 'Zmazaná snímka „' + (t ? t.title : '') + '“', 'd' + sid]]) }); });
+      say('Snímka je zmazaná.');
+    };
+    const moveSlide = (i, d) => mutate(pl.id, (p) => { const a = p.slides.slice(); const t = a[i]; a[i] = a[i + d]; a[i + d] = t; return Object.assign({}, p, { slides: a, log: p.log.filter((x) => x[2] !== 'o').concat([['ord', 'Zmenené poradie snímok', 'o']]) }); });
+    const pushSlide = (pid, sl, logT, extra) => set(Object.assign({ pls: s.pls.map((p) => p.id === pid ? Object.assign({}, p, { slides: insertSl(p, sl), flow: 'draft', log: p.log.concat([['add', logT, 'a' + sl.id]]) }) : p), slId: sl.id, sheet: null }, extra || {}));
+    const toEditor = { screen: 'sl', stack: s.stack.concat(sc), reorder: false, confirm: '' };
+    const addPhotoSlide = (pid, file, galNext, goEdit) => {
+      const sl = newSl('photo', file.title, '', 10, '#1A1F1F', { img: file.col, imgName: file.name });
+      pushSlide(pid, sl, 'Pridaná snímka „' + file.title + '“ (' + file.name + ')', Object.assign({ gal: galNext }, goEdit ? toEditor : {}));
+    };
+    const bumpGal = (gal, fid, pname) => gal.map((g) => g.id === fid ? Object.assign({}, g, { used: g.used + 1, usedIn: g.usedIn.concat([pname]) }) : g);
+    const NEWC = ['#7FA65A', '#6C8EAD', '#C27C4A', '#8A6CAD'];
+    const makeFile = (kind) => {
+      const n = s.gal.length + 1;
+      if (kind === 'cam') return { id: 'g' + n + 'x', name: 'IMG_' + ((d) => d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '_' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0'))(new Date()) + (n > 1 ? '_' + n : '') + '.jpg', title: Tx('Nová fotka'), type: 'img', size: '2,1 MB', used: 0, usedIn: [], folder: 'Z telefónu', col: NEWC[n % 4] };
+      if (kind === 'ph') return { id: 'g' + n + 'x', name: 'foto-z-telefonu-' + n + '.jpg', title: Tx('Fotka z telefónu'), type: 'img', size: '1,6 MB', used: 0, usedIn: [], folder: 'Z telefónu', col: NEWC[(n + 1) % 4] };
+      return { id: 'g' + n + 'x', name: 'novy-spot-' + n + '.mp4', title: Tx('Nový spot'), type: 'vid', size: '9,4 MB', dur: '0:12', used: 0, usedIn: [], folder: 'Reklamy', col: '#2F62B0' };
+    };
+    const sendApv = () => {
+      const lg = pl.log.length ? pl.log : [['mod', 'Úpravy v playliste', 'x']];
+      const a = { id: 'a' + self.nid(), plId: pl.id, name: pl.name, author: 'Miroslav Heglas', when: 'teraz', own: true, state: 'pending', note: '', changes: lg.map((x) => [x[0], x[1]]), valid: 'Platnosť: ihneď po schválení' };
+      set({ apvs: [a].concat(s.apvs), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'pending', log: [] }) : p), reorder: false });
+      say('Odoslané na schválenie. Dáme vám vedieť, keď ho niekto schváli.');
+    };
+    const withdraw = () => { set({ apvs: s.apvs.filter((a) => !(a.plId === pl.id && a.own && a.state === 'pending')), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft' }) : p) }); say('Vzaté späť. Playlist môžete znova upravovať.'); };
+
+    // ---------- hlavička ----------
+    const act = (label, d, fn, badge) => ({ label, d, fn, isIcon: true, isText: false, hasBadge: !!badge, badge: badge || '' });
+    const openPrev = (pid) => set({ screen: 'pv', stack: s.stack.concat(sc), pvPl: pid, pvI: 0, pvT: 0, pvE: 0, pvPlay: true, sheet: null, reorder: false });
+    let hdTitle = 'Info Designer', hdSub = 'DP Riečany', hdActs = [], hdLogo = false;
+    if (sc === 'home') { hdLogo = true; hdActs = [act('Schvaľovanie – čaká ' + pendingOthers.length, IC.bell, () => nav('apv', { apvTab: 'pending' }), pendingOthers.length ? String(pendingOthers.length) : '')]; }
+    else if (sc === 'pls') { hdTitle = 'Playlisty'; hdSub = ''; }
+    else if (sc === 'pl') { hdTitle = pl.name; hdSub = DEV[pl.dev][1]; hdActs = [act('Náhľad playlistu', IC.eye, () => openPrev(pl.id))]; }
+    else if (sc === 'sl') { hdTitle = plLed ? 'Upraviť text' : 'Upraviť snímku'; hdSub = pl.name; hdActs = [{ label: 'Hotovo', d: '', fn: goBack, isIcon: false, isText: true, hasBadge: false, badge: '' }]; }
+    else if (sc === 'apv') { hdTitle = 'Schvaľovanie'; hdSub = ''; }
+    else if (sc === 'ad') { hdTitle = 'Schválenie zmien'; hdSub = ''; }
+    else if (sc === 'gal') { hdTitle = 'Galéria'; hdSub = ''; }
+    else if (sc === 'more') { hdTitle = 'Viac'; hdSub = ''; }
+    else if (sc === 'plc') { hdTitle = 'Miesta'; hdSub = ''; }
+    else if (sc === 'set') { hdTitle = 'Nastavenia'; hdSub = ''; }
+    else if (sc === 'hist') { hdTitle = 'História správ'; hdSub = ''; }
+    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; }
+    else if (sc === 'pv') { hdTitle = 'Náhľad'; hdSub = (plById(s.pvPl) || pl).name; }
+
+    // ---------- rýchle správy: kam ----------
+    const devIds = withDev.map((p) => p.id);
+    const grpIds = (g) => withDev.filter((p) => p.g === g).map((p) => p.id);
+    const sameSet = (a, b) => a.length === b.length && a.every((x) => b.indexOf(x) >= 0);
+    const tgtN = (m) => m.all ? devIds.length : m.ids.length;
+    const tgtLabel = (m) => {
+      if (m.all) return 'Všetky miesta';
+      for (let g = 0; g < GRP.length; g++) if (sameSet(m.ids, grpIds(g))) return GRP[g];
+      return m.ids.length === 1 ? placeName(m.ids[0]) : nPlaces(m.ids.length);
+    };
+    const PRIO = { warn: ['Výstraha', 'warn'], info: ['Oznam', 'blue'] };
+    const POS = { top: 'horný pás', bottom: 'dolný pás', full: 'celá obrazovka' };
+
+    // ---------- DOMOV ----------
+    const qaRows = s.qa.map((m) => ({
+      k: PRIO[m.prio][1], prioT: PRIO[m.prio][0], text: m.text, meta: POS[m.pos] + ' · ' + (m.until || DURS[m.dur][1]) + ' · ' + tgtLabel(m),
+      cancel: () => { set({ qa: s.qa.filter((x) => x.id !== m.id), qh: [Object.assign({}, m, { when: 'Dnes ' + HM() + ' · zrušená' })].concat(s.qh) }); say('Správa je zrušená a z displejov zmizne do pár sekúnd.'); }
+    }));
+    const openQuick = () => set({ sheet: 'quick', qStep: 'main', qSearch: '', qTplAll: false });
+    const effPl = (pc) => plById(pc.temp ? pc.temp.pl : pc.pl);
+    // úprava playlistu, ktorý sa práve prehráva na mieste
+    const editAtPlace = (pid) => { const pc = placeById(pid); const ep = effPl(pc); if (!ep) return; nav('pl', { plId: ep.id }); if (ep.where.length > 1) say('Zmeny sa prejavia na všetkých ' + ep.where.length + ' miestach, kde sa playlist prehráva.'); };
+    const swForPlace = (pid) => { const pc = placeById(pid); const ep = effPl(pc); set({ sheet: 'sw', sw: { step: 'pl', from: 'pl', places: [pid], pl: ep ? ep.id : '', dur: 'today' } }); };
+    const swForPl = (plid) => set({ sheet: 'sw', sw: { step: 'pc', from: 'pc', places: [], pl: plid, dur: 'today' } });
+    const ledLook = (d) => isLedDev(d) || !!PARTS[d];
+    const tile = (p) => { const f = p && p.slides[0]; return ledLook(p ? p.dev : '') ? '#050505' : GRAD(f ? (f.kind === 'photo' ? f.img : f.bg) : '#C9D2D2'); };
+    const nowRows = ['hsv', 'snp', 'asa', 't1'].map((id) => { const pc = placeById(id); const ep = effPl(pc); return { thS: 'width:48px;height:48px;border-radius:10px;flex:none;background:' + tile(ep), place: pc.name, plName: ep ? ep.name : '—', temp: !!pc.temp, until: pc.temp ? pc.temp.until : '', change: () => swForPlace(id), changeA: 'Prepnúť playlist na mieste: ' + pc.name, canEdit: !!ep, edit: () => editAtPlace(id), editA: 'Upraviť playlist: ' + (ep ? ep.name : '') }; });
+    const pcOnN = withDev.filter((p) => p.on).length;
+    const expN = withDev.filter((p) => p.st === 'exp').length;
+    const qhRows = s.qh.map((h) => ({ againA: 'Poslať znova: ' + h.text, text: h.text, meta: h.when + ' · ' + tgtLabel(h) + ' · ' + PRIO[h.prio][0], again: () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: { text: h.text, prio: h.prio, pos: h.pos, dur: h.dur, all: h.all, ids: h.ids.slice() } }) }));
+
+    // ---------- PLAYLISTY ----------
+    const cnt = (k) => s.pls.filter((p) => p.st === k).length;
+    const plChips = [['all', 'Všetko', s.pls.length], ['nahraty', 'Nahratý', cnt('nahraty')], ['expirovany', 'Expirovaný', cnt('expirovany')], ['nenahraty', 'Nenahratý', cnt('nenahraty')]].map((c) => ({ label: c[1], n: c[2], on: s.filt === c[0], pick: () => set({ filt: c[0] }) }));
+    const ql = s.q.trim().toLowerCase();
+    const plList = s.pls.filter((p) => (s.filt === 'all' || p.st === s.filt) && (!ql || p.name.toLowerCase().indexOf(ql) >= 0));
+    const plRows = plList.map((p) => ({
+      open: () => nav('pl', { plId: p.id }), thS: 'width:52px;height:52px;border-radius:12px;flex:none;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;color:' + (ledLook(p.dev) ? '#FFB000' : '#fff') + ';background:' + tile(p), nSl: String(p.slides.length),
+      name: p.name, devT: DEV[p.dev][1], meta: slMeta(p) + ' · ' + nWhere(p.where.length), stK: ST[p.st][0], stT: ST[p.st][1], touch: p.touch, hasFlow: p.flow !== 'none', flowK: (FLOW[p.flow] || ['', ''])[0], flowT: (FLOW[p.flow] || ['', ''])[1]
+    }));
+    const createPl = (dev) => { const id = 'p' + self.nid(); const first = PARTS[dev] ? [newSl('clock', Tx('Čas a dátum'), 'y', 10, '#050505', { d: 'cas' }), newSl('deps', Tx('Odchody'), 'Linky 3 · 5 · 14', 20, '#050505', { d: 'odch' })] : []; const p = { id, name: Tx('Nový playlist'), dev, st: 'nenahraty', slides: first, where: [], flow: 'draft', plan: 'Plán ešte nie je nastavený', touch: false, log: [] }; set({ pls: [p].concat(s.pls), screen: 'pl', plId: id, stack: s.stack.concat(sc), sheet: null }); say('Playlist pre „' + DEV[dev][1] + '“ je vytvorený.'); };
+
+    // ---------- DETAIL PLAYLISTU ----------
+    const locked = pl.flow === 'pending';
+    const mineApv = ownApv(pl.id);
+    const otherApv = s.apvs.find((a) => a.plId === pl.id && a.state === 'pending' && !a.own);
+    const canEdit = !locked;
+    const slRows = pl.slides.map((x, i) => ({
+      open: () => locked ? openPrev(pl.id) : nav('sl', { slId: x.id }), aria: 'Upraviť: ' + x.title, dev: rdev(pl, x), w: thW(pl, x), kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg,
+      meta: (plTotem ? partName(pl, x) + ' · ' : '') + KIND[x.kind] + (x.kind === 'clock' ? '' : ' · ' + x.dur + ' s'), showMove: s.reorder && canEdit, up: () => moveSlide(i, -1), upOff: i === 0 || (pl.slides[i - 1].d || '') !== (x.d || ''), down: () => moveSlide(i, 1), downOff: i === pl.slides.length - 1 || (pl.slides[i + 1].d || '') !== (x.d || ''),
+      delK: s.confirm === 'd' + x.id ? 'd' : '', delLbl: s.confirm === 'd' + x.id ? 'Potvrdiť zmazanie snímky' : 'Zmazať snímku', del: () => { if (s.confirm === 'd' + x.id) { set({ confirm: '' }); delSlide(x.id); } else { set({ confirm: 'd' + x.id }); say('Ťuknite na kôš ešte raz a snímka sa zmaže.'); } },
+      showChev: !(s.reorder && canEdit)
+    }));
+    const BLANK = { id: 0, kind: 'info', title: '', text: '', dur: 10, bg: '#0E8080', img: '', imgName: '', ledSize: 'M', ledAlign: 'left', ledCol: '', ledBg: '', d: '' };
+    const curSl = pl.slides[0] || BLANK;
+    const upload = (p, toastT) => { set({ pls: s.pls.map((x) => x.id === p.id ? Object.assign({}, x, { st: 'nahraty' }) : x), places: deliver(s.places, p) }); say(toastT); if (p.where.length) notify(deliveredT(p, p.where)); };
+    let mainAct;
+    if (pl.flow === 'pending') mainAct = mineApv ? { k: '', label: 'Vziať späť', fn: withdraw } : { k: 'p', label: 'Otvoriť schválenie', fn: () => otherApv && nav('ad', { adId: otherApv.id, apvNote: '' }) };
+    else if (pl.flow === 'draft') mainAct = { k: 'p', label: 'Odoslať na schválenie', fn: sendApv };
+    else if (pl.st === 'nenahraty') mainAct = { k: 'p', label: 'Nahrať na zariadenia', fn: () => pl.where.length ? upload(pl, 'Playlist sa nahráva na ' + nPlaces(pl.where.length) + '.') : swForPl(pl.id) };
+    else if (pl.st === 'expirovany') mainAct = { k: 'p', label: 'Predĺžiť platnosť', fn: () => { set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { st: 'nahraty', plan: 'Po–Pi 6:00–22:00 · do 31. 12.' }) : p) }); say('Platnosť je predĺžená do 31. 12.'); } };
+    else mainAct = { k: 'p', label: 'Prehrať na mieste…', fn: () => swForPl(pl.id) };
+    const lockT = mineApv ? 'Playlist ste odoslali na schválenie, preto sa nedá upravovať. Ak chcete niečo zmeniť, vezmite ho späť.' : 'Playlist čaká na schválenie, preto sa nedá upravovať.';
+    const whereT = pl.where.length ? names(pl.where).join(' · ') : 'Zatiaľ sa neprehráva na žiadnom mieste.';
+    const openAdd = () => set({ sheet: 'add', addMode: 'slide' });
+    // zoznam vytvorených snímok pre zariadenie playlistu: snímky zo všetkých playlistov + samostatné
+    const libAll = []; const libSeen = {};
+    s.pls.forEach((p) => p.slides.forEach((x) => { const k = p.dev + '|' + (x.d || '') + '|' + x.title; if (x.kind !== 'clock' && !libSeen[k]) { libSeen[k] = 1; libAll.push(Object.assign({}, x, { dev: p.dev, from: p.id === pl.id ? '' : 'z playlistu: ' + p.name, own: p.id === pl.id })); } }));
+    s.libX.forEach((x) => { const k = x.dev + '|' + (x.d || '') + '|' + x.title; if (!libSeen[k]) { libSeen[k] = 1; libAll.push(Object.assign({}, x, { from: 'samostatná snímka', own: false })); } });
+    const lql = s.libQ.trim().toLowerCase();
+    const libRows = libAll.filter((x) => x.dev === pl.dev && !x.own && (!lql || x.title.toLowerCase().indexOf(lql) >= 0)).map((x) => ({
+      dev: rdev(pl, x), w: thW(pl, x), kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg, meta: (plTotem ? partName(pl, x) + ' · ' : '') + KIND[x.kind] + ' · ' + x.dur + ' s', from: x.from, aria: 'Pridať snímku ' + x.title,
+      pick: () => { const sl = newSl(x.kind, x.title, x.text, x.dur, x.bg, { img: x.img, imgName: x.imgName, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg, d: x.d || '' }); pushSlide(pl.id, sl, 'Pridaná snímka „' + x.title + '“ (zo zoznamu snímok)', { libQ: '' }); say('Snímka „' + x.title + '“ je pridaná na koniec playlistu.'); }
+    }));
+    const openLib = () => set({ sheet: 'lib', libQ: '' });
+    const addLed = () => { const sl = newSl('led', Tx('Nový text'), '', 10, '#050505', { ledSize: pl.dev === 'vehicle' ? 'L' : 'M' }); pushSlide(pl.id, sl, 'Pridaná snímka „Nový text“', toEditor); };
+
+    // ---------- EDITOR SNÍMKY ----------
+    const ed = pl.slides.find((x) => x.id === s.slId) || BLANK;
+    const upd = (patch) => updSlide(ed.id, patch);
+    const swatch = (c, label, cur, patchKey, show) => ({ label, on: cur === c, pick: () => upd({ [patchKey]: c }), s: 'display:block;width:30px;height:30px;border-radius:50%;background:' + (show || c) + ';box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)' });
+    const BGN = ['Tyrkysová', 'Tmavá tyrkysová', 'Tmavomodrá', 'Modrá', 'Fialová', 'Oranžová', 'Červená', 'Čierna'];
+    const bgSw = BG.map((c, i) => swatch(c, 'Pozadie: ' + BGN[i], ed.bg, 'bg'));
+    const LEDC = [['', 'Predvolená (jantárová)', '#FFB000'], ['#4CFF4C', 'Zelená', '#4CFF4C'], ['#FF4040', 'Červená', '#FF4040'], ['#FFFFFF', 'Biela', '#FFFFFF'], ['#34D8FF', 'Azúrová', '#34D8FF']];
+    const LEDB = [['', 'Bez farby (čierne)', '#050505'], ['#E07A2B', 'Oranžové pole', '#E07A2B'], ['#C8322B', 'Červené pole', '#C8322B'], ['#2E9E4F', 'Zelené pole', '#2E9E4F'], ['#2F62B0', 'Modré pole', '#2F62B0'], ['#FFD27A', 'Žlté pole', '#FFD27A']];
+    const ledColSw = LEDC.map((c) => swatch(c[0], 'Text: ' + c[1], ed.ledCol, 'ledCol', c[2]));
+    const ledBgSw = LEDB.map((c) => swatch(c[0], c[1], ed.ledBg, 'ledBg', c[2]));
+    const ledSizes = ['XS', 'S', 'M', 'L', 'XL'].map((z) => ({ label: z, on: ed.ledSize === z, pick: () => upd({ ledSize: z }) }));
+    const ledAligns = [['left', 'Vľavo'], ['center', 'Stred'], ['right', 'Vpravo']].map((z) => ({ label: z[1], on: ed.ledAlign === z[0], pick: () => upd({ ledAlign: z[0] }) }));
+    const edR = rdev(pl, ed); const edLedR = isLedR(edR);
+    const edLedText = edLedR && ed.kind === 'led';
+    const edClock = ed.kind === 'clock';
+    const flag = (ch) => String(ed.text || '').indexOf(ch) >= 0;
+    const flip = (ch) => upd({ text: flag(ch) ? String(ed.text).replace(ch, '') : String(ed.text || '') + ch });
+    const clkOpts = [['n', 'Dátum', true], ['s', 'Sekundy', false], ['w', 'Deň v týždni', false], ['y', 'Rok', false]].filter((o) => o[0] === 'n' || o[0] === 's' || !flag('n')).map((o) => ({ title: o[1], on: o[2] ? !flag(o[0]) : flag(o[0]), toggle: () => flip(o[0]) }));
+    const edPart = partBy(pl.dev, ed.d);
+    const delEd = () => { if (s.confirm === 'ed') { const sid = ed.id; set(Object.assign({ confirm: '' }, backState())); delSlide(sid); } else { set({ confirm: 'ed' }); say('Ťuknite ešte raz a snímka sa zmaže.'); } };
+
+    // ---------- SCHVAĽOVANIE ----------
+    const AS = { pending: ['warn', 'Čaká'], approved: ['ok', 'Schválené'], returned: ['blue', 'Vrátené'], rejected: ['bad', 'Zamietnuté'] };
+    const pendAll = s.apvs.filter((a) => a.state === 'pending');
+    const doneAll = s.apvs.filter((a) => a.state !== 'pending');
+    const apvTabs = [['pending', 'Čaká (' + pendAll.length + ')'], ['done', 'Vybavené (' + doneAll.length + ')']].map((t) => ({ label: t[1], on: s.apvTab === t[0], pick: () => set({ apvTab: t[0] }) }));
+    const apvRows = (s.apvTab === 'pending' ? pendAll : doneAll).map((a) => { const p = plById(a.plId) || { where: [], dev: 'lcd' }; return { open: () => nav('ad', { adId: a.id, apvNote: '' }), name: a.name, by: a.own ? 'Odoslané vami · ' + a.when : a.author + ' · ' + a.when, k: AS[a.state][0], stT: a.own && a.state === 'pending' ? 'Odoslané vami' : AS[a.state][1], devT: DEV[p.dev][1], nChg: a.changes.length + ' ' + plural(a.changes.length, ['zmena', 'zmeny', 'zmien']), nPl: nPlaces(p.where.length) }; });
+    const at = (list, e) => { const tot = list.reduce((a, x) => a + x.dur, 0); if (!tot) return null; let t = e % tot; for (let k = 0; k < list.length; k++) { if (t < list[k].dur) return list[k]; t -= list[k].dur; } return list[0]; };
+    const ad = s.apvs.find((a) => a.id === s.adId) || s.apvs[0];
+    const adPl = plById(ad.plId) || pl;
+    const CHG = { add: ['add', '+'], del: ['del', '−'], mod: ['mod', '~'], ord: ['ord', '↕'] };
+    const adCanAct = ad.state === 'pending' && !ad.own;
+    const decide = (state, doneT, toastT) => {
+      const approved = state === 'approved';
+      set(Object.assign({ apvs: s.apvs.map((a) => a.id === ad.id ? Object.assign({}, a, { state, note: s.apvNote.trim(), doneT }) : a), pls: s.pls.map((p) => p.id === ad.plId ? Object.assign({}, p, approved ? { st: 'nahraty', flow: 'none' } : { flow: state === 'returned' ? 'draft' : 'none' }) : p), places: approved ? deliver(s.places, adPl) : s.places, apvTab: 'pending', apvNote: '', sheet: null }, backState()));
+      say(toastT);
+      if (approved && adPl.where.length) notify(deliveredT(adPl, adPl.where));
+    };
+    const adObj = {
+      name: ad.name, by: ad.own ? 'Odoslané vami · ' + ad.when : ad.author + ' · ' + ad.when, k: AS[ad.state][0], stT: ad.own && ad.state === 'pending' ? 'Odoslané vami' : AS[ad.state][1], devT: DEV[adPl.dev][0],
+      whereT: adPl.where.length ? names(adPl.where).join(' · ') : 'Zatiaľ žiadne miesto', valid: ad.valid, doneT: ad.doneT || '', hasNote: !!(ad.note && ad.state !== 'pending'), note: ad.note || ''
+    };
+
+    // ---------- GALÉRIA ----------
+    const FT = { img: ['Obrázok', IC.image], vid: ['Video', IC.film], aud: ['Zvuk', IC.music] };
+    const galOk = (g, f) => f === 'all' || (f === 'unused' ? g.used === 0 : g.type === f);
+    const galChips = [['all', 'Všetko'], ['img', 'Obrázky'], ['vid', 'Videá'], ['aud', 'Zvuky'], ['unused', 'Nepoužité']].map((c) => ({ label: c[1], n: s.gal.filter((g) => galOk(g, c[0])).length, on: s.galF === c[0], pick: () => set({ galF: c[0] }) }));
+    const thFile = (g) => 'position:relative;width:100%;aspect-ratio:4/3;border-radius:12px;display:flex;align-items:center;justify-content:center;background:' + (g.type === 'aud' ? 'linear-gradient(135deg,#1F2323,#0B6E6E)' : GRAD(g.col));
+    const galRows = s.gal.filter((g) => galOk(g, s.galF)).map((g) => ({ open: () => set({ sheet: 'gd', galId: g.id, confirm: '' }), aria: 'Detail súboru ' + g.name, thS: thFile(g), d: FT[g.type][1], hasDur: !!g.dur, dur: g.dur || '', name: g.name, size: g.size, unused: g.used === 0 }));
+    const galFile = s.gal.find((g) => g.id === s.galId) || s.gal[0];
+    const gd = {
+      name: galFile.name, bigS: 'width:100%;height:190px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;background:' + (galFile.type === 'aud' ? 'linear-gradient(135deg,#1F2323,#0B6E6E)' : GRAD(galFile.col)), d: FT[galFile.type][1], typeT: FT[galFile.type][0] + (galFile.dur ? ' · ' + galFile.dur : ''),
+      size: galFile.size, folder: galFile.folder, usedT: galFile.used ? galFile.used + '×' : 'Nepoužité', hasUse: galFile.used > 0, useList: galFile.usedIn.join(' · ')
+    };
+
+    // ---------- MIESTA ----------
+    const PST = { up: ['ok', 'Aktívny'], exp: ['bad', 'Expirovaný'], no: ['grey', 'Nenahratý'] };
+    const pcOk = (p, f) => f === 'all' || (f === 'off' ? p.n > 0 && !p.on : f === 'none' ? p.n === 0 : p.st === f);
+    const pcChips = [['all', 'Všetky'], ['up', 'Aktívne'], ['exp', 'Expirované'], ['no', 'Nenahraté'], ['off', 'Offline'], ['none', 'Bez zariadenia']].map((c) => ({ label: c[1], n: s.places.filter((p) => pcOk(p, c[0])).length, on: s.pcF === c[0], pick: () => set({ pcF: c[0] }) }));
+    const pql = s.pq.trim().toLowerCase();
+    const pcList = s.places.filter((p) => pcOk(p, s.pcF) && (!pql || p.name.toLowerCase().indexOf(pql) >= 0));
+    const devLine = (p) => p.n === 0 ? 'Bez zariadenia' : DEV[p.dev][1] + (p.g >= 0 ? ' · ' + GRP[p.g] : '');
+    const pcRows = pcList.map((p) => { const ep = p.n ? effPl(p) : null; return {
+      dotK: p.n === 0 ? '' : p.on ? 'ok' : 'bad', name: p.name, devT: devLine(p), plName: p.n === 0 ? 'Miesto zatiaľ nemá zariadenie' : (ep ? ep.name : 'Bez playlistu') + (p.on ? '' : ' · offline ' + p.off), hasDev: p.n > 0, offline: p.n > 0 && !p.on,
+      stK: (PST[p.st] || ['grey', ''])[0], stT: (PST[p.st] || ['grey', ''])[1], temp: !!p.temp, until: p.temp ? p.temp.until : '',
+      revert: () => { set({ places: s.places.map((x) => x.id === p.id ? Object.assign({}, x, { temp: null }) : x) }); say(p.name + ': vrátený pôvodný playlist.'); }, change: () => swForPlace(p.id), changeA: 'Prepnúť playlist na mieste: ' + p.name, canEdit: !!ep, edit: () => editAtPlace(p.id), editA: 'Upraviť playlist: ' + (ep ? ep.name : '')
+    }; });
+
+    // ---------- NASTAVENIA A AI ----------
+    const NT = [['n1', 'Čaká na schválenie', 'Keď niekto odošle playlist na schválenie'], ['n5', 'Playlist je na zariadení', 'Keď sa playlist poslaný z telefónu nahrá na zariadenie'], ['n2', 'Miesto je offline', 'Keď zariadenie na mieste prestane odpovedať'], ['n3', 'Playlist čoskoro expiruje', '3 dni pred koncom platnosti'], ['n4', 'Potvrdenie rýchlej správy', 'Po odoslaní alebo zrušení správy']];
+    const notifRows = NT.map((n) => ({ title: n[1], sub: n[2], on: !!s.notif[n[0]], toggle: () => set({ notif: Object.assign({}, s.notif, { [n[0]]: !s.notif[n[0]] }) }) }));
+    const AIT = [['a1', 'Návrh textu správy', 'AI navrhne stručný text správy podľa situácie (meškanie, odklon…).'], ['a2', 'Kontrola pred odoslaním', 'AI upozorní na preklepy, nečitateľné farby a chýbajúce údaje.']];
+    const aiRows = AIT.map((n) => ({ title: n[1], sub: n[2], on: !!s.aiOn[n[0]], toggle: () => set({ aiOn: Object.assign({}, s.aiOn, { [n[0]]: !s.aiOn[n[0]] }) }) }));
+    const AIS = {
+      delay: ['Meškanie', 'info', ['Linka 5 mešká približne 10 minút. Ďakujeme za trpezlivosť.', 'Spoje linky 5 majú meškanie do 10 minút.', 'Meškanie linky 5: asi 10 minút. Sledujte odchody na tabuli.']],
+      detour: ['Odklon', 'warn', ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.']],
+      outage: ['Výluka', 'warn', ['Električky T1 a T2 dnes nepremávajú, nahrádza ich autobus.', 'Výluka električiek T1 a T2. Náhradná doprava odchádza zo zastávky Bulvár.', 'T1 a T2 dnes nejazdia. Použite náhradný autobus.']],
+      closed: ['Zatvorená zastávka', 'warn', ['Zastávka Mostná je dočasne zatvorená. Použite zastávku Bulvár.', 'Mostná: zastávka je presunutá o 50 m v smere jazdy.', 'Zastávka Mostná sa dnes neobsluhuje.']]
+    };
+    const aiSits = Object.keys(AIS).map((k) => ({ label: AIS[k][0], on: s.aiSit === k, pick: () => set({ aiSit: k, aiOut: [] }) }));
+    const aiRun = () => { set({ aiBusy: true, aiOut: [] }); clearTimeout(self._ta); const k = s.aiSit; self._ta = setTimeout(() => self.setState({ aiBusy: false, aiOut: AIS[k][2] }), 1100); };
+    const aiOut = s.aiOut.map((t) => ({ text: t, use: () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: Object.assign({}, s.quick, { text: Tx(t), prio: AIS[s.aiSit][1], pos: AIS[s.aiSit][1] === 'warn' ? 'top' : 'bottom' }) }) }));
+
+    // ---------- NÁHĽAD ----------
+    const pvPl = plById(s.pvPl) || pl;
+    const pvSl = pvPl.slides[Math.min(s.pvI, Math.max(0, pvPl.slides.length - 1))];
+    const pvSegs = pvPl.slides.map((x, i) => ({ s: 'flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.25);overflow:hidden', f: 'display:block;height:100%;background:#2BD0D0;width:' + (i < s.pvI ? 100 : i === s.pvI ? Math.round(100 * s.pvT / x.dur) : 0) + '%' }));
+    const pvTot = !!partsOf(pvPl);
+    const pvStep = (d) => pvTot ? set({ pvE: Math.max(0, (s.pvE || 0) + d * 5) }) : set({ pvI: (s.pvI + d + pvPl.slides.length) % Math.max(1, pvPl.slides.length), pvT: 0 });
+    const pvObj = pvSl || BLANK;
+    const pvParts = pvTot ? partsOf(pvPl).map((q) => { const x = at(pvPl.slides.filter((z) => z.d === q[0]), s.pvE || 0); return x ? Object.assign({}, x, { dev: q[2], w: '112', r: '3' }) : null; }).filter(Boolean) : (pvSl ? [Object.assign({}, pvSl, { dev: pvPl.dev, w: String(isPort(pvPl.dev) ? 230 : fw(358)), r: '10' })] : []);
+
+    // ---------- RÝCHLA SPRÁVA ----------
+    const Q = s.quick;
+    const setQ = (o) => set({ quick: Object.assign({}, Q, o) });
+    // šablóny rýchlej správy: zobrazí sa prvých päť, ostatné až po ťuknutí na „Viac“
+    const QTPL = [['Meškanie', 'Linka 5 mešká približne 10 minút. Ďakujeme za trpezlivosť.', 'warn', 'bottom'], ['Odklon', 'Linka 5 je dnes odklonená. Zastávka je dočasne presunutá.', 'warn', 'top'], ['Výpadok', 'Pre technickú poruchu je premávka obmedzená. Sledujte pokyny personálu.', 'warn', 'full'], ['Info', 'Od pondelka platí nový cestovný poriadok.', 'info', 'bottom'], ['Výluka', 'Električky T1 a T2 nepremávajú, nahrádza ich autobus.', 'warn', 'full'],
+      ['Zatvorená zastávka', 'Zastávka Mostná je dočasne zatvorená. Použite zastávku Bulvár.', 'warn', 'top'], ['Náhradná doprava', 'Náhradná doprava odchádza zo zastávky Bulvár.', 'info', 'bottom'], ['Bezplatná doprava', 'Dnes je doprava pre deti zadarmo.', 'info', 'bottom'], ['Podujatie', 'Dnes od 18:00 je Hlavná ulica uzavretá pre podujatie. Spoje idú obchádzkou.', 'info', 'bottom']];
+    const TPL_N = 5;
+    const QTPL_ON = QTPL;
+    const qTplRest = Math.max(0, QTPL_ON.length - TPL_N);
+    const qTpls = (s.qTplAll ? QTPL_ON : QTPL_ON.slice(0, TPL_N)).map((c) => ({ label: c[0], pick: () => setQ({ text: Tx(c[1]), prio: c[2], pos: c[3] }) }));
+    const qPrios = [['info', 'Oznam'], ['warn', 'Výstraha']].map((c) => ({ label: c[1], on: Q.prio === c[0], pick: () => setQ({ prio: c[0] }) }));
+    const qPoss = [['top', 'Horný pás'], ['bottom', 'Dolný pás'], ['full', 'Celá obrazovka']].map((c) => ({ label: c[1], on: Q.pos === c[0], pick: () => setQ({ pos: c[0] }) }));
+    const qDurs = ['m15', 'h1', 'day', 'rev'].map((k) => ({ label: DURS[k][0], on: Q.dur === k, pick: () => setQ({ dur: k }) }));
+    const qSel = Q.all ? devIds : Q.ids;
+    const setSel = (ids) => setQ(ids.length === devIds.length ? { all: true, ids: [] } : { all: false, ids });
+    const qGrps = GRP.map((g, i) => { const gi = grpIds(i); const on = gi.length > 0 && gi.every((x) => qSel.indexOf(x) >= 0); return { label: g + ' (' + gi.length + ')', on, pick: () => setSelOrd(on ? qSel.filter((x) => gi.indexOf(x) < 0) : qSel.concat(gi.filter((x) => qSel.indexOf(x) < 0))) }; });
+    const qsl = s.qSearch.trim().toLowerCase();
+    // vybrané miesta hore: poradie sa určí pri otvorení zoznamu a pri výbere skupiny (jednotlivé ťuknutie zoznam nepreskladá)
+    const snapOrd = (sel) => withDev.filter((p) => sel.indexOf(p.id) >= 0).concat(withDev.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id);
+    const ordIx = (id) => { const k = (s.qOrd || []).indexOf(id); return k < 0 ? 1e6 : k; };
+    const withDevO = s.qOrd ? withDev.slice().sort((a, b) => ordIx(a.id) - ordIx(b.id)) : withDev;
+    const toTop = () => setTimeout(() => { try { const e = document.querySelector('.sheet .sheet-b'); if (e) e.scrollTop = 0; } catch (x) {} }, 30);
+    const setSelOrd = (ids) => { set({ quick: Object.assign({}, Q, ids.length === devIds.length ? { all: true, ids: [] } : { all: false, ids }), qOrd: snapOrd(ids) }); toTop(); };
+    const qPcs = withDevO.filter((p) => !qsl || p.name.toLowerCase().indexOf(qsl) >= 0).map((p) => { const on = qSel.indexOf(p.id) >= 0; return { name: p.name, sub: DEV[p.dev][1] + (p.g >= 0 ? ' · ' + GRP[p.g] : '') + (p.on ? '' : ' · offline'), on, pick: () => setSel(on ? qSel.filter((x) => x !== p.id) : qSel.concat([p.id])) }; });
+    const qN = qSel.length;
+    const qSend = () => {
+      if (!Q.text.trim() || !qN) return;
+      const m = { id: 'q' + self.nid(), text: Q.text.trim(), prio: Q.prio, pos: Q.pos, dur: Q.dur, until: DURS[Q.dur][1], all: Q.all, ids: Q.ids.slice() };
+      set({ qa: [m].concat(s.qa), sheet: null, qStep: 'main', qSearch: '', qTplAll: false, quick: Object.assign({}, Q, { text: '' }) });
+      say('Správa je odoslaná na ' + nPlaces(qN) + ' a zobrazí sa do pár sekúnd.');
+    };
+
+    // ---------- PREPNUTIE PLAYLISTU ----------
+    const W = s.sw;
+    const setW = (o) => set({ sw: Object.assign({}, W, o) });
+    const swPlObj = plById(W.pl);
+    const swDev = W.from === 'pl' ? (placeById(W.places[0]) || {}).dev : (swPlObj || {}).dev;
+    const swPlsRows = s.pls.filter((p) => p.slides.length && p.dev === swDev && p.st !== 'expirovany').map((p) => ({ name: p.name, meta: slMeta(p) + ' · ' + ST[p.st][1], on: W.pl === p.id, pick: () => setW({ pl: p.id }) }));
+    const swPcs = withDev.filter((p) => p.dev === swDev).map((p) => { const ep = effPl(p); return { name: p.name, sub: (ep ? ep.name : 'Bez playlistu') + (p.on ? '' : ' · offline'), on: W.places.indexOf(p.id) >= 0, pick: () => setW({ places: W.places.indexOf(p.id) >= 0 ? W.places.filter((x) => x !== p.id) : W.places.concat([p.id]) }) }; });
+    const swDurs = Object.keys(SWD).map((k) => ({ label: SWD[k][0], sub: SWD[k][1], on: W.dur === k, pick: () => setW({ dur: k }) }));
+    const UNTIL = { today: 'do 23:59', h1: 'do ' + HM(60), h4: 'do ' + HM(240), rev: 'do odvolania' };
+    const swPlaces = shortList(names(W.places));
+    const swApply = () => {
+      if (!swPlObj) return;
+      set({ places: s.places.map((p) => W.places.indexOf(p.id) >= 0 ? Object.assign({}, p, { temp: { pl: W.pl, until: UNTIL[W.dur] } }) : p), sheet: null });
+      const n = W.places.length;
+      say('Odoslané – „' + swPlObj.name + '“ sa prepne na ' + n + ' ' + (n === 1 ? 'mieste' : 'miestach') + ' ' + UNTIL[W.dur] + '.');
+      notify(deliveredT(swPlObj, W.places));
+    };
+    const swTitle = W.step === 'pl' ? 'Čo prehrávať' : W.step === 'pc' ? 'Kde prehrávať' : 'Ako dlho';
+    const swSub = W.step === 'pl' ? 'Miesto: ' + swPlaces : W.step === 'pc' ? 'Playlist: ' + (swPlObj ? swPlObj.name : '') : 'Po skončení sa vráti pôvodný plán prehrávania.';
+    const swSub2 = W.step === 'pl' ? 'Ponúkajú sa len playlisty pre zariadenie ' + (DEV[swDev] || [''])[1] + '.' : W.step === 'pc' ? 'Ponúkajú sa len miesta so zariadením ' + (DEV[swDev] || [''])[1] + '.' : '';
+    const swBtn = W.step === 'dur' ? 'Použiť na ' + W.places.length + ' ' + plural(W.places.length, ['mieste', 'miestach', 'miestach']) : 'Ďalej';
+    const swNext = () => { if (W.step === 'dur') swApply(); else setW({ step: 'dur' }); };
+
+    // ---------- PRIDANIE FOTKY / NAHRATIE ----------
+    const gmode = s.addMode === 'gallery';
+    const addFile = (kind) => {
+      const f = makeFile(kind);
+      if (gmode) { set({ gal: s.gal.concat([f]), sheet: null }); say('Súbor „' + f.name + '“ je nahratý do galérie.'); return; }
+      const f2 = Object.assign({}, f, { used: 1, usedIn: [pl.name] });
+      addPhotoSlide(pl.id, f2, s.gal.concat([f2]), true);
+      say('Fotka je pridaná na koniec playlistu. Upravte popis a trvanie.');
+    };
+    const addOpts = [
+      { d: IC.camera, title: 'Odfotiť', sub: 'Otvorí fotoaparát telefónu', pick: () => addFile('cam') },
+      { d: IC.image, title: 'Z fotiek v telefóne', sub: 'Vyberte hotovú fotku', pick: () => addFile('ph') },
+      gmode ? { d: IC.upload, title: 'Zo súborov', sub: 'Video z telefónu', pick: () => addFile('vid') } : { d: IC.list, title: 'Z galérie', sub: 'Obrázky a videá už nahraté v systéme', pick: () => set({ sheet: 'pick', pickMode: 'add' }) }
+    ];
+    const pickRows = s.gal.filter((g) => g.type !== 'aud').map((g) => ({ aria: 'Vybrať ' + g.name, thS: thFile(g), d: FT[g.type][1], name: g.name, size: g.size, pick: () => {
+      if (s.pickMode === 'replace') { set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft', slides: p.slides.map((x) => x.id === ed.id ? Object.assign({}, x, { img: g.col, imgName: g.name }) : x), log: logSlide(p.log, ed.id, ed.title) }) : p), gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Obrázok je zmenený na „' + g.name + '“.'); }
+      else { addPhotoSlide(pl.id, g, bumpGal(s.gal, g.id, pl.name), true); say('Fotka je pridaná na koniec playlistu. Upravte popis a trvanie.'); }
+    } }));
+    const isNewPl = s.sheet === 'newpl'; const isLang = s.sheet === 'lang';
+    const curLang = WL ? WL.get() : 'sk';
+    const lsRows = isLang ? (WL ? WL.list : ['sk']).map((k) => ({ name: WL ? WL.names[k] : 'Slovenčina', meta: '', d: k === curLang ? IC.tick : IC.none, pick: () => { if (WL) WL.set(k); set({ sheet: null }); } })) : isNewPl
+      ? Object.keys(DEV).map((k) => ({ d: IC.next, name: DEV[k][0], meta: PARTS[k] ? 'Tri displeje pod sebou – čas a dátum, odchody, e-papier' : isLedDev(k) ? 'Texty a odchody na LED tabuli' : 'Fotky, texty a odchody', pick: () => createPl(k) }))
+      : s.pls.filter((p) => p.flow !== 'pending' && !isLedDev(p.dev) && !PARTS[p.dev]).map((p) => ({ d: IC.plus, name: p.name, meta: DEV[p.dev][1] + ' · ' + slMeta(p), pick: () => { addPhotoSlide(p.id, galFile, bumpGal(s.gal, galFile.id, p.name), false); say('Pridané do playlistu „' + p.name + '“. Nezabudnite ho odoslať na schválenie.'); } }));
+    const gdDelete = () => {
+      if (galFile.used > 0) return;
+      if (s.confirm === 'gd') { set({ gal: s.gal.filter((g) => g.id !== galFile.id), sheet: null, confirm: '' }); say('Súbor „' + galFile.name + '“ je zmazaný.'); } else set({ confirm: 'gd' });
+    };
+
+    const tabs = [['home', 'Domov', IC.home], ['pls', 'Playlisty', IC.list], ['plc', 'Miesta', IC.pin], ['gal', 'Galéria', IC.image], ['more', 'Viac', IC.more]].map((t) => ({ label: t[1], d: t[2], cur: tabOf === t[0] ? 'page' : false, pick: () => goTab(t[0]), hasBadge: t[0] === 'more' && pendingOthers.length > 0, badge: String(pendingOthers.length) }));
+    const moreRows = [
+      { d: IC.check, title: 'Schvaľovanie', sub: pendingOthers.length ? pendingOthers.length + ' ' + plural(pendingOthers.length, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: pendingOthers.length > 0, badge: String(pendingOthers.length), open: () => nav('apv', { apvTab: 'pending' }) },
+      { d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') },
+      { d: IC.spark, title: 'AI asistent', sub: 'Návrh textu rýchlej správy a kontrola pred odoslaním', hasBadge: false, badge: '', open: () => nav('ai') },
+      { d: IC.gear, title: 'Nastavenia', sub: 'Upozornenia a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
+      { d: IC.globe, title: 'Jazyk: ' + (WL ? WL.name() : 'Slovenčina'), sub: 'Jazyk aplikácie', hasBadge: false, badge: '', open: () => set({ sheet: 'lang' }) }
+    ];
+    const pvDev = pvPl.dev;
+
+    return {
+      ic: IC, meName: ME.name, meIni: ME.ini, meRole: ME.role + ' · ' + ME.org, homeDate: ((d) => DOWN[d.getDay()] + ' ' + d.getDate() + '. ' + MONG[d.getMonth()])(new Date()) + ' · DP Riečany',
+      hdS: 'background:' + (dark ? '#121616' : '#fff') + ';color:' + (dark ? '#fff' : '#1A1F1F') + ';' + (dark ? '' : 'border-bottom:1px solid #DDE2E2'),
+      subS: 'color:' + (dark ? '#B4C6C6' : '#5B6566'),
+      hasBack: !tabRoot, goBack, hdLogo, hdTitle, hasSub: !!hdSub, hdSub, hdActs, tabs,
+      s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_pv: sc === 'pv',
+      sh_quick: s.sheet === 'quick', sh_sw: s.sheet === 'sw', sh_add: s.sheet === 'add', sh_pick: s.sheet === 'pick', sh_gd: s.sheet === 'gd', sh_lib: s.sheet === 'lib', sh_list: s.sheet === 'gpl' || isNewPl || isLang,
+      closeSheet, bgClose: (e) => { if (e && e.target === e.currentTarget) closeSheet(); }, hasToast: !!s.toast, toast: s.toast, hasPush: !!s.push, pushTitle: s.push ? s.push.title : '', pushText: s.push ? s.push.text : '', closePush: () => set({ push: null }),
+      // domov
+      openQuick, hasQa: qaRows.length > 0, qa: qaRows, hasPend: pendingOthers.length > 0, goApprovals: () => nav('apv', { apvTab: 'pending' }), pendT: pendingOthers.map((a) => a.name).slice(0, 2).join(' · ') + (pendingOthers.length > 2 ? ' · …' : ''), pendN: String(pendingOthers.length),
+      nowRows, pcOn: String(pcOnN), pcDev: String(withDev.length), goPlaces: () => goTab('plc'), pcBarS: 'height:100%;border-radius:4px;background:#2E9E4F;width:' + Math.round(100 * pcOnN / withDev.length) + '%',
+      pcOff: withDev.filter((p) => !p.on).map((p) => ({ name: p.name, since: p.off })), pcHasExp: expN > 0, pcExpT: expN + ' ' + plural(expN, ['miesto má', 'miesta majú', 'miest má']) + ' expirovaný playlist', qh: qhRows, qhHas: qhRows.length > 0, qhEmpty: qhRows.length === 0,
+      // playlisty
+      q: s.q, setQ: (e) => set({ q: e.target.value }), plChips, plRows, plEmpty: plRows.length === 0, newPl: () => set({ sheet: 'newpl' }),
+      // detail playlistu
+      hasSlides: pl.slides.length > 0, noSlides: pl.slides.length === 0, prvParts: prvOf(pl, 104), prvS: stackS(pl), noSlidesT: plTotem ? 'Playlist zatiaľ nemá žiadnu snímku. Pridajte snímku zo zoznamu.' : plLed ? 'Playlist zatiaľ nemá žiadnu snímku. Pridajte text alebo snímku zo zoznamu.' : 'Playlist zatiaľ nemá žiadnu snímku. Pridajte fotku alebo snímku zo zoznamu.',
+      plNotLed: !plLed && !plTotem, plDevT: DEV[pl.dev][0],
+      openPrev: () => openPrev(pl.id), plStK: ST[pl.st][0], plStT: ST[pl.st][1], plTouch: pl.touch, plHasFlow: pl.flow !== 'none', plFlowK: (FLOW[pl.flow] || ['', ''])[0], plFlowT: (FLOW[pl.flow] || ['', ''])[1],
+      plMeta: slMeta(pl), locked, lockT, swFromPl: () => swForPl(pl.id), whereT, planT: pl.plan, slCount: String(pl.slides.length), canReorder: canEdit && pl.slides.length > 1, toggleReorder: () => set({ reorder: !s.reorder, confirm: '' }), reorderT: s.reorder ? 'Hotovo' : 'Upraviť poradie',
+      slRows, canAddLcd: canEdit && !plLed && !plTotem, canAddLed: canEdit && plLed, canAddTotem: canEdit && plTotem, openAdd, addLed, mainAct,
+      openLib, libRows, libEmpty: libRows.length === 0, libEmptyT: lql ? 'Žiadna snímka nezodpovedá hľadaniu.' : 'Pre toto zariadenie zatiaľ nie je v zozname žiadna ďalšia snímka.', libQ: s.libQ, setLibQ: (e) => set({ libQ: e.target.value }), libDevT: 'Pre zariadenie: ' + DEV[pl.dev][1],
+      // editor
+      ed, edRdev: edR, edW: String(edPart ? edPart[5] : isPort(pl.dev) ? 190 : fw(338)), edDevT: DEV[pl.dev][0] + (edPart ? ' · ' + edPart[1] : ''), edClock, clkOpts, edHasDur: !edClock, edLedField: edLedR && !edClock, setTitle: (e) => upd({ title: e.target.value }), setText: (e) => upd({ text: e.target.value }),
+      edLcd: !edLedR, edLedText, edLedLen: ed.title.length + ' znakov' + (edR === 'vehicle' ? ' · dlhší text po tabuli beží' : ' · dlhší text sa zalomí do riadkov'),
+      edHasText: ed.kind === 'deps' || (!edLedR && ed.kind === 'info'), edTextLbl: ed.kind === 'deps' ? 'Zobrazené linky' : 'Text snímky', edTextRows: ed.kind === 'deps' ? 1 : 3,
+      edIsPhoto: !edLedR && ed.kind === 'photo', edImgS: 'display:block;width:56px;height:56px;border-radius:10px;flex:none;background:' + GRAD(ed.img || '#C9D2D2'), edImgName: ed.imgName || 'bez obrázka', openPickReplace: () => set({ sheet: 'pick', pickMode: 'replace' }),
+      edHasBg: !edLedR && ed.kind !== 'photo', bgSw, durMinus: () => upd({ dur: Math.max(5, ed.dur - 5) }), durPlus: () => upd({ dur: Math.min(120, ed.dur + 5) }),
+      edLed: edLedR, edFieldLbl: ed.kind === 'deps' ? 'Pole za číslom linky' : 'Pole (pozadie za textom)', ledSizes, ledAligns, ledColSw, ledBgSw,
+      ledHint: ed.kind === 'deps' ? 'Číslo linky je vždy tmavé na farebnom poli.' : 'S poľom je text tmavý na farebnom podklade. Bez poľa je pozadie čierne.', delSlideEd: delEd, delEdT: s.confirm === 'ed' ? 'Potvrdiť zmazanie' : 'Zmazať snímku',
+      // schvaľovanie
+      apvTabs, apvRows, apvEmpty: apvRows.length === 0, apvEmptyT: s.apvTab === 'pending' ? 'Všetko je vybavené. Nič nečaká na schválenie.' : 'Zatiaľ tu nie je nič vybavené.',
+      ad: adObj,
+      adSlides: adPl.slides.map((x) => ({ dev: rdev(adPl, x), w: String(stW(adPl, x)), itemS: 'flex:none;width:' + stW(adPl, x) + 'px', kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg })), adChanges: ad.changes.map((c) => ({ k: CHG[c[0]][0], sym: CHG[c[0]][1], text: c[1] })),
+      adCanAct, apvNote: s.apvNote, setApvNote: (e) => set({ apvNote: e.target.value }), adDone: ad.state !== 'pending',
+      apvApprove: () => decide('approved', 'Schválil Miroslav Heglas · teraz. Playlist sa nahráva na ' + nPlaces(adPl.where.length || 1) + '.', 'Schválené a zverejnené: ' + ad.name),
+      apvReturn: () => decide('returned', 'Vrátil na úpravu Miroslav Heglas · teraz.', 'Vrátené autorovi na úpravu: ' + ad.name),
+      apvReject: () => decide('rejected', 'Zamietol Miroslav Heglas · teraz.', 'Zamietnuté: ' + ad.name),
+      adOwn: ad.own && ad.state === 'pending', apvWithdraw: () => { set(Object.assign({ apvs: s.apvs.filter((a) => a.id !== ad.id), pls: s.pls.map((p) => p.id === ad.plId ? Object.assign({}, p, { flow: 'draft' }) : p) }, backState())); say('Vzaté späť. Playlist môžete znova upravovať.'); },
+      // galéria
+      galChips, galRows, galEmpty: galRows.length === 0, openUpload: () => set({ sheet: 'add', addMode: 'gallery' }),
+      gd, gdDelBlocked: galFile.used > 0, gdDelete, gdDelT: s.confirm === 'gd' ? 'Potvrdiť zmazanie' : 'Zmazať súbor', gdCanUse: galFile.type !== 'aud', gdAddToPl: () => set({ sheet: 'gpl', gplFile: galFile.id }),
+      lsTitle: isLang ? 'Jazyk aplikácie' : isNewPl ? 'Nový playlist – pre aké zariadenie' : 'Pridať do playlistu', lsSub: isLang ? 'Zmení sa jazyk tlačidiel, nadpisov a hlásení. Obsah playlistov a názvy miest ostávajú tak, ako ste ich napísali.' : isNewPl ? 'Playlist sa potom dá upravovať a prehrávať len na tomto type zariadenia.' : 'Súbor „' + galFile.name + '“ sa pridá ako nová snímka na koniec playlistu. Ponúkajú sa len playlisty pre displeje.', lsRows,
+      // viac / miesta / nastavenia / AI
+      moreRows, logout: () => say('Prototyp: odhlásenie nie je zapojené.'), pq: s.pq, setPq: (e) => set({ pq: e.target.value }), pcChips, pcRows, pcEmpty: pcRows.length === 0, pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + s.places.length + ' miest',
+      notifRows, aiRows, aiSits, aiRun, aiBusy: s.aiBusy, aiBtnT: s.aiBusy ? 'Pripravujem návrhy…' : 'Navrhnúť text', aiHas: aiOut.length > 0, aiOut,
+      // náhľad
+      pvHas: pvParts.length > 0, pvNone: pvParts.length === 0, pvParts, pvWrapS: stackS(pvPl), pvDevT: DEV[pvDev][0], pvSegs: pvTot ? [] : pvSegs,
+      pvCap: pvTot ? 'Tri displeje sa prehrávajú súčasne' : pvPl.slides.length ? (Math.min(s.pvI, pvPl.slides.length - 1) + 1) + '/' + pvPl.slides.length + ' · ' + pvObj.title : '', pvTime: pvTot ? mmss(s.pvE || 0) : pvPl.slides.length ? s.pvT + ' / ' + pvObj.dur + ' s' : '',
+      pvPrev: () => pvStep(-1), pvNext: () => pvStep(1), pvToggle: () => set({ pvPlay: !s.pvPlay }), pvPlayLbl: s.pvPlay ? 'Pozastaviť' : 'Prehrať', pvPlayD: s.pvPlay ? IC.pause : IC.play,
+      // rýchla správa
+      qMain: s.qStep !== 'places', qPlaces: s.qStep === 'places', qText: Q.text, setQText: (e) => setQ({ text: e.target.value }), qHasText: !!Q.text, qClear: () => setQ({ text: '' }), qTpls, qTplMore: qTplRest > 0, qTplMoreT: s.qTplAll ? 'Menej' : 'Viac (' + qTplRest + ')', qTplAllA: s.qTplAll ? 'true' : 'false', qTplToggle: () => set({ qTplAll: !s.qTplAll }), qPrios, qPoss, qDurs,
+      qTgtT: Q.all ? 'Všetky miesta (' + devIds.length + ')' : qN ? tgtLabel(Q) : 'Nie je vybrané žiadne miesto', qTgtSub: Q.all ? 'Každé miesto, ktoré má zariadenie' : qN ? shortList(names(Q.ids)) : 'Vyberte aspoň jedno miesto',
+      qOpenPlaces: () => set({ qStep: 'places', qSearch: '', qOrd: snapOrd(qSel) }), qClosePlaces: () => set({ qStep: 'main', qSearch: '' }), qSearch: s.qSearch, setQSearch: (e) => set({ qSearch: e.target.value }), qGrps,
+      qShowAll: !qsl, qAllOn: Q.all, qToggleAll: () => set({ quick: Object.assign({}, Q, Q.all ? { all: false, ids: [] } : { all: true, ids: [] }), qOrd: null }), qAllT: 'Všetky miesta (' + devIds.length + ')', qPcs, qPcEmpty: qPcs.length === 0,
+      qPcOff: qN === 0, qPcBtn: qN ? 'Hotovo · ' + nPlaces(qN) : 'Vyberte aspoň jedno miesto', qOff: !Q.text.trim() || !qN, qSend, qSendT: !Q.text.trim() ? 'Napíšte text správy' : qN ? 'Odoslať na ' + nPlaces(qN) : 'Vyberte miesto',
+      // prepnutie playlistu
+      swCanBack: W.step === 'dur', swBack: () => setW({ step: W.from }), swTitle, swSub, swSub2, swIsPl: W.step === 'pl', swPls: swPlsRows, swIsPc: W.step === 'pc', swPcs, swIsDur: W.step === 'dur', swPlName: swPlObj ? swPlObj.name : '', swPlaces, swDurs,
+      swOff: (W.step === 'pc' && W.places.length === 0) || !swPlObj, swNext, swBtn,
+      addTitle: gmode ? 'Nahrať do galérie' : 'Pridať fotku', addOpts, pickFromAdd: s.pickMode === 'add', pickBack: () => set({ sheet: 'add' }), pickRows
+    };
+  }
+}
+</script>
+</body>
+</html>
