@@ -37,7 +37,7 @@ Prototyp pri behu potrebuje internet len na písmo Source Sans 3 z Google Fonts.
 
 ```
 index.html                 úvodná stránka: telefón + zoznam obrazoviek
-project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
+project/                   samotný prototyp (súbory z claude.ai upravené pre telefón, pozri nižšie)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
   Obr_*.dc.html            26 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou a jazykom)
@@ -99,9 +99,17 @@ zdroje/
 python3 zdroje/preklady/build_i18n.py project/i18n.js zdroje/preklady/m_dict.txt
 ```
 
-V tejto verzii zdroje vytvoria `project/Main.dc.html` aj `project/i18n.js` bajtovo zhodné s publikovaným prototypom.
+Zdroje vytvoria presne súbory `project/Main.dc.html` a `project/i18n.js`, ktoré sú v repozitári.
 
 **Návrat do claude.ai:** súbory z `project/` (okrem `support.js`) sa dajú znova publikovať do artefaktu typu Design.
+
+## Rozdiel oproti verzii v claude.ai
+
+Aby sa prototyp otvoril v telefóne správne, sú stránky oproti publikovanej verzii 26 upravené v troch bodoch. V claude.ai sa prototyp zobrazuje v rámčeku s pevnou veľkosťou, kde tieto úpravy nič nemenia.
+
+- **Šírka telefónu:** každá stránka `.dc.html` má `<meta name="viewport" content="width=device-width, initial-scale=1">`. Bez neho prehliadač v telefóne kreslí stránku 980 px širokú a zmenší ju, takže aplikácia je malá v strede a spodná lišta je mimo obrazovky.
+- **Len svetlý vzhľad:** `<meta name="color-scheme" content="only light">` hovorí prehliadaču, že stránka má len svetlý vzhľad. Chrome a ďalšie prehliadače na Chromiu ju potom nestmavujú. Samsung Internet s tmavým režimom ju môže stmaviť aj tak. Vtedy treba v jeho ponuke vypnúť tmavý režim pre webové stránky.
+- **Výška obrazovky:** hlavný kontajner má `height: 100dvh`, aby sa spodná lišta neschovala pod lištu prehliadača.
 
 ## support.js
 
