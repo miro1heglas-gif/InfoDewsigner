@@ -14,7 +14,7 @@ head = '''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="only light">
+<meta name="color-scheme" content="light dark">
 <title>Info Designer – mobilná aplikácia</title>
 <script src="./support.js"></script>
 <script src="./i18n.js"></script>

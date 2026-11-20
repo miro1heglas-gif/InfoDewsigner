@@ -12,7 +12,7 @@ Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director z
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia 30 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia 31 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -110,7 +110,11 @@ Zdroje vytvoria presne súbory `project/Main.dc.html` a `project/i18n.js`, ktor�
 
 ## Telefón a vzhľad
 
-Každá stránka má `<meta name="viewport" content="width=device-width, initial-scale=1">`, aby sa v telefóne zobrazila na celú šírku, a `<meta name="color-scheme" content="only light">`, aby ju prehliadač sám nestmavoval. Tmavý vzhľad si používateľ zapne v aplikácii (Viac › Nastavenia › Vzhľad). Voľba sa pamätá v prehliadači. Prehliadač Samsung Internet so zapnutým tmavým režimom môže stránku stmaviť aj tak. Vtedy treba v jeho ponuke vypnúť tmavý režim pre webové stránky.
+- Každá stránka má `<meta name="viewport" content="width=device-width, initial-scale=1">`, aby sa v telefóne zobrazila na celú šírku.
+- Vzhľad si volí používateľ v aplikácii (Viac › Nastavenia › Vzhľad: Svetlý, Tmavý, Podľa telefónu). Voľba sa pamätá v prehliadači.
+- Aplikácia má `color-scheme: only light` (svetlý) alebo `only dark` (tmavý), aby ju prehliadač neprefarboval vlastným tmavým režimom (Chrome, Edge, Opera, Brave). Stránka zároveň hlási, že tmavý vzhľad podporuje (`<meta name="color-scheme" content="light dark">` a pravidlo `prefers-color-scheme`).
+- Prehliadač Samsung Internet má vlastný tmavý režim, ktorý tieto signály nemusí rešpektovať. Ak stránku stmaví aj vo svetlom vzhľade, treba v jeho nastaveniach vypnúť tmavý režim pre webové stránky.
+- GitHub Pages dovoľuje prehliadaču držať stránky 10 minút. Nová verzia sa preto môže prejaviť až do 10 minút po nahratí.
 
 ## support.js
 

@@ -195,7 +195,7 @@
 
     return {
       ic: IC, meName: ACC.name, meIni: ACC.ini, meRole: ACC.role + ' · ' + (ACC.partner ? 'zmluvný partner DP Riečany' : ME.org), homeHi: ACC.first ? 'Dobrý deň, ' + ACC.first : 'Dobrý deň', canSwPl: ACC.pub,
-      themeAttr: s.theme === 'dark' || (s.theme === 'auto' && (() => { try { return window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; } })()) ? 'dark' : 'light',
+      themeAttr: s.theme === 'dark' || s.theme === 'auto' ? s.theme : 'light',
       themeOpts: [['light', 'Svetlý'], ['dark', 'Tmavý'], ['auto', 'Podľa telefónu']].map((t) => ({ label: t[1], on: s.theme === t[0], pick: () => { set({ theme: t[0] }); try { localStorage.setItem('wz_m_theme', t[0]); } catch (e) {} } })), homeDate: ((d) => DOWN[d.getDay()] + ' ' + d.getDate() + '. ' + MONG[d.getMonth()])(new Date()) + ' · DP Riečany',
       hdS: 'background:' + (dark ? 'var(--hddk)' : 'var(--sf)') + ';color:' + (dark ? '#fff' : 'var(--tx)') + ';' + (dark ? '' : 'border-bottom:1px solid var(--ln)'),
       subS: 'color:' + (dark ? '#B4C6C6' : 'var(--mut)'),

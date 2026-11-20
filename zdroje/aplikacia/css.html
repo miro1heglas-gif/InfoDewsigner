@@ -2,9 +2,11 @@
 *{box-sizing:border-box}
 body{margin:0}
 .stage{width:100%;height:100vh;height:100dvh;background:#121616;display:flex;justify-content:center}
-.app{--bg:#F3F6F6;--sf:#fff;--sf2:#F0F4F4;--tx:#1A1F1F;--tx2:#3F4848;--mut:#5B6566;--mut2:#4A5252;--ic:#6B7777;--ic2:#8A9696;--ln:#DDE2E2;--ln2:#EBEFEF;--ctl:#C9D2D2;--trk:#EDF1F1;--ac:#0E8080;--act:#0B6E6E;--aclnk:#0E8080;--acs:#E8F5F5;--dg:#B42318;--dgl:#F0C2BE;--okb:#E3F4F1;--okt:#0B6E6E;--wnb:#FFF1DF;--wnt:#8A4A00;--bdb:#FDECEA;--bdt:#B42318;--blb:#E6EEF9;--blt:#2F62B0;--ort:#A85A00;--ntb:#FFF6E6;--ntt:#6B4A0E;--toast:#1F2323;--scrim:rgba(18,22,22,.55);--hddk:#121616;color-scheme:light;width:100%;max-width:480px;height:100%;position:relative;overflow:hidden;background:var(--bg);font-family:'Source Sans 3',system-ui,sans-serif;color:var(--tx);font-size:15px;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.app{--bg:#F3F6F6;--sf:#fff;--sf2:#F0F4F4;--tx:#1A1F1F;--tx2:#3F4848;--mut:#5B6566;--mut2:#4A5252;--ic:#6B7777;--ic2:#8A9696;--ln:#DDE2E2;--ln2:#EBEFEF;--ctl:#C9D2D2;--trk:#EDF1F1;--ac:#0E8080;--act:#0B6E6E;--aclnk:#0E8080;--acs:#E8F5F5;--dg:#B42318;--dgl:#F0C2BE;--okb:#E3F4F1;--okt:#0B6E6E;--wnb:#FFF1DF;--wnt:#8A4A00;--bdb:#FDECEA;--bdt:#B42318;--blb:#E6EEF9;--blt:#2F62B0;--ort:#A85A00;--ntb:#FFF6E6;--ntt:#6B4A0E;--toast:#1F2323;--scrim:rgba(18,22,22,.55);--hddk:#121616;color-scheme:only light;width:100%;max-width:480px;height:100%;position:relative;overflow:hidden;background:var(--bg);font-family:'Source Sans 3',system-ui,sans-serif;color:var(--tx);font-size:15px;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;color:inherit}
-.app[data-theme="dark"]{--bg:#0E1313;--sf:#182020;--sf2:#222B2B;--tx:#E6ECEC;--tx2:#C4CECE;--mut:#9AA7A7;--mut2:#B5C0C0;--ic:#8C9999;--ic2:#7D8A8A;--ln:#2B3535;--ln2:#232D2D;--ctl:#455252;--trk:#2A3434;--ac:#0E8080;--act:#62D2D2;--aclnk:#62D2D2;--acs:#133434;--dg:#FF8F85;--dgl:#5C2B27;--okb:#12352F;--okt:#82DECD;--wnb:#3A2A12;--wnt:#F5C077;--bdb:#3F1E1B;--bdt:#FF9C92;--blb:#1A2A44;--blt:#A2C1F4;--ort:#F5B266;--ntb:#33291A;--ntt:#F1D49A;--toast:#33403F;--scrim:rgba(0,0,0,.62);--hddk:#0A0F0F;color-scheme:dark;}
+.app[data-theme="dark"]{--bg:#0E1313;--sf:#182020;--sf2:#222B2B;--tx:#E6ECEC;--tx2:#C4CECE;--mut:#9AA7A7;--mut2:#B5C0C0;--ic:#8C9999;--ic2:#7D8A8A;--ln:#2B3535;--ln2:#232D2D;--ctl:#455252;--trk:#2A3434;--ac:#0E8080;--act:#62D2D2;--aclnk:#62D2D2;--acs:#133434;--dg:#FF8F85;--dgl:#5C2B27;--okb:#12352F;--okt:#82DECD;--wnb:#3A2A12;--wnt:#F5C077;--bdb:#3F1E1B;--bdt:#FF9C92;--blb:#1A2A44;--blt:#A2C1F4;--ort:#F5B266;--ntb:#33291A;--ntt:#F1D49A;--toast:#33403F;--scrim:rgba(0,0,0,.62);--hddk:#0A0F0F;color-scheme:only dark;}
+/* vzhľad „Podľa telefónu“: skutočné pravidlo prefers-color-scheme (niektoré prehliadače podľa neho nestmavujú stránku samy) */
+@media (prefers-color-scheme: dark){.app[data-theme="auto"]{--bg:#0E1313;--sf:#182020;--sf2:#222B2B;--tx:#E6ECEC;--tx2:#C4CECE;--mut:#9AA7A7;--mut2:#B5C0C0;--ic:#8C9999;--ic2:#7D8A8A;--ln:#2B3535;--ln2:#232D2D;--ctl:#455252;--trk:#2A3434;--ac:#0E8080;--act:#62D2D2;--aclnk:#62D2D2;--acs:#133434;--dg:#FF8F85;--dgl:#5C2B27;--okb:#12352F;--okt:#82DECD;--wnb:#3A2A12;--wnt:#F5C077;--bdb:#3F1E1B;--bdt:#FF9C92;--blb:#1A2A44;--blt:#A2C1F4;--ort:#F5B266;--ntb:#33291A;--ntt:#F1D49A;--toast:#33403F;--scrim:rgba(0,0,0,.62);--hddk:#0A0F0F;color-scheme:only dark;}}
 input,textarea,select{font-family:inherit;font-size:16px;color:var(--tx)}
 input::placeholder,textarea::placeholder{color:var(--mut);opacity:1}
 /* ikony s pevnou farbou v šablóne: farbu určuje vzhľad */
@@ -22,6 +24,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[role=button]:fo
 .body{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
 .sc{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px}
 .sc::-webkit-scrollbar{width:0}
+/* Firefox: skryté posuvníky ako v ostatných prehliadačoch */
+.sc,.chips,.strip,.sheet-b{scrollbar-width:none}
 .sc>*{flex-shrink:0}
 .filters{flex:none;background:var(--sf);border-bottom:1px solid var(--ln);padding:10px 16px 10px;display:flex;flex-direction:column;gap:10px}
 .srch{height:44px;border-radius:12px;background:var(--sf2);display:flex;align-items:center;gap:8px;padding:0 12px}
