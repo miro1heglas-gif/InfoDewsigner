@@ -3,14 +3,16 @@
 Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy Wertyz (EMLines). Dispečer alebo pracovník dopravného podniku z telefónu:
 
 - pošle rýchlu správu na zariadenia,
-- upraví alebo prepne playlist na mieste,
-- pridá fotku do snímky,
-- schváli zmeny,
-- skontroluje, čo sa kde práve prehráva.
+- upraví a zverejní playlist alebo ho prepne na jednom či viacerých miestach (aj na celú skupinu),
+- pridá fotku do snímky a spravuje galériu,
+- schváli obsah partnera (tretej strany),
+- skontroluje, čo sa kde práve prehráva a ktoré miesta majú problém.
+
+Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad.
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** publikovaná verzia 26 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026.
+- **Verzia:** verzia 30 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -37,10 +39,10 @@ Prototyp pri behu potrebuje internet len na písmo Source Sans 3 z Google Fonts.
 
 ```
 index.html                 úvodná stránka: telefón + zoznam obrazoviek
-project/                   samotný prototyp (súbory z claude.ai upravené pre telefón, pozri nižšie)
+project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
-  Obr_*.dc.html            26 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou a jazykom)
+  Obr_*.dc.html            29 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
   i18n.js                  preklady (generované zo zdroje/preklady)
   canvas.json              rozmiestnenie obrazoviek na plátne v claude.ai (na beh netreba)
   support.js               runtime typu Design z claude.ai (pozri nižšie)
@@ -73,15 +75,18 @@ zdroje/
 | `Obr_Nahlad` | náhľad playlistu na jeho zariadení |
 | `Obr_RychlaSprava` | rýchla správa – text, kam, priorita, trvanie |
 | `Obr_VyberMiest` | rýchla správa – výber miest (všetky, skupina, jednotlivo) |
-| `Obr_Miesta` | miesta – stav, zariadenie, úprava a prepnutie playlistu |
-| `Obr_PrepnutiePlaylistu` | prepnutie playlistu na mieste |
-| `Obr_Galeria` | galéria – súbory, filtre, nahratie |
-| `Obr_Viac` | viac – profil, schvaľovanie, história správ, AI asistent, nastavenia, jazyk |
+| `Obr_Miesta` | miesta – stav, filter Problémy, zariadenie, úprava a prepnutie playlistu |
+| `Obr_PrepnutiePlaylistu` | prepnutie playlistu – viac miest alebo celá skupina naraz |
+| `Obr_Galeria` | galéria – súbory, filtre, nahratie, zmazanie |
+| `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, história správ, AI asistent, nastavenia, jazyk |
 | `Obr_Schvalovanie` | schvaľovanie – čaká a vybavené |
 | `Obr_DetailSchvalenia` | detail schválenia – zmeny, schváliť, vrátiť, zamietnuť |
 | `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova |
 | `Obr_AI` | AI asistent – návrh textu rýchlej správy |
-| `Obr_Nastavenia` | nastavenia – upozornenia v telefóne a úložisko |
+| `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia a úložisko |
+| `Obr_PrepnutieUctu` | prepnutie účtu – Admin, Director, Worker, Partner |
+| `Obr_Partner` | účet Partner – len pridelené miesta, zmeny idú na schválenie |
+| `Obr_TmavyRezim` | tmavý vzhľad – domovská obrazovka |
 | `Obr_Jazyk` | výber jazyka |
 | `Obr_Jazyk_CS`, `_PL`, `_EN`, `_DE` | ukážky v češtine, poľštine, angličtine a nemčine |
 
@@ -103,13 +108,9 @@ Zdroje vytvoria presne súbory `project/Main.dc.html` a `project/i18n.js`, ktor�
 
 **Návrat do claude.ai:** súbory z `project/` (okrem `support.js`) sa dajú znova publikovať do artefaktu typu Design.
 
-## Rozdiel oproti verzii v claude.ai
+## Telefón a vzhľad
 
-Aby sa prototyp otvoril v telefóne správne, sú stránky oproti publikovanej verzii 26 upravené v troch bodoch. V claude.ai sa prototyp zobrazuje v rámčeku s pevnou veľkosťou, kde tieto úpravy nič nemenia.
-
-- **Šírka telefónu:** každá stránka `.dc.html` má `<meta name="viewport" content="width=device-width, initial-scale=1">`. Bez neho prehliadač v telefóne kreslí stránku 980 px širokú a zmenší ju, takže aplikácia je malá v strede a spodná lišta je mimo obrazovky.
-- **Len svetlý vzhľad:** `<meta name="color-scheme" content="only light">` hovorí prehliadaču, že stránka má len svetlý vzhľad. Chrome a ďalšie prehliadače na Chromiu ju potom nestmavujú. Samsung Internet s tmavým režimom ju môže stmaviť aj tak. Vtedy treba v jeho ponuke vypnúť tmavý režim pre webové stránky.
-- **Výška obrazovky:** hlavný kontajner má `height: 100dvh`, aby sa spodná lišta neschovala pod lištu prehliadača.
+Každá stránka má `<meta name="viewport" content="width=device-width, initial-scale=1">`, aby sa v telefóne zobrazila na celú šírku, a `<meta name="color-scheme" content="only light">`, aby ju prehliadač sám nestmavoval. Tmavý vzhľad si používateľ zapne v aplikácii (Viac › Nastavenia › Vzhľad). Voľba sa pamätá v prehliadači. Prehliadač Samsung Internet so zapnutým tmavým režimom môže stránku stmaviť aj tak. Vtedy treba v jeho ponuke vypnúť tmavý režim pre webové stránky.
 
 ## support.js
 
