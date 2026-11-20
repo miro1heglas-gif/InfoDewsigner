@@ -507,3 +507,36 @@ Vozidlo: LED čelná tabuľa 288 × 48 ||| Vozidlo: LED čelní tabule 288 × 48
 55″ nedotykový ||| 55″ nedotykový ||| 55″ niedotykowy ||| 55″ non-touch ||| 55″ ohne Touch
 LED tabuľa 192 × 64 ||| LED tabule 192 × 64 ||| Tablica LED 192 × 64 ||| LED display 192 × 64 ||| LED-Anzeige 192 × 64
 Vozidlo: LED 288 × 48 ||| Vozidlo: LED 288 × 48 ||| Pojazd: LED 288 × 48 ||| Vehicle: LED 288 × 48 ||| Fahrzeug: LED 288 × 48
+# ===== v27: účty a roly, zverejnenie, prepnutie na viac miest, problémy, vzhľad =====
+Dobrý deň, Jana ||| Dobrý den, Jano ||| Dzień dobry, Jana ||| Hello, Jana ||| Guten Tag, Jana
+Dobrý deň, Peter ||| Dobrý den, Petře ||| Dzień dobry, Peter ||| Hello, Peter ||| Guten Tag, Peter
+Dobrý deň ||| Dobrý den ||| Dzień dobry ||| Hello ||| Guten Tag
+Zverejniť ||| Zveřejnit ||| Opublikuj ||| Publish ||| Veröffentlichen
+Zverejnené. Playlist sa nahráva na {0}. ||| Zveřejněno. Playlist se nahrává na {0}. ||| Opublikowano. Playlista jest wgrywana na {0}. ||| Published. The playlist is being uploaded to {0}. ||| Veröffentlicht. Die Playlist wird auf {0} hochgeladen.
+Zverejnené. Ťuknite na „Nahrať na zariadenia“ a vyberte miesta. ||| Zveřejněno. Klepněte na „Nahrát na zařízení“ a vyberte místa. ||| Opublikowano. Stuknij „Wgraj na urządzenia” i wybierz miejsca. ||| Published. Tap “Upload to devices” and choose the places. ||| Veröffentlicht. Tippen Sie auf „Auf Geräte hochladen“ und wählen Sie die Orte.
+Čaká na schválenie správcom ||| Čeká na schválení správcem ||| Czeka na zatwierdzenie przez administratora ||| Waiting for administrator approval ||| Wartet auf Freigabe durch den Administrator
+Playlist schvaľuje správca DP Riečany. ||| Playlist schvaluje správce DP Riečany. ||| Playlistę zatwierdza administrator DP Riečany. ||| The playlist is approved by the DP Riečany administrator. ||| Die Playlist gibt der Administrator von DP Riečany frei.
+Odoslané na schválenie. Dáme vám vedieť, keď ho správca DP Riečany schváli. ||| Odesláno ke schválení. Dáme vám vědět, až ho správce DP Riečany schválí. ||| Wysłano do zatwierdzenia. Damy znać, gdy administrator DP Riečany ją zatwierdzi. ||| Sent for approval. We will let you know when the DP Riečany administrator approves it. ||| Zur Freigabe gesendet. Wir informieren Sie, sobald der Administrator von DP Riečany sie freigibt.
+Pridané do playlistu „{0}“. Nezabudnite ho zverejniť. ||| Přidáno do playlistu „{0}“. Nezapomeňte ho zveřejnit. ||| Dodano do playlisty „{0}”. Nie zapomnij jej opublikować. ||| Added to playlist “{0}”. Do not forget to publish it. ||| Zur Playlist „{0}“ hinzugefügt. Vergessen Sie nicht, sie zu veröffentlichen.
+Súbor sa používa v playlistoch vypísaných vyššie. Po zmazaní v nich zostane prázdne miesto. ||| Soubor se používá v playlistech uvedených výše. Po smazání v nich zůstane prázdné místo. ||| Plik jest używany w playlistach wymienionych powyżej. Po usunięciu zostanie w nich puste miejsce. ||| The file is used in the playlists listed above. After deleting it, an empty spot will remain in them. ||| Die Datei wird in den oben genannten Playlists verwendet. Nach dem Löschen bleibt dort eine leere Stelle.
+Problémy ||| Problémy ||| Problemy ||| Problems ||| Probleme
+Vyberte jedno alebo viac miest, alebo celú skupinu. ||| Vyberte jedno nebo více míst, nebo celou skupinu. ||| Wybierz jedno lub więcej miejsc albo całą grupę. ||| Choose one or more places, or a whole group. ||| Wählen Sie einen oder mehrere Orte oder eine ganze Gruppe.
+Všetky (#) ||| Vše (#) ||| Wszystkie (#) ||| All (#) ||| Alle (#)
+Prepnúť účet ||| Přepnout účet ||| Przełącz konto ||| Switch account ||| Konto wechseln
+vidí a ovláda všetko ||| vidí a ovládá vše ||| widzi i obsługuje wszystko ||| sees and controls everything ||| sieht und steuert alles
+zverejňuje a schvaľuje ||| zveřejňuje a schvaluje ||| publikuje i zatwierdza ||| publishes and approves ||| veröffentlicht und gibt frei
+len pridelené miesta ||| jen přidělená místa ||| tylko przydzielone miejsca ||| assigned places only ||| nur zugewiesene Orte
+len pridelené plochy ||| jen přidělené plochy ||| tylko przydzielone obszary ||| assigned areas only ||| nur zugewiesene Flächen
+zmeny idú na schválenie ||| změny jdou ke schválení ||| zmiany idą do zatwierdzenia ||| changes go for approval ||| Änderungen gehen zur Freigabe
+zmluvný partner DP Riečany ||| smluvní partner DP Riečany ||| partner umowny DP Riečany ||| contract partner of DP Riečany ||| Vertragspartner von DP Riečany
+Prototyp: aplikácia sa zobrazí tak, ako ju vidí vybraný účet. ||| Prototyp: aplikace se zobrazí tak, jak ji vidí vybraný účet. ||| Prototyp: aplikacja wyświetli się tak, jak widzi ją wybrane konto. ||| Prototype: the app is shown the way the selected account sees it. ||| Prototyp: Die App wird so angezeigt, wie das gewählte Konto sie sieht.
+Prepnuté na účet {0}. ||| Přepnuto na účet {0}. ||| Przełączono na konto {0}. ||| Switched to account {0}. ||| Zu Konto {0} gewechselt.
+Odoslané na schválenie ||| Odesláno ke schválení ||| Wysłane do zatwierdzenia ||| Sent for approval ||| Zur Freigabe gesendet
+Vzhľad, upozornenia a úložisko ||| Vzhled, upozornění a úložiště ||| Wygląd, powiadomienia i pamięć ||| Appearance, notifications and storage ||| Aussehen, Benachrichtigungen und Speicher
+Vzhľad ||| Vzhled ||| Wygląd ||| Appearance ||| Aussehen
+Svetlý ||| Světlý ||| Jasny ||| Light ||| Hell
+Tmavý ||| Tmavý ||| Ciemny ||| Dark ||| Dunkel
+Podľa telefónu ||| Podle telefonu ||| Jak w telefonie ||| Match phone ||| Wie Telefon
+Schválila Jana Kováčová · teraz. Playlist sa nahráva na {0}. ||| Schválila Jana Kováčová · teď. Playlist se nahrává na {0}. ||| Zatwierdziła Jana Kováčová · teraz. Playlista jest wgrywana na {0}. ||| Approved by Jana Kováčová · now. The playlist is being uploaded to {0}. ||| Freigegeben von Jana Kováčová · jetzt. Die Playlist wird auf {0} hochgeladen.
+Vrátila na úpravu Jana Kováčová · teraz. ||| Vrátila k úpravě Jana Kováčová · teď. ||| Zwróciła do poprawy Jana Kováčová · teraz. ||| Returned for changes by Jana Kováčová · now. ||| Zur Überarbeitung zurückgegeben von Jana Kováčová · jetzt.
+Zamietla Jana Kováčová · teraz. ||| Zamítla Jana Kováčová · teď. ||| Odrzuciła Jana Kováčová · teraz. ||| Rejected by Jana Kováčová · now. ||| Abgelehnt von Jana Kováčová · jetzt.

@@ -108,7 +108,7 @@
    "y": 964,
    "w": 390,
    "h": 844,
-   "title": "Miesta – stav, zariadenie, úprava a prepnutie playlistu",
+   "title": "Miesta – stav, filter Problémy, zariadenie, úprava a prepnutie playlistu",
    "page": "app",
    "is_interactive": true
   },
@@ -117,7 +117,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Prepnutie playlistu na mieste – len playlisty pre dané zariadenie",
+   "title": "Prepnutie playlistu – viac miest alebo celá skupina naraz",
    "page": "app",
    "is_interactive": true
   },
@@ -126,7 +126,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Galéria – súbory, filtre, nahratie",
+   "title": "Galéria – súbory, filtre, nahratie, zmazanie",
    "page": "app",
    "is_interactive": true
   },
@@ -135,7 +135,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Viac – profil, schvaľovanie, história správ, AI asistent, nastavenia, jazyk",
+   "title": "Viac – prepnutie účtu, schvaľovanie, história správ, AI asistent, nastavenia, jazyk",
    "page": "app",
    "is_interactive": true
   },
@@ -162,7 +162,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Nastavenia – upozornenia v telefóne a úložisko",
+   "title": "Nastavenia – vzhľad (svetlý / tmavý), upozornenia v telefóne a úložisko",
    "page": "app",
    "is_interactive": true
   },
@@ -263,6 +263,33 @@
    "title": "História správ – skončené a zrušené rýchle správy, poslať znova (Viac › História správ)",
    "page": "app",
    "is_interactive": true
+  },
+  "Obr_PrepnutieUctu.dc.html": {
+   "x": 3290,
+   "y": 1928,
+   "w": 390,
+   "h": 844,
+   "title": "Prepnutie účtu – Admin, Director, Worker, Partner",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_Partner.dc.html": {
+   "x": 3290,
+   "y": 964,
+   "w": 390,
+   "h": 844,
+   "title": "Partner – len pridelené miesta, zmeny idú na schválenie",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_TmavyRezim.dc.html": {
+   "x": 3290,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Tmavý vzhľad – domovská obrazovka",
+   "page": "app",
+   "is_interactive": true
   }
  },
  "order": [
@@ -293,6 +320,9 @@
   "Obr_Jazyk_PL.dc.html",
   "Obr_Jazyk_EN.dc.html",
   "Obr_Jazyk_DE.dc.html",
+  "Obr_PrepnutieUctu.dc.html",
+  "Obr_Partner.dc.html",
+  "Obr_TmavyRezim.dc.html",
   "Slide.dc.html"
  ],
  "launch": {

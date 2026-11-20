@@ -1,4 +1,6 @@
 const IC = {
+  users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+  sun: 'M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4',
   back: 'M15 18l-6-6 6-6', next: 'M9 18l6-6-6-6', plus: 'M12 5v14M5 12h14', close: 'M6 6l12 12M18 6L6 18',
   play: 'M7 4l13 8-13 8z', pause: 'M7 5h3.5v14H7zM13.5 5H17v14h-3.5z',
   bell: 'M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
@@ -26,8 +28,15 @@ const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc:
 const ROOT = { home: 'home', pls: 'pls', plc: 'plc', gal: 'gal', more: 'more' };
 const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
 const HM = (add) => { const d = new Date(Date.now() + (add || 0) * 60000); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
-// prihlásený účet – meno a rola sa zobrazujú podľa prihlásenia (rovnaké roly ako vo webovej aplikácii)
-const ME = { name: 'Miroslav Heglas', ini: 'MH', role: 'Admin', org: 'DP Riečany' };
+// účty na prepnutie – rovnaké roly ako vo webovej aplikácii (Menu používateľa › Prepnúť účet)
+// apv = schvaľuje obsah partnerov, pub = zverejňuje sám (bez schválenia), scope = pridelené miesta (null = všetky)
+const MACC = {
+  admin: { name: 'Miroslav Heglas', first: 'Miroslav', ini: 'MH', role: 'Admin', desc: 'vidí a ovláda všetko', apv: true, pub: true, scope: null },
+  director: { name: 'Jana Kováčová', first: 'Jana', f: true, ini: 'JK', role: 'Director', desc: 'zverejňuje a schvaľuje', apv: true, pub: true, scope: null },
+  worker: { name: 'Peter Novák', first: 'Peter', ini: 'PN', role: 'Worker', desc: 'len pridelené miesta', apv: false, pub: true, scope: ['hs1', 'hs2', 'hs3', 'hsv', 'snp', 'snpk'] },
+  partner: { name: 'Mesto Riečany', first: '', ini: 'MR', role: 'Partner', desc: 'len pridelené plochy · zmeny idú na schválenie', apv: false, pub: false, scope: ['ash', 'pc', 'ps'], partner: true }
+};
+const ME = { org: 'DP Riečany' };
 const DOWN = ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'];
 const MONG = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna', 'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
 const DOWAGO = (n) => DOWN[new Date(Date.now() - n * 864e5).getDay()];
@@ -114,11 +123,11 @@ class Component extends DCLogic {
       ['ss', 'Sídlisko Sever', 'stop', -1, 1, 'exp', 'p13'], ['zu', 'Železničná ulica', 'stop', -1, 0, '', ''], ['hr', 'Hrádok', 'stop', -1, 0, '', ''], ['bul', 'Bulvár', 'stop', 1, 1, 'up', 'p13'], ['vlc', 'Vlčince', 'stop', -1, 1, 'up', 'p13'], ['zst', 'Železničná stanica', 'stop', -1, 1, 'up', 'p13'], ['letz', 'Letisko – zastávka', 'stop', -1, 1, 'up', 'p15']
     ].map((a) => ({ id: a[0], name: a[1], dev: TOT[a[0]] ? 'totem' : P31[a[0]] ? 'p31' : PDEV[a[2]], g: a[3], n: a[4], st: a[5], pl: TOT[a[0]] ? 'p14' : a[6], on: !OFF[a[0]], off: OFF[a[0]] || '', temp: null }));
     const apvs = [
-      { id: 'a1', plId: 'p5', name: 'Kultúra – november', author: 'Jana Mikulová', when: 'pred 2 h', own: false, state: 'pending', note: '', changes: [['mod', 'Upravený text snímky „Divadlo – program“ (začiatok o 19:00)'], ['del', 'Zmazaná snímka „Festival – plagát“']], valid: 'Platnosť: ihneď po schválení, do 30. 11.' },
-      { id: 'a2', plId: 'p12', name: 'Nová linka 25', author: 'Peter Hudák', when: 'pred 5 h', own: false, state: 'pending', note: '', changes: [['add', 'Pridaná snímka „Nová linka 25“'], ['add', 'Pridaná snímka „Najbližšie odchody“ (linka 25)'], ['add', 'Pridaná snímka „Mapa linky“']], valid: 'Platnosť: od 1. 12. 2026' },
-      { id: 'a3', plId: 'p6', name: 'Električky – vo vozidle', author: 'Zuzana Kováčová', when: 'včera 16:10', own: false, state: 'pending', note: '', changes: [['add', 'Pridaný text „Linka 5 je dnes odklonená cez Bulvár“ (oranžové pole)'], ['mod', 'Trvanie textu „Prajeme príjemnú cestu“: 10 s → 6 s']], valid: 'Platnosť: ihneď po schválení, len dnes' },
-      { id: 'a4', plId: 'p9', name: 'Halloween v meste', author: 'Zuzana Kováčová', when: '29. 10.', own: false, state: 'approved', note: 'Vyzerá dobre, schvaľujem.', changes: [['add', 'Pridaná snímka „Halloween v meste“ (halloween.png)']], valid: 'Platnosť: 29. 10. – 1. 11.', doneT: 'Schválil Miroslav Heglas · 29. 10. Playlist bol nahratý na 1 miesto.' },
-      { id: 'a5', plId: 'p11', name: 'Dočasná zastávka Mostná', author: 'Peter Hudák', when: '27. 10.', own: false, state: 'returned', note: 'Doplňte vzdialenosť k novej zastávke.', changes: [['add', 'Pridaný text „Zastávka je presunutá“']], valid: 'Platnosť: od 28. 10.', doneT: 'Vrátil na úpravu Miroslav Heglas · 27. 10.' }
+      { id: 'a1', plId: 'p5', name: 'Kultúra – november', author: 'Kultúrne centrum Riečany', when: 'pred 2 h', own: false, state: 'pending', note: '', changes: [['mod', 'Upravený text snímky „Divadlo – program“ (začiatok o 19:00)'], ['del', 'Zmazaná snímka „Festival – plagát“']], valid: 'Platnosť: ihneď po schválení, do 30. 11.' },
+      { id: 'a2', plId: 'p12', name: 'Nová linka 25', author: 'Letisko Riečany', when: 'pred 5 h', own: false, state: 'pending', note: '', changes: [['add', 'Pridaná snímka „Nová linka 25“'], ['add', 'Pridaná snímka „Najbližšie odchody“ (linka 25)'], ['add', 'Pridaná snímka „Mapa linky“']], valid: 'Platnosť: od 1. 12. 2026' },
+      { id: 'a3', plId: 'p6', name: 'Električky – vo vozidle', author: 'Mesto Riečany', acc: 'partner', when: 'včera 16:10', own: false, state: 'pending', note: '', changes: [['add', 'Pridaný text „Linka 5 je dnes odklonená cez Bulvár“ (oranžové pole)'], ['mod', 'Trvanie textu „Prajeme príjemnú cestu“: 10 s → 6 s']], valid: 'Platnosť: ihneď po schválení, len dnes' },
+      { id: 'a4', plId: 'p9', name: 'Halloween v meste', author: 'Mesto Riečany', acc: 'partner', when: '29. 10.', own: false, state: 'approved', note: 'Vyzerá dobre, schvaľujem.', changes: [['add', 'Pridaná snímka „Halloween v meste“ (halloween.png)']], valid: 'Platnosť: 29. 10. – 1. 11.', doneT: 'Schválil Miroslav Heglas · 29. 10. Playlist bol nahratý na 1 miesto.' },
+      { id: 'a5', plId: 'p11', name: 'Dočasná zastávka Mostná', author: 'Mesto Riečany', acc: 'partner', when: '27. 10.', own: false, state: 'returned', note: 'Doplňte vzdialenosť k novej zastávke.', changes: [['add', 'Pridaný text „Zastávka je presunutá“']], valid: 'Platnosť: od 28. 10.', doneT: 'Vrátil na úpravu Miroslav Heglas · 27. 10.' }
     ];
     const qa = [{ id: 'q1', text: 'Linka 5 je dnes odklonená cez Bulvár.', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }];
     const qh = [
@@ -130,7 +139,9 @@ class Component extends DCLogic {
       screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
       apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
-      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiSit: 'detour', aiBusy: false, aiOut: [], toast: '', push: null
+      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiSit: 'detour', aiBusy: false, aiOut: [], toast: '', push: null,
+      role: (p && MACC[p.role]) ? p.role : 'admin',
+      theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })()
     };
     const st = this.state;
     const P = (pid) => pls.find((x) => x.id === pid);
@@ -139,15 +150,15 @@ class Component extends DCLogic {
       home: {}, totem: { screen: 'pl', plId: 'p14', stack: ['pls'] }, totempreview: { screen: 'pv', pvPl: 'p14', stack: ['pls', 'pl'] }, playlists: { screen: 'pls' }, playlist: { screen: 'pl', plId: 'p2', stack: ['pls'] }, ledplaylist: { screen: 'pl', plId: 'p1', stack: ['pls'] },
       slide: { screen: 'sl', plId: 'p2', slId: P('p2').slides[2].id, stack: ['pls', 'pl'] }, led: { screen: 'sl', plId: 'p1', slId: P('p1').slides[1].id, stack: ['pls', 'pl'] },
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
-      switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pl', from: 'pl', places: ['hsv'], pl: 'p3', dur: 'today' } },
+      switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pc', from: 'pl', dev: 'portrait', places: ['hsv', 'nema'], pl: 'p3', dur: 'today' } },
       approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal' },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, ai: { screen: 'ai', stack: ['more'], aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', stack: ['more'], aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
     };
     Object.assign(st, S[start] || {});
     if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }
   }
-  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} }
-  componentWillUnmount() { try { if (this._unL) this._unL(); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); }
+  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { this._mq = window.matchMedia('(prefers-color-scheme: dark)'); this._mqf = () => { if (this.state.theme === 'auto') this.forceUpdate(); }; if (this._mq.addEventListener) this._mq.addEventListener('change', this._mqf); } catch (e) {} try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} }
+  componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); }
   tick() {
     this.setState((st) => {
       if (st.screen !== 'pv' || !st.pvPlay) return null;
