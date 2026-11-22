@@ -121,6 +121,7 @@
       <div class="sc">
         <div class="h2">Vzhľad</div>
         <div class="seg" role="group" aria-label="Vzhľad"><sc-for list="{{ themeOpts }}" as="t" hint-placeholder-count="3"><button aria-pressed="{{ t.on }}" onClick="{{ t.pick }}">{{ t.label }}</button></sc-for></div>
+        <sc-if value="{{ fdSet }}" hint-placeholder-val="{{ false }}"><div class="note" role="note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ ic.info }}"></path></svg><span>Samsung Internet prefarbuje stránky vlastným tmavým režimom, preto sa zvolený vzhľad nemusí prejaviť. Vypnite ho v prehliadači: ⋮ › Nastavenia › Zobrazenie webových stránok a posúvanie › Tmavý režim › vynútený tmavý režim pre webový obsah. V starších verziách zapnite ⋮ › Nastavenia › Užitočné funkcie › Labs › Tmavý režim webovej stránky.</span></div></sc-if>
         <div class="h2">Upozornenia v telefóne</div>
         <div class="list"><sc-for list="{{ notifRows }}" as="x" hint-placeholder-count="5">
           <div class="row"><span style="flex: 1; min-width: 0"><span class="nm">{{ x.title }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div>

@@ -126,7 +126,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Galéria – súbory, filtre, nahratie, zmazanie",
+   "title": "Galéria (Viac › Galéria) – súbory, filtre, nahratie, zmazanie",
    "page": "app",
    "is_interactive": true
   },
@@ -135,7 +135,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Viac – prepnutie účtu, schvaľovanie, história správ, AI asistent, nastavenia, jazyk",
+   "title": "Viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenia, jazyk",
    "page": "app",
    "is_interactive": true
   },
@@ -171,7 +171,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "AI asistent – návrh textu rýchlej správy",
+   "title": "AI asistent (záložka dole) – návrh textu rýchlej správy",
    "page": "app",
    "is_interactive": true
   },

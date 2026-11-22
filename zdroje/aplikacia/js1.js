@@ -24,8 +24,8 @@ const plural = (n, a) => n === 1 ? a[0] : (n >= 2 && n <= 4 ? a[1] : a[2]);
 const mmss = (t) => Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
 const BG = ['#0E8080', '#0B6E6E', '#1E2A5A', '#2F62B0', '#5B2A86', '#E07A2B', '#C8322B', '#1A1F1F'];
 const GRAD = (c) => 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
-const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'gal', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'more', hist: 'more' };
-const ROOT = { home: 'home', pls: 'pls', plc: 'plc', gal: 'gal', more: 'more' };
+const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', hist: 'more' };
+const ROOT = { home: 'home', pls: 'pls', plc: 'plc', ai: 'ai', more: 'more' };
 const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
 const HM = (add) => { const d = new Date(Date.now() + (add || 0) * 60000); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
 // účty na prepnutie – rovnaké roly ako vo webovej aplikácii (Menu používateľa › Prepnúť účet)
@@ -141,7 +141,8 @@ class Component extends DCLogic {
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
       pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiSit: 'detour', aiBusy: false, aiOut: [], toast: '', push: null,
       role: (p && MACC[p.role]) ? p.role : 'admin',
-      theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })()
+      theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })(),
+      fdark: false, samsung: (() => { try { return /SamsungBrowser/i.test(navigator.userAgent || ''); } catch (e) { return false; } })(), fdOk: (() => { try { return localStorage.getItem('wz_m_fdark_ok') === '1'; } catch (e) { return false; } })()
     };
     const st = this.state;
     const P = (pid) => pls.find((x) => x.id === pid);
@@ -151,13 +152,24 @@ class Component extends DCLogic {
       slide: { screen: 'sl', plId: 'p2', slId: P('p2').slides[2].id, stack: ['pls', 'pl'] }, led: { screen: 'sl', plId: 'p1', slId: P('p1').slides[1].id, stack: ['pls', 'pl'] },
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
       switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pc', from: 'pl', dev: 'portrait', places: ['hsv', 'nema'], pl: 'p3', dur: 'today' } },
-      approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal' },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', stack: ['more'], aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
+      approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
     };
     Object.assign(st, S[start] || {});
     if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }
   }
-  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { this._mq = window.matchMedia('(prefers-color-scheme: dark)'); this._mqf = () => { if (this.state.theme === 'auto') this.forceUpdate(); }; if (this._mq.addEventListener) this._mq.addEventListener('change', this._mqf); } catch (e) {} try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} }
+  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { this._mq = window.matchMedia('(prefers-color-scheme: dark)'); this._mqf = () => { if (this.state.theme === 'auto') this.forceUpdate(); }; if (this._mq.addEventListener) this._mq.addEventListener('change', this._mqf); } catch (e) {} try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} this.detectForcedDark(); }
+  detectForcedDark() {
+    const hit = () => this.setState({ fdark: true });
+    try {
+      if (localStorage.getItem('wz_m_fdark_test') === '1') { hit(); return; }
+      if (!/SamsungBrowser/i.test(navigator.userAgent || '')) return;
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return;
+      const img = new Image();
+      img.onload = () => { try { const c = document.createElement('canvas'); c.width = 1; c.height = 1; const x = c.getContext('2d'); x.drawImage(img, 0, 0); const d = x.getImageData(0, 0, 1, 1).data; if ((d[0] & d[1] & d[2]) < 255) hit(); } catch (e) {} };
+      img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IndoaXRlIi8+PC9zdmc+';
+    } catch (e) {}
+  }
   componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); }
   tick() {
     this.setState((st) => {

@@ -46,7 +46,7 @@
     const ST = { nahraty: ['ok', 'Nahratý'], expirovany: ['bad', 'Expirovaný'], nenahraty: ['grey', 'Nenahratý'] };
     const FLOW = { draft: ['blue', 'Neodoslané zmeny'], pending: ['warn', 'Čaká na schválenie'] };
     const ownApv = (pid) => s.apvs.find((a) => a.plId === pid && a.state === 'pending' && isOwn(a));
-    const tabRoot = ['home', 'pls', 'plc', 'gal', 'more'].indexOf(sc) >= 0;
+    const tabRoot = ['home', 'pls', 'plc', 'ai', 'more'].indexOf(sc) >= 0;
     const dark = tabRoot || sc === 'pv';
     const plLed = isLedDev(pl.dev);
     // zariadenie s viacerými displejmi: každá snímka patrí jednému displeju (x.d)

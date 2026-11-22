@@ -180,14 +180,14 @@
       if (s.confirm === 'gd') { set({ gal: s.gal.filter((g) => g.id !== galFile.id), sheet: null, confirm: '' }); say('Súbor „' + galFile.name + '“ je zmazaný.'); } else set({ confirm: 'gd' });
     };
 
-    const tabs = [['home', 'Domov', IC.home], ['pls', 'Playlisty', IC.list], ['plc', 'Miesta', IC.pin], ['gal', 'Galéria', IC.image], ['more', 'Viac', IC.more]].map((t) => ({ label: t[1], d: t[2], cur: tabOf === t[0] ? 'page' : false, pick: () => goTab(t[0]), hasBadge: t[0] === 'more' && pendingOthers.length > 0, badge: String(pendingOthers.length) }));
+    const tabs = [['home', 'Domov', IC.home], ['pls', 'Playlisty', IC.list], ['plc', 'Miesta', IC.pin], ['ai', 'AI asistent', IC.spark], ['more', 'Viac', IC.more]].map((t) => ({ label: t[1], d: t[2], cur: tabOf === t[0] ? 'page' : false, pick: () => goTab(t[0]), hasBadge: t[0] === 'more' && pendingOthers.length > 0, badge: String(pendingOthers.length) }));
     const myPend = pendAll.length;
     const moreRows = [
       { d: IC.users, title: 'Prepnúť účet', sub: ACC.name + ' · ' + ACC.role, hasBadge: false, badge: '', open: () => set({ sheet: 'acc' }) }
     ].concat(ACC.apv ? [{ d: IC.check, title: 'Schvaľovanie', sub: pendingOthers.length ? pendingOthers.length + ' ' + plural(pendingOthers.length, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: pendingOthers.length > 0, badge: String(pendingOthers.length), open: () => nav('apv', { apvTab: 'pending' }) }]
       : ACC.partner ? [{ d: IC.check, title: 'Odoslané na schválenie', sub: myPend ? myPend + ' ' + plural(myPend, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: false, badge: '', open: () => nav('apv', { apvTab: 'pending' }) }] : []).concat([
+      { d: IC.image, title: 'Galéria', sub: 'Obrázky, videá a zvuky, nahratie a zmazanie', hasBadge: false, badge: '', open: () => nav('gal') },
       { d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') },
-      { d: IC.spark, title: 'AI asistent', sub: 'Návrh textu rýchlej správy a kontrola pred odoslaním', hasBadge: false, badge: '', open: () => nav('ai') },
       { d: IC.gear, title: 'Nastavenia', sub: 'Vzhľad, upozornenia a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
       { d: IC.globe, title: 'Jazyk: ' + (WL ? WL.name() : 'Slovenčina'), sub: 'Jazyk aplikácie', hasBadge: false, badge: '', open: () => set({ sheet: 'lang' }) }
     ]);
@@ -196,6 +196,7 @@
     return {
       ic: IC, meName: ACC.name, meIni: ACC.ini, meRole: ACC.role + ' · ' + (ACC.partner ? 'zmluvný partner DP Riečany' : ME.org), homeHi: ACC.first ? 'Dobrý deň, ' + ACC.first : 'Dobrý deň', canSwPl: ACC.pub,
       themeAttr: s.theme === 'dark' || s.theme === 'auto' ? s.theme : 'light',
+      fdHome: s.fdark && !s.fdOk, fdSet: s.fdark || s.samsung, fdHide: () => { set({ fdOk: true }); try { localStorage.setItem('wz_m_fdark_ok', '1'); } catch (e) {} },
       themeOpts: [['light', 'Svetlý'], ['dark', 'Tmavý'], ['auto', 'Podľa telefónu']].map((t) => ({ label: t[1], on: s.theme === t[0], pick: () => { set({ theme: t[0] }); try { localStorage.setItem('wz_m_theme', t[0]); } catch (e) {} } })), homeDate: ((d) => DOWN[d.getDay()] + ' ' + d.getDate() + '. ' + MONG[d.getMonth()])(new Date()) + ' · DP Riečany',
       hdS: 'background:' + (dark ? 'var(--hddk)' : 'var(--sf)') + ';color:' + (dark ? '#fff' : 'var(--tx)') + ';' + (dark ? '' : 'border-bottom:1px solid var(--ln)'),
       subS: 'color:' + (dark ? '#B4C6C6' : 'var(--mut)'),

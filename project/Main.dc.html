@@ -187,6 +187,12 @@ textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
     <!-- ===== DOMOV ===== -->
     <sc-if value="{{ s_home }}" hint-placeholder-val="{{ true }}">
       <div class="sc">
+        <sc-if value="{{ fdHome }}" hint-placeholder-val="{{ false }}">
+          <div class="note" role="status" style="flex-direction: column; gap: 10px">
+            <div style="display: flex; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ ic.info }}"></path></svg><span><span style="display: block; font-weight: 700; margin-bottom: 2px">Pre správne farby vypnite tmavý režim prehliadača</span><span>Samsung Internet prefarbuje stránky vlastným tmavým režimom. V prehliadači otvorte ⋮ › Nastavenia › Zobrazenie webových stránok a posúvanie › Tmavý režim a vypnite vynútený tmavý režim pre webový obsah.</span></span></div>
+            <button class="btn sm" onClick="{{ fdHide }}" style="align-self: flex-end">Rozumiem</button>
+          </div>
+        </sc-if>
         <div><div style="font-size: 23px; font-weight: 700">{{ homeHi }}</div><div class="mut">{{ homeDate }}</div></div>
         <button class="cta" onClick="{{ openQuick }}">
           <span class="cta-i"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.msg }}"></path></svg></span>
@@ -475,6 +481,7 @@ textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
       <div class="sc">
         <div class="h2">Vzhľad</div>
         <div class="seg" role="group" aria-label="Vzhľad"><sc-for list="{{ themeOpts }}" as="t" hint-placeholder-count="3"><button aria-pressed="{{ t.on }}" onClick="{{ t.pick }}">{{ t.label }}</button></sc-for></div>
+        <sc-if value="{{ fdSet }}" hint-placeholder-val="{{ false }}"><div class="note" role="note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ ic.info }}"></path></svg><span>Samsung Internet prefarbuje stránky vlastným tmavým režimom, preto sa zvolený vzhľad nemusí prejaviť. Vypnite ho v prehliadači: ⋮ › Nastavenia › Zobrazenie webových stránok a posúvanie › Tmavý režim › vynútený tmavý režim pre webový obsah. V starších verziách zapnite ⋮ › Nastavenia › Užitočné funkcie › Labs › Tmavý režim webovej stránky.</span></div></sc-if>
         <div class="h2">Upozornenia v telefóne</div>
         <div class="list"><sc-for list="{{ notifRows }}" as="x" hint-placeholder-count="5">
           <div class="row"><span style="flex: 1; min-width: 0"><span class="nm">{{ x.title }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div>
@@ -678,8 +685,8 @@ const plural = (n, a) => n === 1 ? a[0] : (n >= 2 && n <= 4 ? a[1] : a[2]);
 const mmss = (t) => Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
 const BG = ['#0E8080', '#0B6E6E', '#1E2A5A', '#2F62B0', '#5B2A86', '#E07A2B', '#C8322B', '#1A1F1F'];
 const GRAD = (c) => 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
-const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'gal', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'more', hist: 'more' };
-const ROOT = { home: 'home', pls: 'pls', plc: 'plc', gal: 'gal', more: 'more' };
+const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', hist: 'more' };
+const ROOT = { home: 'home', pls: 'pls', plc: 'plc', ai: 'ai', more: 'more' };
 const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
 const HM = (add) => { const d = new Date(Date.now() + (add || 0) * 60000); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
 // účty na prepnutie – rovnaké roly ako vo webovej aplikácii (Menu používateľa › Prepnúť účet)
@@ -795,7 +802,8 @@ class Component extends DCLogic {
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
       pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiSit: 'detour', aiBusy: false, aiOut: [], toast: '', push: null,
       role: (p && MACC[p.role]) ? p.role : 'admin',
-      theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })()
+      theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })(),
+      fdark: false, samsung: (() => { try { return /SamsungBrowser/i.test(navigator.userAgent || ''); } catch (e) { return false; } })(), fdOk: (() => { try { return localStorage.getItem('wz_m_fdark_ok') === '1'; } catch (e) { return false; } })()
     };
     const st = this.state;
     const P = (pid) => pls.find((x) => x.id === pid);
@@ -805,13 +813,24 @@ class Component extends DCLogic {
       slide: { screen: 'sl', plId: 'p2', slId: P('p2').slides[2].id, stack: ['pls', 'pl'] }, led: { screen: 'sl', plId: 'p1', slId: P('p1').slides[1].id, stack: ['pls', 'pl'] },
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
       switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pc', from: 'pl', dev: 'portrait', places: ['hsv', 'nema'], pl: 'p3', dur: 'today' } },
-      approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal' },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', stack: ['more'], aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
+      approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
     };
     Object.assign(st, S[start] || {});
     if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }
   }
-  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { this._mq = window.matchMedia('(prefers-color-scheme: dark)'); this._mqf = () => { if (this.state.theme === 'auto') this.forceUpdate(); }; if (this._mq.addEventListener) this._mq.addEventListener('change', this._mqf); } catch (e) {} try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} }
+  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { this._mq = window.matchMedia('(prefers-color-scheme: dark)'); this._mqf = () => { if (this.state.theme === 'auto') this.forceUpdate(); }; if (this._mq.addEventListener) this._mq.addEventListener('change', this._mqf); } catch (e) {} try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} this.detectForcedDark(); }
+  detectForcedDark() {
+    const hit = () => this.setState({ fdark: true });
+    try {
+      if (localStorage.getItem('wz_m_fdark_test') === '1') { hit(); return; }
+      if (!/SamsungBrowser/i.test(navigator.userAgent || '')) return;
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return;
+      const img = new Image();
+      img.onload = () => { try { const c = document.createElement('canvas'); c.width = 1; c.height = 1; const x = c.getContext('2d'); x.drawImage(img, 0, 0); const d = x.getImageData(0, 0, 1, 1).data; if ((d[0] & d[1] & d[2]) < 255) hit(); } catch (e) {} };
+      img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IndoaXRlIi8+PC9zdmc+';
+    } catch (e) {}
+  }
   componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); }
   tick() {
     this.setState((st) => {
@@ -872,7 +891,7 @@ class Component extends DCLogic {
     const ST = { nahraty: ['ok', 'Nahratý'], expirovany: ['bad', 'Expirovaný'], nenahraty: ['grey', 'Nenahratý'] };
     const FLOW = { draft: ['blue', 'Neodoslané zmeny'], pending: ['warn', 'Čaká na schválenie'] };
     const ownApv = (pid) => s.apvs.find((a) => a.plId === pid && a.state === 'pending' && isOwn(a));
-    const tabRoot = ['home', 'pls', 'plc', 'gal', 'more'].indexOf(sc) >= 0;
+    const tabRoot = ['home', 'pls', 'plc', 'ai', 'more'].indexOf(sc) >= 0;
     const dark = tabRoot || sc === 'pv';
     const plLed = isLedDev(pl.dev);
     // zariadenie s viacerými displejmi: každá snímka patrí jednému displeju (x.d)
@@ -1209,14 +1228,14 @@ class Component extends DCLogic {
       if (s.confirm === 'gd') { set({ gal: s.gal.filter((g) => g.id !== galFile.id), sheet: null, confirm: '' }); say('Súbor „' + galFile.name + '“ je zmazaný.'); } else set({ confirm: 'gd' });
     };
 
-    const tabs = [['home', 'Domov', IC.home], ['pls', 'Playlisty', IC.list], ['plc', 'Miesta', IC.pin], ['gal', 'Galéria', IC.image], ['more', 'Viac', IC.more]].map((t) => ({ label: t[1], d: t[2], cur: tabOf === t[0] ? 'page' : false, pick: () => goTab(t[0]), hasBadge: t[0] === 'more' && pendingOthers.length > 0, badge: String(pendingOthers.length) }));
+    const tabs = [['home', 'Domov', IC.home], ['pls', 'Playlisty', IC.list], ['plc', 'Miesta', IC.pin], ['ai', 'AI asistent', IC.spark], ['more', 'Viac', IC.more]].map((t) => ({ label: t[1], d: t[2], cur: tabOf === t[0] ? 'page' : false, pick: () => goTab(t[0]), hasBadge: t[0] === 'more' && pendingOthers.length > 0, badge: String(pendingOthers.length) }));
     const myPend = pendAll.length;
     const moreRows = [
       { d: IC.users, title: 'Prepnúť účet', sub: ACC.name + ' · ' + ACC.role, hasBadge: false, badge: '', open: () => set({ sheet: 'acc' }) }
     ].concat(ACC.apv ? [{ d: IC.check, title: 'Schvaľovanie', sub: pendingOthers.length ? pendingOthers.length + ' ' + plural(pendingOthers.length, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: pendingOthers.length > 0, badge: String(pendingOthers.length), open: () => nav('apv', { apvTab: 'pending' }) }]
       : ACC.partner ? [{ d: IC.check, title: 'Odoslané na schválenie', sub: myPend ? myPend + ' ' + plural(myPend, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: false, badge: '', open: () => nav('apv', { apvTab: 'pending' }) }] : []).concat([
+      { d: IC.image, title: 'Galéria', sub: 'Obrázky, videá a zvuky, nahratie a zmazanie', hasBadge: false, badge: '', open: () => nav('gal') },
       { d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') },
-      { d: IC.spark, title: 'AI asistent', sub: 'Návrh textu rýchlej správy a kontrola pred odoslaním', hasBadge: false, badge: '', open: () => nav('ai') },
       { d: IC.gear, title: 'Nastavenia', sub: 'Vzhľad, upozornenia a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
       { d: IC.globe, title: 'Jazyk: ' + (WL ? WL.name() : 'Slovenčina'), sub: 'Jazyk aplikácie', hasBadge: false, badge: '', open: () => set({ sheet: 'lang' }) }
     ]);
@@ -1225,6 +1244,7 @@ class Component extends DCLogic {
     return {
       ic: IC, meName: ACC.name, meIni: ACC.ini, meRole: ACC.role + ' · ' + (ACC.partner ? 'zmluvný partner DP Riečany' : ME.org), homeHi: ACC.first ? 'Dobrý deň, ' + ACC.first : 'Dobrý deň', canSwPl: ACC.pub,
       themeAttr: s.theme === 'dark' || s.theme === 'auto' ? s.theme : 'light',
+      fdHome: s.fdark && !s.fdOk, fdSet: s.fdark || s.samsung, fdHide: () => { set({ fdOk: true }); try { localStorage.setItem('wz_m_fdark_ok', '1'); } catch (e) {} },
       themeOpts: [['light', 'Svetlý'], ['dark', 'Tmavý'], ['auto', 'Podľa telefónu']].map((t) => ({ label: t[1], on: s.theme === t[0], pick: () => { set({ theme: t[0] }); try { localStorage.setItem('wz_m_theme', t[0]); } catch (e) {} } })), homeDate: ((d) => DOWN[d.getDay()] + ' ' + d.getDate() + '. ' + MONG[d.getMonth()])(new Date()) + ' · DP Riečany',
       hdS: 'background:' + (dark ? 'var(--hddk)' : 'var(--sf)') + ';color:' + (dark ? '#fff' : 'var(--tx)') + ';' + (dark ? '' : 'border-bottom:1px solid var(--ln)'),
       subS: 'color:' + (dark ? '#B4C6C6' : 'var(--mut)'),

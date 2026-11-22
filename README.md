@@ -8,11 +8,11 @@ Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy W
 - schváli obsah partnera (tretej strany),
 - skontroluje, čo sa kde práve prehráva a ktoré miesta majú hlásenie.
 
-Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad.
+Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria je vo Viac.
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia 33 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia 35 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -82,12 +82,12 @@ zdroje/
 | `Obr_VyberMiest` | rýchla správa – výber miest (všetky, skupina, jednotlivo) |
 | `Obr_Miesta` | miesta – stav, filter Hlásenia, zariadenie, úprava a prepnutie playlistu |
 | `Obr_PrepnutiePlaylistu` | prepnutie playlistu – viac miest alebo celá skupina naraz |
-| `Obr_Galeria` | galéria – súbory, filtre, nahratie, zmazanie |
-| `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, história správ, AI asistent, nastavenia, jazyk |
+| `Obr_Galeria` | galéria (Viac › Galéria) – súbory, filtre, nahratie, zmazanie |
+| `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenia, jazyk |
 | `Obr_Schvalovanie` | schvaľovanie – čaká a vybavené |
 | `Obr_DetailSchvalenia` | detail schválenia – zmeny, schváliť, vrátiť, zamietnuť |
 | `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova |
-| `Obr_AI` | AI asistent – návrh textu rýchlej správy |
+| `Obr_AI` | AI asistent (záložka dole) – návrh textu rýchlej správy |
 | `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia a úložisko |
 | `Obr_PrepnutieUctu` | prepnutie účtu – Admin, Director, Worker, Partner |
 | `Obr_Partner` | účet Partner – len pridelené miesta, zmeny idú na schválenie |
@@ -118,7 +118,8 @@ Zdroje vytvoria presne súbory `project/Main.dc.html` a `project/i18n.js`, ktor�
 - Každá stránka má `<meta name="viewport" content="width=device-width, initial-scale=1">`, aby sa v telefóne zobrazila na celú šírku.
 - Vzhľad si volí používateľ v aplikácii (Viac › Nastavenia › Vzhľad: Svetlý, Tmavý, Podľa telefónu). Voľba sa pamätá v prehliadači.
 - Aplikácia má `color-scheme: only light` (svetlý) alebo `only dark` (tmavý), aby ju prehliadač neprefarboval vlastným tmavým režimom (Chrome, Edge, Opera, Brave). Stránka zároveň hlási, že tmavý vzhľad podporuje (`<meta name="color-scheme" content="light dark">` a pravidlo `prefers-color-scheme`).
-- Prehliadač Samsung Internet má vlastný tmavý režim, ktorý tieto signály nemusí rešpektovať. Ak stránku stmaví aj vo svetlom vzhľade, treba v jeho nastaveniach vypnúť tmavý režim pre webové stránky.
+- Prehliadač Samsung Internet má predvolene zapnutý vlastný „vynútený tmavý režim“. Ten prefarbí každú stránku a stránka ho nemôže vypnúť ani zistiť štandardnou cestou (potvrdil to Samsung na svojom fóre pre vývojárov, marec 2026). Aplikácia ho preto rozpozná náhradným spôsobom (biely obrázok SVG vykreslený na plátno prestane byť biely) a na Domove ukáže návod, ako ho vypnúť. Návod je aj vo Viac › Nastavenia, ak stránku otvoríte v Samsung Internet.
+- Ako ho vypnúť: Samsung Internet 29 a novší: ⋮ › Nastavenia › Zobrazenie webových stránok a posúvanie › Tmavý režim › vypnúť vynútený tmavý režim pre webový obsah. Verzia 28: ⋮ › Nastavenia › Užitočné funkcie › Labs › zapnúť tmavý režim webovej stránky. Potom sa použije vzhľad zvolený v aplikácii.
 - GitHub Pages dovoľuje prehliadaču držať stránky 10 minút. Nová verzia sa preto môže prejaviť až do 10 minút po nahratí.
 
 ## Ikona na ploche telefónu
