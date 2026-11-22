@@ -80,9 +80,6 @@
       outage: ['Výluka', 'warn', ['Električky T1 a T2 dnes nepremávajú, nahrádza ich autobus.', 'Výluka električiek T1 a T2. Náhradná doprava odchádza zo zastávky Bulvár.', 'T1 a T2 dnes nejazdia. Použite náhradný autobus.']],
       closed: ['Zatvorená zastávka', 'warn', ['Zastávka Mostná je dočasne zatvorená. Použite zastávku Bulvár.', 'Mostná: zastávka je presunutá o 50 m v smere jazdy.', 'Zastávka Mostná sa dnes neobsluhuje.']]
     };
-    const aiSits = Object.keys(AIS).map((k) => ({ label: AIS[k][0], on: s.aiSit === k, pick: () => set({ aiSit: k, aiOut: [] }) }));
-    const aiRun = () => { set({ aiBusy: true, aiOut: [] }); clearTimeout(self._ta); const k = s.aiSit; self._ta = setTimeout(() => self.setState({ aiBusy: false, aiOut: AIS[k][2] }), 1100); };
-    const aiOut = s.aiOut.map((t) => ({ text: t, use: () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: Object.assign({}, s.quick, { text: Tx(t), prio: AIS[s.aiSit][1], pos: AIS[s.aiSit][1] === 'warn' ? 'top' : 'bottom' }) }) }));
 
     // ---------- NÁHĽAD ----------
     const pvPl = plById(s.pvPl) || pl;
@@ -188,10 +185,80 @@
       : ACC.partner ? [{ d: IC.check, title: 'Odoslané na schválenie', sub: myPend ? myPend + ' ' + plural(myPend, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: false, badge: '', open: () => nav('apv', { apvTab: 'pending' }) }] : []).concat([
       { d: IC.image, title: 'Galéria', sub: 'Obrázky, videá a zvuky, nahratie a zmazanie', hasBadge: false, badge: '', open: () => nav('gal') },
       { d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') },
+      { d: IC.spark, title: 'Nastavenie AI asistenta', sub: 'Návrh textu rýchlej správy a kontrola pred odoslaním', hasBadge: false, badge: '', open: () => nav('aiset') },
       { d: IC.gear, title: 'Nastavenia', sub: 'Vzhľad, upozornenia a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
       { d: IC.globe, title: 'Jazyk: ' + (WL ? WL.name() : 'Slovenčina'), sub: 'Jazyk aplikácie', hasBadge: false, badge: '', open: () => set({ sheet: 'lang' }) }
     ]);
     const pvDev = pvPl.dev;
+
+    // ---------- AI ASISTENT: chat ----------
+    const AIQ = { delay: 'Napíš správu o meškaní', detour: 'Napíš správu o odklone', outage: 'Napíš správu o výluke', closed: 'Napíš správu o zatvorenej zastávke' };
+    const AIH = { delay: 'Návrhy správy o meškaní:', detour: 'Návrhy správy o odklone:', outage: 'Návrhy správy o výluke:', closed: 'Návrhy správy o zatvorenej zastávke:' };
+    const AIK = {
+      delay: ['mesk', 'zpozd', 'opozn', 'delay', 'late', 'verspat'],
+      detour: ['odklon', 'objizd', 'objazd', 'detour', 'umleit'],
+      outage: ['vyluk', 'nepremav', 'nejazd', 'nejezd', 'outage', 'ausfall', 'sperrung', 'wylacz'],
+      closed: ['zatvoren', 'uzavret', 'zavren', 'closed', 'zamkniet', 'geschlossen', 'gesperrt']
+    };
+    const aiNorm = (t) => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const aiAny = (q, ws) => ws.some((w) => q.indexOf(w) >= 0);
+    const aiPlaces = (q) => {
+      let best = 0; const hit = [];
+      vPlaces.forEach((p) => { const n = aiNorm(p.name).split(/[^a-z0-9]+/).filter((w) => w.length >= 4).filter((w) => q.indexOf(w.slice(0, 5)) >= 0).length; if (n > best) { best = n; hit.length = 0; } if (n && n === best) hit.push(p.id); });
+      return hit.slice(0, 8);
+    };
+    const aiAnswer = (raw) => {
+      const q = aiNorm(raw); const words = q.split(/[^a-z0-9]+/);
+      if (aiAny(q, ['schval', 'approv', 'zatwierdz', 'genehmig', 'freigab'])) return { kind: 'apv' };
+      const sit = Object.keys(AIK).find((k) => aiAny(q, AIK[k]));
+      if (sit) return s.aiOn.a1 ? { kind: 'draft', sit } : { kind: 'aioff' };
+      if (aiAny(q, ['napis', 'navrh', 'write', 'draft', 'napisz', 'schreib', 'formul'])) return s.aiOn.a1 ? { kind: 'sitask' } : { kind: 'aioff' };
+      if (aiAny(q, ['expir', 'vyprs', 'abgelauf', 'wygas'])) return { kind: 'exp' };
+      if (aiAny(q, ['hlasen', 'offline', 'problem', 'porucha', 'nefung', 'alert', 'storung', 'zglosz', 'meldung', 'nedzia'])) return { kind: 'prob' };
+      if (aiAny(q, ['zobrazen', 'na displej', 'displayed', 'on display', 'wyswietl', 'angezeigt'])) return { kind: 'qa' };
+      const ids = aiPlaces(q);
+      if (ids.length) return { kind: 'play', ids };
+      if (aiAny(q, ['hra', 'prehrav', 'bezi', 'playing', 'hraje', 'odtwarz', 'lauft', 'spielt'])) return { kind: 'noplace' };
+      if (aiAny(q, ['pomoc', 'help', 'co vies', 'co umis', 'hilfe', 'what can'])) return { kind: 'help' };
+      if (aiAny(q, ['dakuj', 'diky', 'dekuj', 'thank', 'dziek', 'danke', 'vdaka'])) return { kind: 'thanks' };
+      if (words.some((w) => ['ahoj', 'cau', 'hello', 'hallo', 'hi', 'zdravim', 'czesc'].indexOf(w) >= 0) || aiAny(q, ['dobry den', 'dzien dobry', 'guten tag'])) return { kind: 'hi' };
+      return { kind: 'fallback' };
+    };
+    const aiScroll = () => setTimeout(() => { try { const el = document.getElementById('ai-chat'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40);
+    const aiAsk = (text, chip) => {
+      const t = String(text || '').trim(); if (!t || s.aiTyping) return;
+      const ans = aiAnswer(t); const n = s.aiChat.length;
+      set({ aiChat: s.aiChat.concat([{ id: n + 1, who: 'me', text: t, chip: !!chip }]), aiQ: '', aiTyping: true }); aiScroll();
+      clearTimeout(self._tai); self._tai = setTimeout(() => { const c = self.state.aiChat; self.setState({ aiTyping: false, aiChat: c.concat([Object.assign({ id: c.length + 1, who: 'ai' }, ans)]) }); aiScroll(); }, 650);
+    };
+    const aiUse = (sit, t) => () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: Object.assign({}, s.quick, { text: Tx(t), prio: AIS[sit][1], pos: AIS[sit][1] === 'warn' ? 'top' : 'bottom' }) });
+    const aiItemP = (p) => { const ep = p.n ? effPl(p) : null; return { name: p.name, sub: p.n === 0 ? 'Miesto zatiaľ nemá zariadenie' : (ep ? ep.name : 'Bez playlistu') + (p.on ? '' : ' · offline ' + p.off), canTap: !!ep, noTap: !ep, tap: () => { if (ep) editAtPlace(p.id); }, aria: ep ? 'Upraviť playlist: ' + ep.name : '' }; };
+    const aiBuild = (m) => {
+      const base = { id: m.id, who: m.who, me: m.who === 'me', meChip: m.who === 'me' && !!m.chip, meTyped: m.who === 'me' && !m.chip, ai: m.who === 'ai', text: '', items: [], sugg: [], acts: [], note: '' };
+      if (m.who === 'me') return Object.assign(base, { text: m.text });
+      const r = base; const A = (label, fn) => r.acts.push({ label, fn });
+      if (m.kind === 'draft') { r.text = AIH[m.sit]; r.sugg = AIS[m.sit][2].map((t) => ({ text: t, use: aiUse(m.sit, t) })); r.note = 'Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.'; }
+      else if (m.kind === 'sitask') { r.text = 'O čom má byť správa? Vyberte situáciu.'; Object.keys(AIS).forEach((k) => A(AIS[k][0], () => aiAsk(AIQ[k], true))); }
+      else if (m.kind === 'aioff') { r.text = 'Návrh textu správy je vypnutý v nastavení AI asistenta.'; A('Otvoriť nastavenie', () => nav('aiset')); }
+      else if (m.kind === 'prob') { const ps = vPlaces.filter(pcProb); if (!ps.length) r.text = 'Všetky miesta sú v poriadku.'; else { r.text = 'Tieto miesta majú hlásenie:'; r.items = ps.map((p) => Object.assign(aiItemP(p), { sub: p.on ? 'Expirovaný playlist' : 'offline ' + p.off })); A('Zobraziť v Miestach', () => set({ screen: 'plc', stack: [], sheet: null, pcF: 'prob', pq: '' })); } }
+      else if (m.kind === 'exp') { const ps = vPls.filter((p) => p.st === 'expirovany'); if (!ps.length) r.text = 'Žiadny playlist neexpiroval.'; else { r.text = 'Tieto playlisty expirovali:'; r.items = ps.map((p) => ({ name: p.name, sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => nav('pl', { plId: p.id }), aria: 'Upraviť playlist: ' + p.name })); A('Zobraziť v Playlistoch', () => set({ screen: 'pls', stack: [], sheet: null, filt: 'expirovany', q: '' })); } }
+      else if (m.kind === 'play') { r.text = 'Na týchto miestach sa teraz prehráva:'; r.items = m.ids.map(placeById).filter(Boolean).filter((p) => vPlaces.indexOf(p) >= 0).map(aiItemP); }
+      else if (m.kind === 'noplace') r.text = 'Ktoré miesto myslíte? Napíšte jeho názov, napríklad Hlavná stanica alebo Nemocnica.';
+      else if (m.kind === 'apv') {
+        if (ACC.apv) { if (!pendingOthers.length) r.text = 'Nič nečaká na schválenie.'; else { r.text = 'Na schválenie čaká:'; r.items = pendingOthers.map((a) => ({ name: a.name, sub: a.author + ' · ' + a.when, canTap: true, noTap: false, tap: () => nav('ad', { adId: a.id, apvNote: '' }), aria: a.name })); A('Otvoriť schvaľovanie', () => nav('apv', { apvTab: 'pending' })); } }
+        else if (ACC.partner) { if (!pendAll.length) r.text = 'Nič nečaká na schválenie.'; else { r.text = 'Na schválenie ste odoslali:'; r.items = pendAll.map((a) => ({ name: a.name, sub: a.when, canTap: false, noTap: true, tap: () => {}, aria: '' })); A('Otvoriť schvaľovanie', () => nav('apv', { apvTab: 'pending' })); } }
+        else r.text = 'Zmeny zverejňujete priamo, schvaľovanie robí správca.';
+      }
+      else if (m.kind === 'qa') { if (!qaRows.length) r.text = 'Teraz nie je zobrazená žiadna rýchla správa.'; else { r.text = 'Na displejoch sú teraz tieto správy:'; r.items = qaRows.map((x) => ({ name: x.text, sub: x.prioT + ' · ' + x.meta, canTap: false, noTap: true, tap: () => {}, aria: '' })); } A('Nová rýchla správa', openQuick); }
+      else if (m.kind === 'help') r.text = 'Viem napísať text rýchlej správy, nájsť miesta s hlásením, povedať, čo sa kde prehráva, a ukázať, čo čaká na schválenie alebo je zobrazené.';
+      else if (m.kind === 'thanks') r.text = 'Rado sa stalo. Ak treba, pýtajte sa ďalej.';
+      else if (m.kind === 'hi') r.text = 'Dobrý deň. S čím vám pomôžem?';
+      else r.text = 'Tomuto zatiaľ nerozumiem. Skúste jednu z otázok nad poľom na písanie.';
+      return Object.assign(r, { hasItems: r.items.length > 0, hasSugg: r.sugg.length > 0, hasActs: r.acts.length > 0, hasNote: !!r.note });
+    };
+    const aiMsgs = s.aiChat.map(aiBuild);
+    const aiChipQ = ['Napíš správu o meškaní', 'Napíš správu o odklone', 'Ktoré miesta majú hlásenie?', 'Čo sa hrá na Hlavnej stanici?', 'Ktoré playlisty expirovali?'].concat(ACC.apv || ACC.partner ? ['Čo čaká na schválenie?'] : []).concat(['Ktoré správy sú zobrazené?']);
+    const aiChips = aiChipQ.map((t) => ({ label: t, ask: () => aiAsk(t, true) }));
 
     return {
       ic: IC, meName: ACC.name, meIni: ACC.ini, meRole: ACC.role + ' · ' + (ACC.partner ? 'zmluvný partner DP Riečany' : ME.org), homeHi: ACC.first ? 'Dobrý deň, ' + ACC.first : 'Dobrý deň', canSwPl: ACC.pub,
@@ -201,7 +268,7 @@
       hdS: 'background:' + (dark ? 'var(--hddk)' : 'var(--sf)') + ';color:' + (dark ? '#fff' : 'var(--tx)') + ';' + (dark ? '' : 'border-bottom:1px solid var(--ln)'),
       subS: 'color:' + (dark ? '#B4C6C6' : 'var(--mut)'),
       hasBack: !tabRoot, goBack, hdLogo, hdTitle, hasSub: !!hdSub, hdSub, hdActs, tabs,
-      s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_pv: sc === 'pv',
+      s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_aiset: sc === 'aiset', s_pv: sc === 'pv',
       sh_quick: s.sheet === 'quick', sh_sw: s.sheet === 'sw', sh_add: s.sheet === 'add', sh_pick: s.sheet === 'pick', sh_gd: s.sheet === 'gd', sh_lib: s.sheet === 'lib', sh_list: s.sheet === 'gpl' || isNewPl || isLang || isAcc,
       closeSheet, bgClose: (e) => { if (e && e.target === e.currentTarget) closeSheet(); }, hasToast: !!s.toast, toast: s.toast, hasPush: !!s.push, pushTitle: s.push ? s.push.title : '', pushText: s.push ? s.push.text : '', closePush: () => set({ push: null }),
       // domov
@@ -240,7 +307,8 @@
       lsTitle: isAcc ? 'Prepnúť účet' : isLang ? 'Jazyk aplikácie' : isNewPl ? 'Nový playlist – pre aké zariadenie' : 'Pridať do playlistu', lsSub: isAcc ? 'Prototyp: aplikácia sa zobrazí tak, ako ju vidí vybraný účet.' : isLang ? 'Zmení sa jazyk tlačidiel, nadpisov a hlásení. Obsah playlistov a názvy miest ostávajú tak, ako ste ich napísali.' : isNewPl ? 'Playlist sa potom dá upravovať a prehrávať len na tomto type zariadenia.' : 'Súbor „' + galFile.name + '“ sa pridá ako nová snímka na koniec playlistu. Ponúkajú sa len playlisty pre displeje.', lsRows,
       // viac / miesta / nastavenia / AI
       moreRows, logout: () => say('Prototyp: odhlásenie nie je zapojené.'), pq: s.pq, setPq: (e) => set({ pq: e.target.value }), pcChips, pcRows, pcEmpty: pcRows.length === 0, pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + vPlaces.length + ' miest',
-      notifRows, aiRows, aiSits, aiRun, aiBusy: s.aiBusy, aiBtnT: s.aiBusy ? 'Pripravujem návrhy…' : 'Navrhnúť text', aiHas: aiOut.length > 0, aiOut,
+      notifRows, aiRows,
+      aiHi: ACC.first ? 'Dobrý deň, ' + ACC.first + '. S čím vám pomôžem?' : 'Dobrý deň. S čím vám pomôžem?', aiMsgs, aiChips, aiTyping: s.aiTyping, aiQ: s.aiQ, aiNoQ: !s.aiQ.trim() || s.aiTyping, setAiQ: (e) => set({ aiQ: e.target.value }), aiSend: () => aiAsk(s.aiQ, false), aiKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(s.aiQ, false); } },
       // náhľad
       pvHas: pvParts.length > 0, pvNone: pvParts.length === 0, pvParts, pvWrapS: stackS(pvPl), pvDevT: DEV[pvDev][0], pvSegs: pvTot ? [] : pvSegs,
       pvCap: pvTot ? 'Tri displeje sa prehrávajú súčasne' : pvPl.slides.length ? (Math.min(s.pvI, pvPl.slides.length - 1) + 1) + '/' + pvPl.slides.length + ' · ' + pvObj.title : '', pvTime: pvTot ? mmss(s.pvE || 0) : pvPl.slides.length ? s.pvT + ' / ' + pvObj.dur + ' s' : '',

@@ -135,7 +135,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenia, jazyk",
+   "title": "Viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenie AI, nastavenia, jazyk",
    "page": "app",
    "is_interactive": true
   },
@@ -171,7 +171,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "AI asistent (záložka dole) – návrh textu rýchlej správy",
+   "title": "AI asistent (záložka dole) – chat: návrh správy, hlásenia, čo sa kde hrá",
    "page": "app",
    "is_interactive": true
   },
@@ -290,6 +290,15 @@
    "title": "Tmavý vzhľad – domovská obrazovka",
    "page": "app",
    "is_interactive": true
+  },
+  "Obr_AINastavenie.dc.html": {
+   "x": 3290,
+   "y": 2892,
+   "w": 390,
+   "h": 844,
+   "title": "Nastavenie AI asistenta (Viac › Nastavenie AI asistenta)",
+   "page": "app",
+   "is_interactive": true
   }
  },
  "order": [
@@ -314,6 +323,7 @@
   "Obr_DetailSchvalenia.dc.html",
   "Obr_Nastavenia.dc.html",
   "Obr_AI.dc.html",
+  "Obr_AINastavenie.dc.html",
   "Obr_HistoriaSprav.dc.html",
   "Obr_Jazyk.dc.html",
   "Obr_Jazyk_CS.dc.html",

@@ -18,13 +18,13 @@ const IC = {
   speaker: 'M11 5L6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14', gear: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
   film: 'M3 5h18v14H3zM10 9l5 3-5 3z', music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
   shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', db: 'M12 8c4.4 0 8-1.1 8-2.5S16.4 3 12 3 4 4.1 4 5.5 7.6 8 12 8zM4 5.5v13C4 19.9 7.6 21 12 21s8-1.1 8-2.5v-13M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5',
-  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6'
+  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6'
 };
 const plural = (n, a) => n === 1 ? a[0] : (n >= 2 && n <= 4 ? a[1] : a[2]);
 const mmss = (t) => Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
 const BG = ['#0E8080', '#0B6E6E', '#1E2A5A', '#2F62B0', '#5B2A86', '#E07A2B', '#C8322B', '#1A1F1F'];
 const GRAD = (c) => 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
-const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', hist: 'more' };
+const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', aiset: 'more', hist: 'more' };
 const ROOT = { home: 'home', pls: 'pls', plc: 'plc', ai: 'ai', more: 'more' };
 const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
 const HM = (add) => { const d = new Date(Date.now() + (add || 0) * 60000); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
@@ -139,7 +139,7 @@ class Component extends DCLogic {
       screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
       apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
-      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiSit: 'detour', aiBusy: false, aiOut: [], toast: '', push: null,
+      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, toast: '', push: null,
       role: (p && MACC[p.role]) ? p.role : 'admin',
       theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })(),
       fdark: false, samsung: (() => { try { return /SamsungBrowser/i.test(navigator.userAgent || ''); } catch (e) { return false; } })(), fdOk: (() => { try { return localStorage.getItem('wz_m_fdark_ok') === '1'; } catch (e) { return false; } })()
@@ -153,7 +153,7 @@ class Component extends DCLogic {
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
       switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pc', from: 'pl', dev: 'portrait', places: ['hsv', 'nema'], pl: 'p3', dur: 'today' } },
       approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }, aiset: { screen: 'aiset', stack: ['more'] }
     };
     Object.assign(st, S[start] || {});
     if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }
@@ -170,7 +170,7 @@ class Component extends DCLogic {
       img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IndoaXRlIi8+PC9zdmc+';
     } catch (e) {}
   }
-  componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); }
+  componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); clearTimeout(this._tai); }
   tick() {
     this.setState((st) => {
       if (st.screen !== 'pv' || !st.pvPlay) return null;

@@ -108,6 +108,23 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[role=button]:fo
 .prv{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.12);flex:none;align-self:center}
 .playov{position:absolute;right:12px;bottom:12px;width:48px;height:48px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;padding-left:3px}
 .bar{flex:none;display:flex;gap:10px;padding:10px 16px 12px;background:var(--sf);border-top:1px solid var(--ln)}
+.chat{gap:10px;padding-bottom:14px}
+.msg{max-width:88%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;display:flex;flex-direction:column;gap:8px;flex:none}
+.msg[data-who="me"]{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:6px}
+.msg[data-who="ai"]{align-self:flex-start;background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-bottom-left-radius:6px}
+.ai-list{display:flex;flex-direction:column;border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+.ai-it{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:44px;padding:9px 12px;background:var(--sf2);border:none;border-top:1px solid var(--ln);text-align:left;width:100%;color:var(--tx);font:inherit}
+.ai-it:first-child{border-top:none}
+.ai-it .nm{font-size:15px}
+.ai-sg{display:flex;gap:10px;align-items:center;padding:8px 8px 8px 12px;border:1px solid var(--ln);border-radius:12px;background:var(--sf2)}
+.ai-sg span{flex:1;min-width:0;line-height:1.35}
+.ai-acts{display:flex;flex-wrap:wrap;gap:8px}
+.ai-acts .btn{flex:none}
+.aiq{flex:none;background:var(--sf);border-top:1px solid var(--ln);padding:8px 12px 10px;display:flex;flex-direction:column;gap:8px}
+.aiq-r{display:flex;gap:8px;align-items:center}
+.aiq-r .inp{flex:1;min-width:0;height:48px}
+.aiq-send{width:48px;height:48px;border-radius:12px;border:none;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.aiq-send:disabled{opacity:.45}
 .tabs{height:64px;flex:none;display:flex;background:var(--sf);border-top:1px solid var(--ln)}
 .tab{flex:1;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;color:var(--mut);position:relative;padding:0}
 .tab[aria-current="page"]{color:var(--act)}
@@ -491,26 +508,41 @@ textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
       </div>
     </sc-if>
 
-    <!-- ===== AI ASISTENT ===== -->
+    <!-- ===== AI ASISTENT: chat (záložka dole) ===== -->
     <sc-if value="{{ s_ai }}" hint-placeholder-val="{{ false }}">
+      <div class="sc chat" id="ai-chat" aria-live="polite">
+        <div class="msg" data-who="ai"><div style="font-weight: 700">{{ aiHi }}</div><div>Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie.</div><div class="mut sm">Prototyp: AI odpovedá z ukážkových údajov aplikácie.</div></div>
+        <sc-for list="{{ aiMsgs }}" as="m" hint-placeholder-count="2">
+          <div class="msg" data-who="{{ m.who }}">
+            <sc-if value="{{ m.meChip }}" hint-placeholder-val="{{ false }}"><div>{{ m.text }}</div></sc-if>
+            <sc-if value="{{ m.meTyped }}" hint-placeholder-val="{{ false }}"><div translate="no">{{ m.text }}</div></sc-if>
+            <sc-if value="{{ m.ai }}" hint-placeholder-val="{{ true }}">
+              <div>{{ m.text }}</div>
+              <sc-if value="{{ m.hasItems }}" hint-placeholder-val="{{ false }}"><div class="ai-list"><sc-for list="{{ m.items }}" as="it" hint-placeholder-count="2">
+                <sc-if value="{{ it.canTap }}" hint-placeholder-val="{{ true }}"><button class="ai-it" onClick="{{ it.tap }}" aria-label="{{ it.aria }}"><span class="nm" translate="no">{{ it.name }}</span><span class="mut sm">{{ it.sub }}</span></button></sc-if>
+                <sc-if value="{{ it.noTap }}" hint-placeholder-val="{{ false }}"><div class="ai-it"><span class="nm" translate="no">{{ it.name }}</span><span class="mut sm">{{ it.sub }}</span></div></sc-if>
+              </sc-for></div></sc-if>
+              <sc-if value="{{ m.hasSugg }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ m.sugg }}" as="g" hint-placeholder-count="3"><div class="ai-sg"><span>{{ g.text }}</span><button class="btn sm" onClick="{{ g.use }}">Použiť</button></div></sc-for></sc-if>
+              <sc-if value="{{ m.hasNote }}" hint-placeholder-val="{{ false }}"><div class="mut sm">{{ m.note }}</div></sc-if>
+              <sc-if value="{{ m.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ai-acts"><sc-for list="{{ m.acts }}" as="a" hint-placeholder-count="1"><button class="btn sm" onClick="{{ a.fn }}">{{ a.label }}</button></sc-for></div></sc-if>
+            </sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{ aiTyping }}" hint-placeholder-val="{{ false }}"><div class="msg" data-who="ai" role="status"><span class="mut">AI píše…</span></div></sc-if>
+      </div>
+      <div class="aiq">
+        <div class="chips"><sc-for list="{{ aiChips }}" as="c" hint-placeholder-count="4"><button class="chip" onClick="{{ c.ask }}">{{ c.label }}</button></sc-for></div>
+        <div class="aiq-r"><input class="inp" value="{{ aiQ }}" onInput="{{ setAiQ }}" onKeyDown="{{ aiKey }}" placeholder="Napíšte otázku alebo požiadavku" aria-label="Otázka pre AI asistenta" enterkeyhint="send"><button class="aiq-send" onClick="{{ aiSend }}" disabled="{{ aiNoQ }}" aria-label="Odoslať otázku"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.send }}"></path></svg></button></div>
+      </div>
+    </sc-if>
+
+    <!-- ===== NASTAVENIE AI ASISTENTA (Viac › Nastavenie AI asistenta) ===== -->
+    <sc-if value="{{ s_aiset }}" hint-placeholder-val="{{ false }}">
       <div class="sc">
         <div class="list"><sc-for list="{{ aiRows }}" as="x" hint-placeholder-count="2">
           <div class="row"><span style="flex: 1; min-width: 0"><span class="nm">{{ x.title }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div>
         </sc-for></div>
-        <div class="card form">
-          <div class="h2">Navrhnúť text rýchlej správy</div>
-          <div class="lbl">Čo sa stalo</div>
-          <div class="chips" style="flex-wrap: wrap"><sc-for list="{{ aiSits }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div>
-          <button class="btn" data-k="p" disabled="{{ aiBusy }}" onClick="{{ aiRun }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.spark }}"></path></svg>{{ aiBtnT }}</button>
-        </div>
-        <sc-if value="{{ aiHas }}" hint-placeholder-val="{{ false }}">
-          <div class="sec"><h2 class="h2">Návrhy</h2>
-            <div class="list"><sc-for list="{{ aiOut }}" as="o" hint-placeholder-count="3">
-              <div class="row"><span style="flex: 1; min-width: 0; line-height: 1.35">{{ o.text }}</span><button class="btn sm" onClick="{{ o.use }}">Použiť</button></div>
-            </sc-for></div>
-            <div class="mut sm">Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.</div>
-          </div>
-        </sc-if>
+        <div class="mut sm">Chat s asistentom otvoríte v záložke AI asistent dole.</div>
       </div>
     </sc-if>
 
@@ -679,13 +711,13 @@ const IC = {
   speaker: 'M11 5L6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14', gear: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
   film: 'M3 5h18v14H3zM10 9l5 3-5 3z', music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
   shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', db: 'M12 8c4.4 0 8-1.1 8-2.5S16.4 3 12 3 4 4.1 4 5.5 7.6 8 12 8zM4 5.5v13C4 19.9 7.6 21 12 21s8-1.1 8-2.5v-13M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5',
-  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6'
+  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6'
 };
 const plural = (n, a) => n === 1 ? a[0] : (n >= 2 && n <= 4 ? a[1] : a[2]);
 const mmss = (t) => Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
 const BG = ['#0E8080', '#0B6E6E', '#1E2A5A', '#2F62B0', '#5B2A86', '#E07A2B', '#C8322B', '#1A1F1F'];
 const GRAD = (c) => 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
-const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', hist: 'more' };
+const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', aiset: 'more', hist: 'more' };
 const ROOT = { home: 'home', pls: 'pls', plc: 'plc', ai: 'ai', more: 'more' };
 const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
 const HM = (add) => { const d = new Date(Date.now() + (add || 0) * 60000); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
@@ -800,7 +832,7 @@ class Component extends DCLogic {
       screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
       apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
-      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiSit: 'detour', aiBusy: false, aiOut: [], toast: '', push: null,
+      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, toast: '', push: null,
       role: (p && MACC[p.role]) ? p.role : 'admin',
       theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })(),
       fdark: false, samsung: (() => { try { return /SamsungBrowser/i.test(navigator.userAgent || ''); } catch (e) { return false; } })(), fdOk: (() => { try { return localStorage.getItem('wz_m_fdark_ok') === '1'; } catch (e) { return false; } })()
@@ -814,7 +846,7 @@ class Component extends DCLogic {
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
       switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pc', from: 'pl', dev: 'portrait', places: ['hsv', 'nema'], pl: 'p3', dur: 'today' } },
       approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiOut: ['Linka 5 je dnes odklonená cez Bulvár.', 'Odklon linky 5: zastávka Mostná sa neobsluhuje, použite Bulvár.', 'Linka 5 dnes nejde cez Mostnú. Nastúpte na zastávke Bulvár.'] }
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }, aiset: { screen: 'aiset', stack: ['more'] }
     };
     Object.assign(st, S[start] || {});
     if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }
@@ -831,7 +863,7 @@ class Component extends DCLogic {
       img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IndoaXRlIi8+PC9zdmc+';
     } catch (e) {}
   }
-  componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); }
+  componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); clearTimeout(this._tai); }
   tick() {
     this.setState((st) => {
       if (st.screen !== 'pv' || !st.pvPlay) return null;
@@ -959,7 +991,8 @@ class Component extends DCLogic {
     else if (sc === 'plc') { hdTitle = 'Miesta'; hdSub = ''; }
     else if (sc === 'set') { hdTitle = 'Nastavenia'; hdSub = ''; }
     else if (sc === 'hist') { hdTitle = 'História správ'; hdSub = ''; }
-    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; }
+    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length ? [act('Nová konverzácia', IC.plus, () => { clearTimeout(self._tai); set({ aiChat: [], aiQ: '', aiTyping: false }); })] : []; }
+    else if (sc === 'aiset') { hdTitle = 'Nastavenie AI asistenta'; hdSub = ''; }
     else if (sc === 'pv') { hdTitle = 'Náhľad'; hdSub = (plById(s.pvPl) || pl).name; }
 
     // ---------- rýchle správy: kam ----------
@@ -1128,9 +1161,6 @@ class Component extends DCLogic {
       outage: ['Výluka', 'warn', ['Električky T1 a T2 dnes nepremávajú, nahrádza ich autobus.', 'Výluka električiek T1 a T2. Náhradná doprava odchádza zo zastávky Bulvár.', 'T1 a T2 dnes nejazdia. Použite náhradný autobus.']],
       closed: ['Zatvorená zastávka', 'warn', ['Zastávka Mostná je dočasne zatvorená. Použite zastávku Bulvár.', 'Mostná: zastávka je presunutá o 50 m v smere jazdy.', 'Zastávka Mostná sa dnes neobsluhuje.']]
     };
-    const aiSits = Object.keys(AIS).map((k) => ({ label: AIS[k][0], on: s.aiSit === k, pick: () => set({ aiSit: k, aiOut: [] }) }));
-    const aiRun = () => { set({ aiBusy: true, aiOut: [] }); clearTimeout(self._ta); const k = s.aiSit; self._ta = setTimeout(() => self.setState({ aiBusy: false, aiOut: AIS[k][2] }), 1100); };
-    const aiOut = s.aiOut.map((t) => ({ text: t, use: () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: Object.assign({}, s.quick, { text: Tx(t), prio: AIS[s.aiSit][1], pos: AIS[s.aiSit][1] === 'warn' ? 'top' : 'bottom' }) }) }));
 
     // ---------- NÁHĽAD ----------
     const pvPl = plById(s.pvPl) || pl;
@@ -1236,10 +1266,80 @@ class Component extends DCLogic {
       : ACC.partner ? [{ d: IC.check, title: 'Odoslané na schválenie', sub: myPend ? myPend + ' ' + plural(myPend, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: false, badge: '', open: () => nav('apv', { apvTab: 'pending' }) }] : []).concat([
       { d: IC.image, title: 'Galéria', sub: 'Obrázky, videá a zvuky, nahratie a zmazanie', hasBadge: false, badge: '', open: () => nav('gal') },
       { d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') },
+      { d: IC.spark, title: 'Nastavenie AI asistenta', sub: 'Návrh textu rýchlej správy a kontrola pred odoslaním', hasBadge: false, badge: '', open: () => nav('aiset') },
       { d: IC.gear, title: 'Nastavenia', sub: 'Vzhľad, upozornenia a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
       { d: IC.globe, title: 'Jazyk: ' + (WL ? WL.name() : 'Slovenčina'), sub: 'Jazyk aplikácie', hasBadge: false, badge: '', open: () => set({ sheet: 'lang' }) }
     ]);
     const pvDev = pvPl.dev;
+
+    // ---------- AI ASISTENT: chat ----------
+    const AIQ = { delay: 'Napíš správu o meškaní', detour: 'Napíš správu o odklone', outage: 'Napíš správu o výluke', closed: 'Napíš správu o zatvorenej zastávke' };
+    const AIH = { delay: 'Návrhy správy o meškaní:', detour: 'Návrhy správy o odklone:', outage: 'Návrhy správy o výluke:', closed: 'Návrhy správy o zatvorenej zastávke:' };
+    const AIK = {
+      delay: ['mesk', 'zpozd', 'opozn', 'delay', 'late', 'verspat'],
+      detour: ['odklon', 'objizd', 'objazd', 'detour', 'umleit'],
+      outage: ['vyluk', 'nepremav', 'nejazd', 'nejezd', 'outage', 'ausfall', 'sperrung', 'wylacz'],
+      closed: ['zatvoren', 'uzavret', 'zavren', 'closed', 'zamkniet', 'geschlossen', 'gesperrt']
+    };
+    const aiNorm = (t) => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const aiAny = (q, ws) => ws.some((w) => q.indexOf(w) >= 0);
+    const aiPlaces = (q) => {
+      let best = 0; const hit = [];
+      vPlaces.forEach((p) => { const n = aiNorm(p.name).split(/[^a-z0-9]+/).filter((w) => w.length >= 4).filter((w) => q.indexOf(w.slice(0, 5)) >= 0).length; if (n > best) { best = n; hit.length = 0; } if (n && n === best) hit.push(p.id); });
+      return hit.slice(0, 8);
+    };
+    const aiAnswer = (raw) => {
+      const q = aiNorm(raw); const words = q.split(/[^a-z0-9]+/);
+      if (aiAny(q, ['schval', 'approv', 'zatwierdz', 'genehmig', 'freigab'])) return { kind: 'apv' };
+      const sit = Object.keys(AIK).find((k) => aiAny(q, AIK[k]));
+      if (sit) return s.aiOn.a1 ? { kind: 'draft', sit } : { kind: 'aioff' };
+      if (aiAny(q, ['napis', 'navrh', 'write', 'draft', 'napisz', 'schreib', 'formul'])) return s.aiOn.a1 ? { kind: 'sitask' } : { kind: 'aioff' };
+      if (aiAny(q, ['expir', 'vyprs', 'abgelauf', 'wygas'])) return { kind: 'exp' };
+      if (aiAny(q, ['hlasen', 'offline', 'problem', 'porucha', 'nefung', 'alert', 'storung', 'zglosz', 'meldung', 'nedzia'])) return { kind: 'prob' };
+      if (aiAny(q, ['zobrazen', 'na displej', 'displayed', 'on display', 'wyswietl', 'angezeigt'])) return { kind: 'qa' };
+      const ids = aiPlaces(q);
+      if (ids.length) return { kind: 'play', ids };
+      if (aiAny(q, ['hra', 'prehrav', 'bezi', 'playing', 'hraje', 'odtwarz', 'lauft', 'spielt'])) return { kind: 'noplace' };
+      if (aiAny(q, ['pomoc', 'help', 'co vies', 'co umis', 'hilfe', 'what can'])) return { kind: 'help' };
+      if (aiAny(q, ['dakuj', 'diky', 'dekuj', 'thank', 'dziek', 'danke', 'vdaka'])) return { kind: 'thanks' };
+      if (words.some((w) => ['ahoj', 'cau', 'hello', 'hallo', 'hi', 'zdravim', 'czesc'].indexOf(w) >= 0) || aiAny(q, ['dobry den', 'dzien dobry', 'guten tag'])) return { kind: 'hi' };
+      return { kind: 'fallback' };
+    };
+    const aiScroll = () => setTimeout(() => { try { const el = document.getElementById('ai-chat'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40);
+    const aiAsk = (text, chip) => {
+      const t = String(text || '').trim(); if (!t || s.aiTyping) return;
+      const ans = aiAnswer(t); const n = s.aiChat.length;
+      set({ aiChat: s.aiChat.concat([{ id: n + 1, who: 'me', text: t, chip: !!chip }]), aiQ: '', aiTyping: true }); aiScroll();
+      clearTimeout(self._tai); self._tai = setTimeout(() => { const c = self.state.aiChat; self.setState({ aiTyping: false, aiChat: c.concat([Object.assign({ id: c.length + 1, who: 'ai' }, ans)]) }); aiScroll(); }, 650);
+    };
+    const aiUse = (sit, t) => () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: Object.assign({}, s.quick, { text: Tx(t), prio: AIS[sit][1], pos: AIS[sit][1] === 'warn' ? 'top' : 'bottom' }) });
+    const aiItemP = (p) => { const ep = p.n ? effPl(p) : null; return { name: p.name, sub: p.n === 0 ? 'Miesto zatiaľ nemá zariadenie' : (ep ? ep.name : 'Bez playlistu') + (p.on ? '' : ' · offline ' + p.off), canTap: !!ep, noTap: !ep, tap: () => { if (ep) editAtPlace(p.id); }, aria: ep ? 'Upraviť playlist: ' + ep.name : '' }; };
+    const aiBuild = (m) => {
+      const base = { id: m.id, who: m.who, me: m.who === 'me', meChip: m.who === 'me' && !!m.chip, meTyped: m.who === 'me' && !m.chip, ai: m.who === 'ai', text: '', items: [], sugg: [], acts: [], note: '' };
+      if (m.who === 'me') return Object.assign(base, { text: m.text });
+      const r = base; const A = (label, fn) => r.acts.push({ label, fn });
+      if (m.kind === 'draft') { r.text = AIH[m.sit]; r.sugg = AIS[m.sit][2].map((t) => ({ text: t, use: aiUse(m.sit, t) })); r.note = 'Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.'; }
+      else if (m.kind === 'sitask') { r.text = 'O čom má byť správa? Vyberte situáciu.'; Object.keys(AIS).forEach((k) => A(AIS[k][0], () => aiAsk(AIQ[k], true))); }
+      else if (m.kind === 'aioff') { r.text = 'Návrh textu správy je vypnutý v nastavení AI asistenta.'; A('Otvoriť nastavenie', () => nav('aiset')); }
+      else if (m.kind === 'prob') { const ps = vPlaces.filter(pcProb); if (!ps.length) r.text = 'Všetky miesta sú v poriadku.'; else { r.text = 'Tieto miesta majú hlásenie:'; r.items = ps.map((p) => Object.assign(aiItemP(p), { sub: p.on ? 'Expirovaný playlist' : 'offline ' + p.off })); A('Zobraziť v Miestach', () => set({ screen: 'plc', stack: [], sheet: null, pcF: 'prob', pq: '' })); } }
+      else if (m.kind === 'exp') { const ps = vPls.filter((p) => p.st === 'expirovany'); if (!ps.length) r.text = 'Žiadny playlist neexpiroval.'; else { r.text = 'Tieto playlisty expirovali:'; r.items = ps.map((p) => ({ name: p.name, sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => nav('pl', { plId: p.id }), aria: 'Upraviť playlist: ' + p.name })); A('Zobraziť v Playlistoch', () => set({ screen: 'pls', stack: [], sheet: null, filt: 'expirovany', q: '' })); } }
+      else if (m.kind === 'play') { r.text = 'Na týchto miestach sa teraz prehráva:'; r.items = m.ids.map(placeById).filter(Boolean).filter((p) => vPlaces.indexOf(p) >= 0).map(aiItemP); }
+      else if (m.kind === 'noplace') r.text = 'Ktoré miesto myslíte? Napíšte jeho názov, napríklad Hlavná stanica alebo Nemocnica.';
+      else if (m.kind === 'apv') {
+        if (ACC.apv) { if (!pendingOthers.length) r.text = 'Nič nečaká na schválenie.'; else { r.text = 'Na schválenie čaká:'; r.items = pendingOthers.map((a) => ({ name: a.name, sub: a.author + ' · ' + a.when, canTap: true, noTap: false, tap: () => nav('ad', { adId: a.id, apvNote: '' }), aria: a.name })); A('Otvoriť schvaľovanie', () => nav('apv', { apvTab: 'pending' })); } }
+        else if (ACC.partner) { if (!pendAll.length) r.text = 'Nič nečaká na schválenie.'; else { r.text = 'Na schválenie ste odoslali:'; r.items = pendAll.map((a) => ({ name: a.name, sub: a.when, canTap: false, noTap: true, tap: () => {}, aria: '' })); A('Otvoriť schvaľovanie', () => nav('apv', { apvTab: 'pending' })); } }
+        else r.text = 'Zmeny zverejňujete priamo, schvaľovanie robí správca.';
+      }
+      else if (m.kind === 'qa') { if (!qaRows.length) r.text = 'Teraz nie je zobrazená žiadna rýchla správa.'; else { r.text = 'Na displejoch sú teraz tieto správy:'; r.items = qaRows.map((x) => ({ name: x.text, sub: x.prioT + ' · ' + x.meta, canTap: false, noTap: true, tap: () => {}, aria: '' })); } A('Nová rýchla správa', openQuick); }
+      else if (m.kind === 'help') r.text = 'Viem napísať text rýchlej správy, nájsť miesta s hlásením, povedať, čo sa kde prehráva, a ukázať, čo čaká na schválenie alebo je zobrazené.';
+      else if (m.kind === 'thanks') r.text = 'Rado sa stalo. Ak treba, pýtajte sa ďalej.';
+      else if (m.kind === 'hi') r.text = 'Dobrý deň. S čím vám pomôžem?';
+      else r.text = 'Tomuto zatiaľ nerozumiem. Skúste jednu z otázok nad poľom na písanie.';
+      return Object.assign(r, { hasItems: r.items.length > 0, hasSugg: r.sugg.length > 0, hasActs: r.acts.length > 0, hasNote: !!r.note });
+    };
+    const aiMsgs = s.aiChat.map(aiBuild);
+    const aiChipQ = ['Napíš správu o meškaní', 'Napíš správu o odklone', 'Ktoré miesta majú hlásenie?', 'Čo sa hrá na Hlavnej stanici?', 'Ktoré playlisty expirovali?'].concat(ACC.apv || ACC.partner ? ['Čo čaká na schválenie?'] : []).concat(['Ktoré správy sú zobrazené?']);
+    const aiChips = aiChipQ.map((t) => ({ label: t, ask: () => aiAsk(t, true) }));
 
     return {
       ic: IC, meName: ACC.name, meIni: ACC.ini, meRole: ACC.role + ' · ' + (ACC.partner ? 'zmluvný partner DP Riečany' : ME.org), homeHi: ACC.first ? 'Dobrý deň, ' + ACC.first : 'Dobrý deň', canSwPl: ACC.pub,
@@ -1249,7 +1349,7 @@ class Component extends DCLogic {
       hdS: 'background:' + (dark ? 'var(--hddk)' : 'var(--sf)') + ';color:' + (dark ? '#fff' : 'var(--tx)') + ';' + (dark ? '' : 'border-bottom:1px solid var(--ln)'),
       subS: 'color:' + (dark ? '#B4C6C6' : 'var(--mut)'),
       hasBack: !tabRoot, goBack, hdLogo, hdTitle, hasSub: !!hdSub, hdSub, hdActs, tabs,
-      s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_pv: sc === 'pv',
+      s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_aiset: sc === 'aiset', s_pv: sc === 'pv',
       sh_quick: s.sheet === 'quick', sh_sw: s.sheet === 'sw', sh_add: s.sheet === 'add', sh_pick: s.sheet === 'pick', sh_gd: s.sheet === 'gd', sh_lib: s.sheet === 'lib', sh_list: s.sheet === 'gpl' || isNewPl || isLang || isAcc,
       closeSheet, bgClose: (e) => { if (e && e.target === e.currentTarget) closeSheet(); }, hasToast: !!s.toast, toast: s.toast, hasPush: !!s.push, pushTitle: s.push ? s.push.title : '', pushText: s.push ? s.push.text : '', closePush: () => set({ push: null }),
       // domov
@@ -1288,7 +1388,8 @@ class Component extends DCLogic {
       lsTitle: isAcc ? 'Prepnúť účet' : isLang ? 'Jazyk aplikácie' : isNewPl ? 'Nový playlist – pre aké zariadenie' : 'Pridať do playlistu', lsSub: isAcc ? 'Prototyp: aplikácia sa zobrazí tak, ako ju vidí vybraný účet.' : isLang ? 'Zmení sa jazyk tlačidiel, nadpisov a hlásení. Obsah playlistov a názvy miest ostávajú tak, ako ste ich napísali.' : isNewPl ? 'Playlist sa potom dá upravovať a prehrávať len na tomto type zariadenia.' : 'Súbor „' + galFile.name + '“ sa pridá ako nová snímka na koniec playlistu. Ponúkajú sa len playlisty pre displeje.', lsRows,
       // viac / miesta / nastavenia / AI
       moreRows, logout: () => say('Prototyp: odhlásenie nie je zapojené.'), pq: s.pq, setPq: (e) => set({ pq: e.target.value }), pcChips, pcRows, pcEmpty: pcRows.length === 0, pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + vPlaces.length + ' miest',
-      notifRows, aiRows, aiSits, aiRun, aiBusy: s.aiBusy, aiBtnT: s.aiBusy ? 'Pripravujem návrhy…' : 'Navrhnúť text', aiHas: aiOut.length > 0, aiOut,
+      notifRows, aiRows,
+      aiHi: ACC.first ? 'Dobrý deň, ' + ACC.first + '. S čím vám pomôžem?' : 'Dobrý deň. S čím vám pomôžem?', aiMsgs, aiChips, aiTyping: s.aiTyping, aiQ: s.aiQ, aiNoQ: !s.aiQ.trim() || s.aiTyping, setAiQ: (e) => set({ aiQ: e.target.value }), aiSend: () => aiAsk(s.aiQ, false), aiKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(s.aiQ, false); } },
       // náhľad
       pvHas: pvParts.length > 0, pvNone: pvParts.length === 0, pvParts, pvWrapS: stackS(pvPl), pvDevT: DEV[pvDev][0], pvSegs: pvTot ? [] : pvSegs,
       pvCap: pvTot ? 'Tri displeje sa prehrávajú súčasne' : pvPl.slides.length ? (Math.min(s.pvI, pvPl.slides.length - 1) + 1) + '/' + pvPl.slides.length + ' · ' + pvObj.title : '', pvTime: pvTot ? mmss(s.pvE || 0) : pvPl.slides.length ? s.pvT + ' / ' + pvObj.dur + ' s' : '',

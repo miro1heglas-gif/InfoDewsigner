@@ -549,3 +549,51 @@ Samsung Internet prefarbuje stránky vlastným tmavým režimom, preto sa zvolen
 
 # ===== v35: Galéria vo Viac, AI asistent v záložkách =====
 Obrázky, videá a zvuky, nahratie a zmazanie ||| Obrázky, videa a zvuky, nahrání a smazání ||| Obrazy, wideo i dźwięki, przesyłanie i usuwanie ||| Images, videos and sounds, upload and delete ||| Bilder, Videos und Töne, Hochladen und Löschen
+
+# ===== v36: AI asistent ako chat, nastavenie AI vo Viac =====
+Nastavenie AI asistenta ||| Nastavení AI asistenta ||| Ustawienia asystenta AI ||| AI assistant settings ||| Einstellungen des KI-Assistenten
+Dobrý deň, {0}. S čím vám pomôžem? ||| Dobrý den, {0}. S čím vám pomůžu? ||| Dzień dobry, {0}. W czym mogę pomóc? ||| Hello, {0}. How can I help? ||| Guten Tag, {0}. Wobei kann ich helfen?
+Dobrý deň. S čím vám pomôžem? ||| Dobrý den. S čím vám pomůžu? ||| Dzień dobry. W czym mogę pomóc? ||| Hello. How can I help? ||| Guten Tag. Wobei kann ich helfen?
+Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie. ||| Napíšu text rychlé zprávy, najdu místa s hlášením, řeknu, co se kde přehrává, a ukážu, co čeká na schválení. ||| Napiszę tekst szybkiej wiadomości, znajdę miejsca ze zgłoszeniami, powiem, co gdzie jest odtwarzane, i pokażę, co czeka na zatwierdzenie. ||| I can write a quick message, find places with alerts, tell you what is playing where and show what is waiting for approval. ||| Ich schreibe den Text einer Schnellmeldung, finde Standorte mit Meldungen, sage, was wo läuft, und zeige, was auf Freigabe wartet.
+Prototyp: AI odpovedá z ukážkových údajov aplikácie. ||| Prototyp: AI odpovídá z ukázkových dat aplikace. ||| Prototyp: AI odpowiada na podstawie przykładowych danych aplikacji. ||| Prototype: the AI answers from the app's sample data. ||| Prototyp: Die KI antwortet anhand der Beispieldaten der App.
+Napíš správu o meškaní ||| Napiš zprávu o zpoždění ||| Napisz wiadomość o opóźnieniu ||| Write a message about a delay ||| Schreib eine Meldung zur Verspätung
+Napíš správu o odklone ||| Napiš zprávu o objížďce ||| Napisz wiadomość o objeździe ||| Write a message about a detour ||| Schreib eine Meldung zur Umleitung
+Napíš správu o výluke ||| Napiš zprávu o výluce ||| Napisz wiadomość o wyłączeniu ruchu ||| Write a message about a service closure ||| Schreib eine Meldung zur Streckensperrung
+Napíš správu o zatvorenej zastávke ||| Napiš zprávu o uzavřené zastávce ||| Napisz wiadomość o zamkniętym przystanku ||| Write a message about a closed stop ||| Schreib eine Meldung zur geschlossenen Haltestelle
+Ktoré miesta majú hlásenie? ||| Která místa mají hlášení? ||| Które miejsca mają zgłoszenia? ||| Which places have alerts? ||| Welche Standorte haben Meldungen?
+Čo sa hrá na Hlavnej stanici? ||| Co se hraje na místě Hlavná stanica? ||| Co jest odtwarzane w miejscu Hlavná stanica? ||| What is playing at Hlavná stanica? ||| Was läuft am Standort Hlavná stanica?
+Ktoré playlisty expirovali? ||| Které playlisty expirovaly? ||| Które playlisty wygasły? ||| Which playlists have expired? ||| Welche Playlists sind abgelaufen?
+Čo čaká na schválenie? ||| Co čeká na schválení? ||| Co czeka na zatwierdzenie? ||| What is waiting for approval? ||| Was wartet auf Freigabe?
+Ktoré správy sú zobrazené? ||| Které zprávy jsou zobrazené? ||| Które wiadomości są wyświetlane? ||| Which messages are on display? ||| Welche Meldungen werden angezeigt?
+Návrhy správy o meškaní: ||| Návrhy zprávy o zpoždění: ||| Propozycje wiadomości o opóźnieniu: ||| Message suggestions for a delay: ||| Vorschläge für eine Verspätungsmeldung:
+Návrhy správy o odklone: ||| Návrhy zprávy o objížďce: ||| Propozycje wiadomości o objeździe: ||| Message suggestions for a detour: ||| Vorschläge für eine Umleitungsmeldung:
+Návrhy správy o výluke: ||| Návrhy zprávy o výluce: ||| Propozycje wiadomości o wyłączeniu ruchu: ||| Message suggestions for a service closure: ||| Vorschläge für eine Sperrungsmeldung:
+Návrhy správy o zatvorenej zastávke: ||| Návrhy zprávy o uzavřené zastávce: ||| Propozycje wiadomości o zamkniętym przystanku: ||| Message suggestions for a closed stop: ||| Vorschläge für eine Meldung zur geschlossenen Haltestelle:
+O čom má byť správa? Vyberte situáciu. ||| O čem má být zpráva? Vyberte situaci. ||| Czego ma dotyczyć wiadomość? Wybierz sytuację. ||| What should the message be about? Choose a situation. ||| Worum soll es in der Meldung gehen? Wählen Sie die Situation.
+Návrh textu správy je vypnutý v nastavení AI asistenta. ||| Návrh textu zprávy je vypnutý v nastavení AI asistenta. ||| Propozycja tekstu wiadomości jest wyłączona w ustawieniach asystenta AI. ||| Message text suggestions are turned off in the AI assistant settings. ||| Textvorschläge sind in den Einstellungen des KI-Assistenten ausgeschaltet.
+Otvoriť nastavenie ||| Otevřít nastavení ||| Otwórz ustawienia ||| Open settings ||| Einstellungen öffnen
+Tieto miesta majú hlásenie: ||| Tato místa mají hlášení: ||| Te miejsca mają zgłoszenia: ||| These places have alerts: ||| Diese Standorte haben Meldungen:
+Všetky miesta sú v poriadku. ||| Všechna místa jsou v pořádku. ||| Wszystkie miejsca są w porządku. ||| All places are fine. ||| Alle Standorte sind in Ordnung.
+Expirovaný playlist ||| Expirovaný playlist ||| Wygasła playlista ||| Expired playlist ||| Abgelaufene Playlist
+Zobraziť v Miestach ||| Zobrazit v Místech ||| Pokaż w Miejscach ||| Show in Places ||| In Standorten anzeigen
+Tieto playlisty expirovali: ||| Tyto playlisty expirovaly: ||| Te playlisty wygasły: ||| These playlists have expired: ||| Diese Playlists sind abgelaufen:
+Žiadny playlist neexpiroval. ||| Žádný playlist neexpiroval. ||| Żadna playlista nie wygasła. ||| No playlist has expired. ||| Keine Playlist ist abgelaufen.
+Zobraziť v Playlistoch ||| Zobrazit v Playlistech ||| Pokaż w Playlistach ||| Show in Playlists ||| In Playlists anzeigen
+Na týchto miestach sa teraz prehráva: ||| Na těchto místech se teď přehrává: ||| W tych miejscach jest teraz odtwarzane: ||| Now playing at these places: ||| An diesen Standorten läuft gerade:
+Ktoré miesto myslíte? Napíšte jeho názov, napríklad Hlavná stanica alebo Nemocnica. ||| Které místo myslíte? Napište jeho název, například Hlavná stanica nebo Nemocnica. ||| O które miejsce chodzi? Napisz jego nazwę, na przykład Hlavná stanica albo Nemocnica. ||| Which place do you mean? Type its name, for example Hlavná stanica or Nemocnica. ||| Welchen Standort meinen Sie? Geben Sie den Namen ein, zum Beispiel Hlavná stanica oder Nemocnica.
+Na schválenie čaká: ||| Na schválení čeká: ||| Na zatwierdzenie czeka: ||| Waiting for approval: ||| Wartet auf Freigabe:
+Na schválenie ste odoslali: ||| Ke schválení jste odeslali: ||| Do zatwierdzenia wysłano: ||| You sent for approval: ||| Zur Freigabe gesendet:
+Nič nečaká na schválenie. ||| Nic nečeká na schválení. ||| Nic nie czeka na zatwierdzenie. ||| Nothing is waiting for approval. ||| Nichts wartet auf Freigabe.
+Zmeny zverejňujete priamo, schvaľovanie robí správca. ||| Změny zveřejňujete přímo, schvalování dělá správce. ||| Zmiany publikujesz bezpośrednio, zatwierdzaniem zajmuje się administrator. ||| You publish changes directly; approvals are handled by the administrator. ||| Sie veröffentlichen Änderungen direkt, Freigaben erledigt der Administrator.
+Otvoriť schvaľovanie ||| Otevřít schvalování ||| Otwórz zatwierdzanie ||| Open approvals ||| Freigaben öffnen
+Na displejoch sú teraz tieto správy: ||| Na displejích jsou teď tyto zprávy: ||| Na wyświetlaczach są teraz te wiadomości: ||| These messages are on the displays now: ||| Auf den Displays laufen gerade diese Meldungen:
+Teraz nie je zobrazená žiadna rýchla správa. ||| Teď není zobrazená žádná rychlá zpráva. ||| Teraz nie jest wyświetlana żadna szybka wiadomość. ||| No quick message is on display right now. ||| Gerade wird keine Schnellmeldung angezeigt.
+Viem napísať text rýchlej správy, nájsť miesta s hlásením, povedať, čo sa kde prehráva, a ukázať, čo čaká na schválenie alebo je zobrazené. ||| Umím napsat text rychlé zprávy, najít místa s hlášením, říct, co se kde přehrává, a ukázat, co čeká na schválení nebo je zobrazené. ||| Potrafię napisać tekst szybkiej wiadomości, znaleźć miejsca ze zgłoszeniami, powiedzieć, co gdzie jest odtwarzane, i pokazać, co czeka na zatwierdzenie lub jest wyświetlane. ||| I can write a quick message, find places with alerts, tell you what is playing where and show what is waiting for approval or on display. ||| Ich kann den Text einer Schnellmeldung schreiben, Standorte mit Meldungen finden, sagen, was wo läuft, und zeigen, was auf Freigabe wartet oder angezeigt wird.
+Rado sa stalo. Ak treba, pýtajte sa ďalej. ||| Rádo se stalo. Klidně se ptejte dál. ||| Nie ma za co. Proszę pytać dalej. ||| You're welcome. Ask anytime. ||| Gern geschehen. Fragen Sie ruhig weiter.
+Tomuto zatiaľ nerozumiem. Skúste jednu z otázok nad poľom na písanie. ||| Tomu zatím nerozumím. Zkuste jednu z otázek nad polem pro psaní. ||| Jeszcze tego nie rozumiem. Spróbuj jednego z pytań nad polem tekstowym. ||| I don't understand that yet. Try one of the questions above the text box. ||| Das verstehe ich noch nicht. Versuchen Sie eine der Fragen über dem Eingabefeld.
+AI píše… ||| AI píše… ||| AI pisze… ||| AI is typing… ||| KI schreibt…
+Napíšte otázku alebo požiadavku ||| Napište otázku nebo požadavek ||| Napisz pytanie lub prośbę ||| Type a question or request ||| Frage oder Anliegen eingeben
+Otázka pre AI asistenta ||| Otázka pro AI asistenta ||| Pytanie do asystenta AI ||| Question for the AI assistant ||| Frage an den KI-Assistenten
+Odoslať otázku ||| Odeslat otázku ||| Wyślij pytanie ||| Send question ||| Frage senden
+Nová konverzácia ||| Nová konverzace ||| Nowa rozmowa ||| New conversation ||| Neue Unterhaltung
+Chat s asistentom otvoríte v záložke AI asistent dole. ||| Chat s asistentem otevřete v záložce AI asistent dole. ||| Czat z asystentem otworzysz w zakładce Asystent AI na dole. ||| Open the chat in the AI assistant tab at the bottom. ||| Den Chat öffnen Sie unten im Tab KI-Assistent.

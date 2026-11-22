@@ -131,26 +131,41 @@
       </div>
     </sc-if>
 
-    <!-- ===== AI ASISTENT ===== -->
+    <!-- ===== AI ASISTENT: chat (záložka dole) ===== -->
     <sc-if value="{{ s_ai }}" hint-placeholder-val="{{ false }}">
+      <div class="sc chat" id="ai-chat" aria-live="polite">
+        <div class="msg" data-who="ai"><div style="font-weight: 700">{{ aiHi }}</div><div>Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie.</div><div class="mut sm">Prototyp: AI odpovedá z ukážkových údajov aplikácie.</div></div>
+        <sc-for list="{{ aiMsgs }}" as="m" hint-placeholder-count="2">
+          <div class="msg" data-who="{{ m.who }}">
+            <sc-if value="{{ m.meChip }}" hint-placeholder-val="{{ false }}"><div>{{ m.text }}</div></sc-if>
+            <sc-if value="{{ m.meTyped }}" hint-placeholder-val="{{ false }}"><div translate="no">{{ m.text }}</div></sc-if>
+            <sc-if value="{{ m.ai }}" hint-placeholder-val="{{ true }}">
+              <div>{{ m.text }}</div>
+              <sc-if value="{{ m.hasItems }}" hint-placeholder-val="{{ false }}"><div class="ai-list"><sc-for list="{{ m.items }}" as="it" hint-placeholder-count="2">
+                <sc-if value="{{ it.canTap }}" hint-placeholder-val="{{ true }}"><button class="ai-it" onClick="{{ it.tap }}" aria-label="{{ it.aria }}"><span class="nm" translate="no">{{ it.name }}</span><span class="mut sm">{{ it.sub }}</span></button></sc-if>
+                <sc-if value="{{ it.noTap }}" hint-placeholder-val="{{ false }}"><div class="ai-it"><span class="nm" translate="no">{{ it.name }}</span><span class="mut sm">{{ it.sub }}</span></div></sc-if>
+              </sc-for></div></sc-if>
+              <sc-if value="{{ m.hasSugg }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ m.sugg }}" as="g" hint-placeholder-count="3"><div class="ai-sg"><span>{{ g.text }}</span><button class="btn sm" onClick="{{ g.use }}">Použiť</button></div></sc-for></sc-if>
+              <sc-if value="{{ m.hasNote }}" hint-placeholder-val="{{ false }}"><div class="mut sm">{{ m.note }}</div></sc-if>
+              <sc-if value="{{ m.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ai-acts"><sc-for list="{{ m.acts }}" as="a" hint-placeholder-count="1"><button class="btn sm" onClick="{{ a.fn }}">{{ a.label }}</button></sc-for></div></sc-if>
+            </sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{ aiTyping }}" hint-placeholder-val="{{ false }}"><div class="msg" data-who="ai" role="status"><span class="mut">AI píše…</span></div></sc-if>
+      </div>
+      <div class="aiq">
+        <div class="chips"><sc-for list="{{ aiChips }}" as="c" hint-placeholder-count="4"><button class="chip" onClick="{{ c.ask }}">{{ c.label }}</button></sc-for></div>
+        <div class="aiq-r"><input class="inp" value="{{ aiQ }}" onInput="{{ setAiQ }}" onKeyDown="{{ aiKey }}" placeholder="Napíšte otázku alebo požiadavku" aria-label="Otázka pre AI asistenta" enterkeyhint="send"><button class="aiq-send" onClick="{{ aiSend }}" disabled="{{ aiNoQ }}" aria-label="Odoslať otázku"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.send }}"></path></svg></button></div>
+      </div>
+    </sc-if>
+
+    <!-- ===== NASTAVENIE AI ASISTENTA (Viac › Nastavenie AI asistenta) ===== -->
+    <sc-if value="{{ s_aiset }}" hint-placeholder-val="{{ false }}">
       <div class="sc">
         <div class="list"><sc-for list="{{ aiRows }}" as="x" hint-placeholder-count="2">
           <div class="row"><span style="flex: 1; min-width: 0"><span class="nm">{{ x.title }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div>
         </sc-for></div>
-        <div class="card form">
-          <div class="h2">Navrhnúť text rýchlej správy</div>
-          <div class="lbl">Čo sa stalo</div>
-          <div class="chips" style="flex-wrap: wrap"><sc-for list="{{ aiSits }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div>
-          <button class="btn" data-k="p" disabled="{{ aiBusy }}" onClick="{{ aiRun }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.spark }}"></path></svg>{{ aiBtnT }}</button>
-        </div>
-        <sc-if value="{{ aiHas }}" hint-placeholder-val="{{ false }}">
-          <div class="sec"><h2 class="h2">Návrhy</h2>
-            <div class="list"><sc-for list="{{ aiOut }}" as="o" hint-placeholder-count="3">
-              <div class="row"><span style="flex: 1; min-width: 0; line-height: 1.35">{{ o.text }}</span><button class="btn sm" onClick="{{ o.use }}">Použiť</button></div>
-            </sc-for></div>
-            <div class="mut sm">Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.</div>
-          </div>
-        </sc-if>
+        <div class="mut sm">Chat s asistentom otvoríte v záložke AI asistent dole.</div>
       </div>
     </sc-if>
 

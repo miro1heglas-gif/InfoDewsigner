@@ -8,11 +8,11 @@ Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy W
 - schváli obsah partnera (tretej strany),
 - skontroluje, čo sa kde práve prehráva a ktoré miesta majú hlásenie.
 
-Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria je vo Viac.
+Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria a nastavenie AI asistenta sú vo Viac. AI asistent je chat, ktorý odpovedá z ukážkových údajov prototypu.
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia 35 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia 37 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -42,7 +42,7 @@ index.html                 úvodná stránka: telefón + zoznam obrazoviek
 project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
-  Obr_*.dc.html            29 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
+  Obr_*.dc.html            30 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
   i18n.js                  preklady (generované zo zdroje/preklady)
   canvas.json              rozmiestnenie obrazoviek na plátne v claude.ai (na beh netreba)
   manifest.json            údaje pre pridanie na plochu telefónu (názov, ikony, farby)
@@ -83,11 +83,12 @@ zdroje/
 | `Obr_Miesta` | miesta – stav, filter Hlásenia, zariadenie, úprava a prepnutie playlistu |
 | `Obr_PrepnutiePlaylistu` | prepnutie playlistu – viac miest alebo celá skupina naraz |
 | `Obr_Galeria` | galéria (Viac › Galéria) – súbory, filtre, nahratie, zmazanie |
-| `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenia, jazyk |
+| `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenie AI asistenta, nastavenia, jazyk |
 | `Obr_Schvalovanie` | schvaľovanie – čaká a vybavené |
 | `Obr_DetailSchvalenia` | detail schválenia – zmeny, schváliť, vrátiť, zamietnuť |
 | `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova |
-| `Obr_AI` | AI asistent (záložka dole) – návrh textu rýchlej správy |
+| `Obr_AI` | AI asistent (záložka dole) – chat: návrh textu správy, miesta s hlásením, čo sa kde hrá, schvaľovanie |
+| `Obr_AINastavenie` | nastavenie AI asistenta (Viac › Nastavenie AI asistenta) |
 | `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia a úložisko |
 | `Obr_PrepnutieUctu` | prepnutie účtu – Admin, Director, Worker, Partner |
 | `Obr_Partner` | účet Partner – len pridelené miesta, zmeny idú na schválenie |

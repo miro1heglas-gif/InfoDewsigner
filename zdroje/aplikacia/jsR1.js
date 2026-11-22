@@ -114,7 +114,8 @@
     else if (sc === 'plc') { hdTitle = 'Miesta'; hdSub = ''; }
     else if (sc === 'set') { hdTitle = 'Nastavenia'; hdSub = ''; }
     else if (sc === 'hist') { hdTitle = 'História správ'; hdSub = ''; }
-    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; }
+    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length ? [act('Nová konverzácia', IC.plus, () => { clearTimeout(self._tai); set({ aiChat: [], aiQ: '', aiTyping: false }); })] : []; }
+    else if (sc === 'aiset') { hdTitle = 'Nastavenie AI asistenta'; hdSub = ''; }
     else if (sc === 'pv') { hdTitle = 'Náhľad'; hdSub = (plById(s.pvPl) || pl).name; }
 
     // ---------- rýchle správy: kam ----------

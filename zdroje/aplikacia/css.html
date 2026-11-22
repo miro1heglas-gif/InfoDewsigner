@@ -84,6 +84,23 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[role=button]:fo
 .prv{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.12);flex:none;align-self:center}
 .playov{position:absolute;right:12px;bottom:12px;width:48px;height:48px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;padding-left:3px}
 .bar{flex:none;display:flex;gap:10px;padding:10px 16px 12px;background:var(--sf);border-top:1px solid var(--ln)}
+.chat{gap:10px;padding-bottom:14px}
+.msg{max-width:88%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;display:flex;flex-direction:column;gap:8px;flex:none}
+.msg[data-who="me"]{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:6px}
+.msg[data-who="ai"]{align-self:flex-start;background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-bottom-left-radius:6px}
+.ai-list{display:flex;flex-direction:column;border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+.ai-it{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:44px;padding:9px 12px;background:var(--sf2);border:none;border-top:1px solid var(--ln);text-align:left;width:100%;color:var(--tx);font:inherit}
+.ai-it:first-child{border-top:none}
+.ai-it .nm{font-size:15px}
+.ai-sg{display:flex;gap:10px;align-items:center;padding:8px 8px 8px 12px;border:1px solid var(--ln);border-radius:12px;background:var(--sf2)}
+.ai-sg span{flex:1;min-width:0;line-height:1.35}
+.ai-acts{display:flex;flex-wrap:wrap;gap:8px}
+.ai-acts .btn{flex:none}
+.aiq{flex:none;background:var(--sf);border-top:1px solid var(--ln);padding:8px 12px 10px;display:flex;flex-direction:column;gap:8px}
+.aiq-r{display:flex;gap:8px;align-items:center}
+.aiq-r .inp{flex:1;min-width:0;height:48px}
+.aiq-send{width:48px;height:48px;border-radius:12px;border:none;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.aiq-send:disabled{opacity:.45}
 .tabs{height:64px;flex:none;display:flex;background:var(--sf);border-top:1px solid var(--ln)}
 .tab{flex:1;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;color:var(--mut);position:relative;padding:0}
 .tab[aria-current="page"]{color:var(--act)}
