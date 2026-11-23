@@ -10,11 +10,11 @@ Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy W
 
 Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria je vo Viac, nastavenie AI asistenta v Nastaveniach. AI asistent je chat, ktorý odpovedá z ukážkových údajov prototypu.
 
-Mobilná aplikácia len upravuje: nevytvára playlisty, nemaže snímky ani súbory a nemení vzory (rozloženie plochy). Snímku môže z playlistu odstrániť, v zozname snímok však ostane.
+Mobilná aplikácia len upravuje: nevytvára playlisty, nemaže snímky ani súbory a nemení vzory (rozloženie plochy). Snímku môže z playlistu odstrániť, v zozname snímok však ostane. Snímky podľa zložených vzorov (sekcie v riadkoch a stĺpcoch, ako v desktopovom editore vzorov) sa upravujú ťuknutím na sekciu: obsah sekcie sa vyberá z rovnakých typov ako v desktope (text, obrázok, video, odchody vozidiel, cestovné poriadky, odkaz, mapa, počasie, detail linky, info menu, vozidlová trasa, kalendár, vodné merania, čas). Ponúknu sa len typy, pre ktoré má organizácia pripojený zdroj dát a ktoré zariadenie zvládne (napríklad info menu len na dotykovom kiosku). Ostatné sú vypísané ako nedostupné s dôvodom. Prehľad zdrojov dát je vo Viac › Nastavenia. Sekcie, ktoré patria tretej strane (napríklad Mesto Riečany), sú šrafované a označené jej menom. Dopravca ich obsah nemení, partner upravuje len svoje sekcie.
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia 38 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia 40 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -44,7 +44,7 @@ index.html                 úvodná stránka: telefón + zoznam obrazoviek
 project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
-  Obr_*.dc.html            30 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
+  Obr_*.dc.html            33 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
   i18n.js                  preklady (generované zo zdroje/preklady)
   canvas.json              rozmiestnenie obrazoviek na plátne v claude.ai (na beh netreba)
   manifest.json            údaje pre pridanie na plochu telefónu (názov, ikony, farby)
@@ -72,12 +72,15 @@ zdroje/
 | `Main` | celá klikateľná aplikácia (domov) |
 | `Obr_Playlisty` | playlisty – zoznam, filter, upraviť (ceruzka) a náhľad (play) |
 | `Obr_DetailPlaylistu` | detail playlistu pre displej – poradie, pridanie fotky, odoslanie |
-| `Obr_DetailLED` | detail playlistu pre LED tabuľu – text alebo snímka zo zoznamu |
 | `Obr_UpravaSnimky` | úprava snímky pre displej – text, farba, trvanie, odstránenie z playlistu |
-| `Obr_SnimkaSekcie` | snímka podľa vzoru – ťuknutím na sekciu ju upravíte, vzor sa nemení |
+| `Obr_PlaylistSekcie` | playlist so zloženými snímkami (31″ zastávka) |
+| `Obr_SnimkaSekcie` | vzor „Kiosk s menu“ – ťuknutím na sekciu ju upravíte, vzor sa nemení |
+| `Obr_VzorPolovice` | vzor „Hore 1 + dole 2“ – hore oznam, dole mapa a odchody |
+| `Obr_VzorOdchody` | vzor „Odchody + 2 info“ – odchody, oznam, počasie |
+| `Obr_VzorPas` | vzor „Pás – nástupište“ na šírku – odchody a reklama |
+| `Obr_Vzor2x2` | vzor „Nástenka 2 × 2 na šírku“ – štyri sekcie |
 | `Obr_LED` | úprava textu pre LED tabuľu – veľkosť, farba, pole |
 | `Obr_Oznacnik` | playlist pre označník – LED čas a dátum, LED odchody, e-papier |
-| `Obr_OznacnikNahlad` | náhľad označníka – tri displeje pod sebou |
 | `Obr_PridanieFotky` | pridanie fotky – odfotiť, z telefónu, z galérie |
 | `Obr_ZoznamSnimok` | pridanie snímky zo zoznamu vytvorených snímok |
 | `Obr_Nahlad` | náhľad playlistu na jeho zariadení |

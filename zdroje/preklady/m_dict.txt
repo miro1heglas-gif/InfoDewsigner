@@ -635,3 +635,87 @@ Odoslané – „{0}“ sa prepne na {1} od {2} do {3}. ||| Odesláno – „{0}
 Použité v playlistoch ({0}) ||| Použito v playlistech ({0}) ||| Używane w playlistach ({0}) ||| Used in playlists ({0}) ||| Verwendet in Playlists ({0})
 Obrázky, videá a zvuky, nahratie nových súborov ||| Obrázky, videa a zvuky, nahrání nových souborů ||| Obrazy, wideo i dźwięki, przesyłanie nowych plików ||| Images, videos and sounds, upload new files ||| Bilder, Videos und Töne, neue Dateien hochladen
 Vzhľad, upozornenia, AI asistent a úložisko ||| Vzhled, upozornění, AI asistent a úložiště ||| Wygląd, powiadomienia, asystent AI i pamięć ||| Appearance, notifications, AI assistant and storage ||| Aussehen, Benachrichtigungen, KI-Assistent und Speicher
+
+# ===== v39: ďalšie zložené vzory – názvy sekcií =====
+Mapa ||| Mapa ||| Mapa ||| Map ||| Karte
+Počasie ||| Počasí ||| Pogoda ||| Weather ||| Wetter
+Pätička ||| Zápatí ||| Stopka ||| Footer ||| Fußzeile
+Reklama ||| Reklama ||| Reklama ||| Advert ||| Werbung
+Servis ||| Servis ||| Serwis ||| Service ||| Service
+Park ||| Park ||| Park ||| Park ||| Park
+Kino ||| Kino ||| Kino ||| Cinema ||| Kino
+Koncert ||| Koncert ||| Koncert ||| Concert ||| Konzert
+Výstava ||| Výstava ||| Wystawa ||| Exhibition ||| Ausstellung
+Pruh ||| Pruh ||| Pasek ||| Strip ||| Streifen
+
+# ===== v39: obsah sekcie a sekcie tretej strany =====
+Čo sa zobrazí v sekcii ||| Co se zobrazí v sekci ||| Co ma się wyświetlać w sekcji ||| What the section shows ||| Was der Bereich zeigt
+Cestovný poriadok ||| Jízdní řád ||| Rozkład jazdy ||| Timetable ||| Fahrplan
+Linka ||| Linka ||| Linia ||| Line ||| Linie
+Linka {0} ||| Linka {0} ||| Linia {0} ||| Line {0} ||| Linie {0}
+Smer ||| Směr ||| Kierunek ||| Direction ||| Richtung
+Cestovný poriadok sa načíta zo zdroja dát pre zvolenú linku a smer. ||| Jízdní řád se načte ze zdroje dat pro zvolenou linku a směr. ||| Rozkład jazdy wczyta się ze źródła danych dla wybranej linii i kierunku. ||| The timetable loads from the data source for the chosen line and direction. ||| Der Fahrplan wird für die gewählte Linie und Richtung aus der Datenquelle geladen.
+Fotka do sekcie ||| Fotka do sekce ||| Zdjęcie do sekcji ||| Photo for the section ||| Foto für den Bereich
+Fotka „{0}“ je v sekcii „{1}“. ||| Fotka „{0}“ je v sekci „{1}“. ||| Zdjęcie „{0}” jest w sekcji „{1}”. ||| Photo “{0}” is now in section “{1}”. ||| Das Foto „{0}“ ist jetzt im Bereich „{1}“.
+Túto sekciu spravuje tretia strana – {0}. Jej obsah meniť nemôžete. ||| Tuto sekci spravuje třetí strana – {0}. Její obsah měnit nemůžete. ||| Tą sekcją zarządza strona trzecia – {0}. Nie możesz zmieniać jej treści. ||| This section is managed by a third party – {0}. You cannot change its content. ||| Dieser Bereich wird von einem Dritten verwaltet – {0}. Sie können den Inhalt nicht ändern.
+Túto sekciu spravuje DP Riečany. Upravovať môžete len sekcie svojej plochy. ||| Tuto sekci spravuje DP Riečany. Upravovat můžete jen sekce své plochy. ||| Tą sekcją zarządza DP Riečany. Możesz edytować tylko sekcje swojej powierzchni. ||| This section is managed by DP Riečany. You can only edit sections of your own area. ||| Dieser Bereich wird von DP Riečany verwaltet. Sie können nur Bereiche Ihrer eigenen Fläche bearbeiten.
+Vaša plocha. Zmeny pošlete na schválenie. ||| Vaše plocha. Změny pošlete ke schválení. ||| Twoja powierzchnia. Zmiany wyślesz do zatwierdzenia. ||| Your area. Changes are sent for approval. ||| Ihre Fläche. Änderungen werden zur Freigabe gesendet.
+tretia strana: {0} ||| třetí strana: {0} ||| strona trzecia: {0} ||| third party: {0} ||| Dritter: {0}
+Upraviť sekciu: {0} (tretia strana: {1}) ||| Upravit sekci: {0} (třetí strana: {1}) ||| Edytuj sekcję: {0} (strona trzecia: {1}) ||| Edit section: {0} (third party: {1}) ||| Bereich bearbeiten: {0} (Dritter: {1})
+Šrafované sekcie patria tretej strane: {0}. ||| Šrafované sekce patří třetí straně: {0}. ||| Zakreskowane sekcje należą do strony trzeciej: {0}. ||| Hatched sections belong to a third party: {0}. ||| Schraffierte Bereiche gehören einem Dritten: {0}.
+Snímky playlistu ||| Snímky playlistu ||| Slajdy playlisty ||| Playlist slides ||| Playlist-Folien
+
+# ===== v40: obsah sekcie podľa zdrojov dát a zariadenia =====
+Nadpis alebo oznam ||| Nadpis nebo oznámení ||| Nagłówek lub komunikat ||| Heading or notice ||| Überschrift oder Hinweis
+Fotka alebo grafika ||| Fotka nebo grafika ||| Zdjęcie lub grafika ||| Photo or graphic ||| Foto oder Grafik
+Krátke video v slučke ||| Krátké video ve smyčce ||| Krótkie wideo w pętli ||| Short looping video ||| Kurzes Video in Schleife
+Odchody vozidiel ||| Odjezdy vozidel ||| Odjazdy pojazdów ||| Vehicle departures ||| Fahrzeugabfahrten
+Živé odchody zo zastávky ||| Živé odjezdy ze zastávky ||| Odjazdy z przystanku na żywo ||| Live departures from the stop ||| Live-Abfahrten der Haltestelle
+Cestovné poriadky ||| Jízdní řády ||| Rozkłady jazdy ||| Timetables ||| Fahrpläne
+Tabuľka odchodov podľa liniek ||| Tabulka odjezdů podle linek ||| Tabela odjazdów według linii ||| Departure table by line ||| Abfahrtstabelle nach Linien
+Odkaz ||| Odkaz ||| Link ||| Link ||| Link
+Zobrazí webovú stránku ||| Zobrazí webovou stránku ||| Wyświetla stronę internetową ||| Shows a web page ||| Zeigt eine Webseite
+Mapa okolia zastávky ||| Mapa okolí zastávky ||| Mapa okolicy przystanku ||| Map around the stop ||| Karte der Umgebung
+Teplota a predpoveď ||| Teplota a předpověď ||| Temperatura i prognoza ||| Temperature and forecast ||| Temperatur und Vorhersage
+Detail linky ||| Detail linky ||| Szczegóły linii ||| Line detail ||| Liniendetail
+Trasa a zastávky linky ||| Trasa a zastávky linky ||| Trasa i przystanki linii ||| Route and stops of the line ||| Strecke und Haltestellen der Linie
+Info menu ||| Info menu ||| Menu informacyjne ||| Info menu ||| Infomenü
+Dotykové dlaždice s ponukou ||| Dotykové dlaždice s nabídkou ||| Dotykowe kafelki z menu ||| Touch tiles with a menu ||| Touch-Kacheln mit Menü
+Vozidlová trasa ||| Trasa vozidla ||| Trasa pojazdu ||| Vehicle route ||| Fahrzeugroute
+Trasa vozidla z palubného počítača ||| Trasa vozidla z palubního počítače ||| Trasa pojazdu z komputera pokładowego ||| Vehicle route from the on-board computer ||| Fahrzeugroute vom Bordcomputer
+Kalendár ||| Kalendář ||| Kalendarz ||| Calendar ||| Kalender
+Mesiac so sviatkami a udalosťami ||| Měsíc se svátky a událostmi ||| Miesiąc ze świętami i wydarzeniami ||| Month with holidays and events ||| Monat mit Feiertagen und Ereignissen
+Vodné merania ||| Vodní měření ||| Pomiary wodne ||| Water measurements ||| Wassermessungen
+Hladiny a prietoky tokov ||| Hladiny a průtoky toků ||| Poziomy i przepływy rzek ||| River levels and flows ||| Pegel und Abflüsse
+Čas ||| Čas ||| Czas ||| Time ||| Uhrzeit
+Hodiny a dátum ||| Hodiny a datum ||| Zegar i data ||| Clock and date ||| Uhr und Datum
+Mapové podklady ||| Mapové podklady ||| Podkłady mapowe ||| Map data ||| Kartendaten
+Palubný počítač vozidla ||| Palubní počítač vozidla ||| Komputer pokładowy pojazdu ||| Vehicle on-board computer ||| Bordcomputer des Fahrzeugs
+Chýba zdroj dát: {0} ||| Chybí zdroj dat: {0} ||| Brak źródła danych: {0} ||| Data source missing: {0} ||| Datenquelle fehlt: {0}
+Zariadenie nie je dotykové ||| Zařízení není dotykové ||| Urządzenie nie jest dotykowe ||| The device is not touch-enabled ||| Das Gerät hat keinen Touchscreen
+Zariadenie neprehráva video ||| Zařízení nepřehrává video ||| Urządzenie nie odtwarza wideo ||| The device cannot play video ||| Das Gerät spielt kein Video ab
+Zariadenie nemá prehliadač ||| Zařízení nemá prohlížeč ||| Urządzenie nie ma przeglądarki ||| The device has no browser ||| Das Gerät hat keinen Browser
+Len pre displej vo vozidle ||| Jen pro displej ve vozidle ||| Tylko dla wyświetlacza w pojeździe ||| Only for in-vehicle displays ||| Nur für Displays im Fahrzeug
+Ponuka podľa zdrojov dát a zariadenia: {0}. ||| Nabídka podle zdrojů dat a zařízení: {0}. ||| Oferta według źródeł danych i urządzenia: {0}. ||| Options based on data sources and device: {0}. ||| Angebot nach Datenquellen und Gerät: {0}.
+Nedostupné ||| Nedostupné ||| Niedostępne ||| Unavailable ||| Nicht verfügbar
+Zdroje dát a typy zariadení sa nastavujú v desktopovej aplikácii. ||| Zdroje dat a typy zařízení se nastavují v desktopové aplikaci. ||| Źródła danych i typy urządzeń ustawia się w aplikacji desktopowej. ||| Data sources and device types are set in the desktop app. ||| Datenquellen und Gerätetypen werden in der Desktop-App eingestellt.
+Obsah sekcie ||| Obsah sekce ||| Treść sekcji ||| Section content ||| Bereichsinhalt
+Zmeniť obsah sekcie: {0} ||| Změnit obsah sekce: {0} ||| Zmień treść sekcji: {0} ||| Change section content: {0} ||| Bereichsinhalt ändern: {0}
+Zdroj dát: {0} ||| Zdroj dat: {0} ||| Źródło danych: {0} ||| Data source: {0} ||| Datenquelle: {0}
+Prehráva sa v slučke bez zvuku ||| Přehrává se ve smyčce bez zvuku ||| Odtwarzane w pętli bez dźwięku ||| Plays in a loop without sound ||| Läuft in Schleife ohne Ton
+Adresa stránky ||| Adresa stránky ||| Adres strony ||| Page address ||| Seitenadresse
+Stránka sa zobrazí v sekcii a obnoví sa každých 5 minút. ||| Stránka se zobrazí v sekci a obnoví se každých 5 minut. ||| Strona wyświetli się w sekcji i odświeży co 5 minut. ||| The page shows in the section and refreshes every 5 minutes. ||| Die Seite wird im Bereich angezeigt und alle 5 Minuten aktualisiert.
+Okolie zastávky ||| Okolí zastávky ||| Okolica przystanku ||| Area around the stop ||| Umgebung der Haltestelle
+Mapa sa načíta pre polohu miesta. ||| Mapa se načte pro polohu místa. ||| Mapa wczyta się dla położenia miejsca. ||| The map loads for the place's location. ||| Die Karte wird für den Standort geladen.
+Teplota a predpoveď na 3 dni sa načítajú pre polohu miesta. ||| Teplota a předpověď na 3 dny se načtou pro polohu místa. ||| Temperatura i prognoza na 3 dni wczytają się dla położenia miejsca. ||| Temperature and a 3-day forecast load for the place's location. ||| Temperatur und 3-Tage-Vorhersage werden für den Standort geladen.
+Trasa a zastávky sa načítajú z cestovných poriadkov. ||| Trasa a zastávky se načtou z jízdních řádů. ||| Trasa i przystanki wczytają się z rozkładów jazdy. ||| The route and stops load from the timetables. ||| Strecke und Haltestellen werden aus den Fahrplänen geladen.
+Dlaždice (oddelené čiarkou) ||| Dlaždice (oddělené čárkou) ||| Kafelki (oddzielone przecinkiem) ||| Tiles (comma-separated) ||| Kacheln (durch Komma getrennt)
+Ťuknutím na dlaždicu cestujúci otvorí ďalšiu stránku. ||| Klepnutím na dlaždici cestující otevře další stránku. ||| Dotknięcie kafelka otwiera pasażerowi kolejną stronę. ||| Tapping a tile opens another page for passengers. ||| Durch Tippen auf eine Kachel öffnen Fahrgäste eine weitere Seite.
+Zobrazí aktuálny mesiac so sviatkami a udalosťami mesta. ||| Zobrazí aktuální měsíc se svátky a událostmi města. ||| Wyświetla bieżący miesiąc ze świętami i wydarzeniami miasta. ||| Shows the current month with holidays and city events. ||| Zeigt den aktuellen Monat mit Feiertagen und Ereignissen der Stadt.
+Hodiny a dátum podľa času zariadenia. ||| Hodiny a datum podle času zařízení. ||| Zegar i data według czasu urządzenia. ||| Clock and date from the device time. ||| Uhr und Datum nach Gerätezeit.
+Video „{0}“ je v sekcii „{1}“. ||| Video „{0}“ je v sekci „{1}“. ||| Wideo „{0}” jest w sekcji „{1}”. ||| Video “{0}” is now in section “{1}”. ||| Das Video „{0}“ ist jetzt im Bereich „{1}“.
+bez videa ||| bez videa ||| bez wideo ||| no video ||| ohne Video
+Zdroje dát ||| Zdroje dat ||| Źródła danych ||| Data sources ||| Datenquellen
+Pripojený ||| Připojený ||| Połączone ||| Connected ||| Verbunden
+Nepripojený ||| Nepřipojený ||| Niepołączone ||| Not connected ||| Nicht verbunden
+Podľa zdrojov dát sa ponúka obsah sekcií snímky. Pripájajú sa v desktopovej aplikácii. ||| Podle zdrojů dat se nabízí obsah sekcí snímku. Připojují se v desktopové aplikaci. ||| Według źródeł danych oferowana jest treść sekcji slajdu. Podłącza się je w aplikacji desktopowej. ||| Section content is offered based on data sources. They are connected in the desktop app. ||| Der Bereichsinhalt richtet sich nach den Datenquellen. Sie werden in der Desktop-App verbunden.

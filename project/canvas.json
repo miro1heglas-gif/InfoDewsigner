@@ -40,15 +40,6 @@
    "page": "app",
    "is_interactive": true
   },
-  "Obr_DetailLED.dc.html": {
-   "x": 1410,
-   "y": 0,
-   "w": 390,
-   "h": 844,
-   "title": "Detail playlistu pre LED tabuľu – text alebo snímka zo zoznamu",
-   "page": "app",
-   "is_interactive": true
-  },
   "Obr_UpravaSnimky.dc.html": {
    "x": 1880,
    "y": 0,
@@ -201,15 +192,6 @@
    "page": "app",
    "is_interactive": true
   },
-  "Obr_OznacnikNahlad.dc.html": {
-   "x": 0,
-   "y": 964,
-   "w": 390,
-   "h": 844,
-   "title": "Náhľad označníka – tri displeje pod sebou",
-   "page": "app",
-   "is_interactive": true
-  },
   "Obr_Jazyk.dc.html": {
    "x": 470,
    "y": 2892,
@@ -292,11 +274,56 @@
    "is_interactive": true
   },
   "Obr_SnimkaSekcie.dc.html": {
-   "x": 3290,
-   "y": 2892,
+   "x": 0,
+   "y": 3856,
    "w": 390,
    "h": 844,
-   "title": "Snímka podľa vzoru – ťuknutím na sekciu ju upravíte, vzor sa v mobile nemení",
+   "title": "Vzor „Kiosk s menu“ (32″ kiosk) – ťuknutím na sekciu ju upravíte, vzor sa v mobile nemení",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_PlaylistSekcie.dc.html": {
+   "x": 1410,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Playlist so zloženými snímkami – snímky podľa vzorov so sekciami (31″ zastávka)",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_VzorPolovice.dc.html": {
+   "x": 470,
+   "y": 3856,
+   "w": 390,
+   "h": 844,
+   "title": "Vzor „Hore 1 + dole 2“ (31″) – hore oznam, dole mapa a odchody",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_VzorOdchody.dc.html": {
+   "x": 940,
+   "y": 3856,
+   "w": 390,
+   "h": 844,
+   "title": "Vzor „Odchody + 2 info“ (31″) – odchody, oznam, počasie",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_VzorPas.dc.html": {
+   "x": 1410,
+   "y": 3856,
+   "w": 390,
+   "h": 844,
+   "title": "Vzor „Pás – nástupište“ (55″ na šírku) – odchody a reklama vedľa seba",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_Vzor2x2.dc.html": {
+   "x": 1880,
+   "y": 3856,
+   "w": 390,
+   "h": 844,
+   "title": "Vzor „Nástenka 2 × 2 na šírku“ (55″) – štyri sekcie",
    "page": "app",
    "is_interactive": true
   }
@@ -305,12 +332,15 @@
   "Main.dc.html",
   "Obr_Playlisty.dc.html",
   "Obr_DetailPlaylistu.dc.html",
-  "Obr_DetailLED.dc.html",
   "Obr_UpravaSnimky.dc.html",
+  "Obr_PlaylistSekcie.dc.html",
   "Obr_SnimkaSekcie.dc.html",
+  "Obr_VzorPolovice.dc.html",
+  "Obr_VzorOdchody.dc.html",
+  "Obr_VzorPas.dc.html",
+  "Obr_Vzor2x2.dc.html",
   "Obr_LED.dc.html",
   "Obr_Oznacnik.dc.html",
-  "Obr_OznacnikNahlad.dc.html",
   "Obr_PridanieFotky.dc.html",
   "Obr_ZoznamSnimok.dc.html",
   "Obr_Nahlad.dc.html",

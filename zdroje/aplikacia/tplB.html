@@ -71,7 +71,7 @@
         <div class="card" style="display: flex; flex-direction: column; gap: 10px">
           <div style="display: flex; align-items: flex-start; gap: 10px"><div style="flex: 1; min-width: 0"><div class="nm" style="font-size: 17px" translate="no">{{ ad.name }}</div><div class="mut sm">{{ ad.by }}</div><div class="sm" style="font-weight: 600; color: var(--tx2)">{{ ad.devT }}</div></div><span class="pill" data-k="{{ ad.k }}">{{ ad.stT }}</span></div>
           <div class="h2">Náhľad snímok</div>
-          <div class="strip"><sc-for list="{{ adSlides }}" as="r" hint-placeholder-count="3"><div style="{{ r.itemS }}"><dc-import name="Slide" sx="{{ r.sx }}" kind="{{ r.kind }}" title="{{ r.title }}" text="{{ r.text }}" bg="{{ r.bg }}" img="{{ r.img }}" dev="{{ r.dev }}" w="{{ r.w }}" r="8" ledsize="{{ r.ledSize }}" ledalign="{{ r.ledAlign }}" ledcol="{{ r.ledCol }}" ledbg="{{ r.ledBg }}" hint-size="150px,84px"></dc-import><div class="mut sm" style="margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" translate="no">{{ r.title }}</div></div></sc-for></div>
+          <div class="strip" tabindex="0" role="region" aria-label="Snímky playlistu"><sc-for list="{{ adSlides }}" as="r" hint-placeholder-count="3"><div style="{{ r.itemS }}"><dc-import name="Slide" sx="{{ r.sx }}" kind="{{ r.kind }}" title="{{ r.title }}" text="{{ r.text }}" bg="{{ r.bg }}" img="{{ r.img }}" dev="{{ r.dev }}" w="{{ r.w }}" r="8" ledsize="{{ r.ledSize }}" ledalign="{{ r.ledAlign }}" ledcol="{{ r.ledCol }}" ledbg="{{ r.ledBg }}" hint-size="150px,84px"></dc-import><div class="mut sm" style="margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" translate="no">{{ r.title }}</div></div></sc-for></div>
         </div>
         <div class="card">
           <div class="h2" style="margin-bottom: 8px">Zmeny v playliste</div>
@@ -131,6 +131,9 @@
           <div class="row"><span style="flex: 1; min-width: 0"><span class="nm">{{ x.title }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><button class="sw" role="switch" aria-checked="{{ x.on }}" aria-label="{{ x.title }}" onClick="{{ x.toggle }}"></button></div>
         </sc-for></div>
         <div class="mut sm">Chat s asistentom otvoríte v záložke AI asistent dole.</div>
+        <div class="h2">Zdroje dát</div>
+        <div class="list"><sc-for list="{{ srcRows }}" as="x" hint-placeholder-count="4"><div class="row" style="min-height: 52px"><span class="nm" style="flex: 1; font-size: 15px">{{ x.name }}</span><span class="pill" data-k="{{ x.stK }}">{{ x.stT }}</span></div></sc-for></div>
+        <div class="mut sm">Podľa zdrojov dát sa ponúka obsah sekcií snímky. Pripájajú sa v desktopovej aplikácii.</div>
         <div class="h2">Úložisko</div>
         <div class="card" style="display: flex; flex-direction: column; gap: 8px"><div style="display: flex; justify-content: space-between"><span class="nm">Cloudové úložisko</span><span class="mut">57 MB z 1 GB</span></div><div style="height: 8px; border-radius: 4px; background: var(--trk); overflow: hidden"><div style="width: 6%; height: 100%; background: #0E8080"></div></div></div>
       </div>
@@ -217,6 +220,23 @@
         </div>
         <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" disabled="{{ qPcOff }}" onClick="{{ qClosePlaces }}">{{ qPcBtn }}</button></div>
       </sc-if>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== OBSAH SEKCIE (výber podľa zdrojov dát a zariadenia) ===== -->
+  <sc-if value="{{ sh_ct }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 92%" role="dialog" aria-label="Čo sa zobrazí v sekcii">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">Čo sa zobrazí v sekcii</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b">
+        <div class="mut sm">{{ ctDevT }}</div>
+        <div class="ctg" role="radiogroup" aria-label="Čo sa zobrazí v sekcii"><sc-for list="{{ secTypes }}" as="t" hint-placeholder-count="8"><button class="ctb" role="radio" aria-checked="{{ t.on }}" onClick="{{ t.pick }}"><span class="cti"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.d }}"></path></svg></span><span style="min-width: 0"><span class="ctt">{{ t.label }}</span><span class="cts">{{ t.sub }}</span></span></button></sc-for></div>
+        <sc-if value="{{ ctHasNo }}" hint-placeholder-val="{{ true }}">
+          <div class="h2">Nedostupné</div>
+          <div class="list"><sc-for list="{{ ctNo }}" as="t" hint-placeholder-count="3"><div class="row" style="min-height: 52px; opacity: .8"><span class="cti" style="opacity: .55"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.d }}"></path></svg></span><span style="flex: 1; min-width: 0"><span class="nm" style="font-size: 15px">{{ t.label }}</span><span class="mut sm" style="display: block">{{ t.why }}</span></span></div></sc-for></div>
+          <div class="mut sm">Zdroje dát a typy zariadení sa nastavujú v desktopovej aplikácii.</div>
+        </sc-if>
+      </div>
     </div></div>
   </sc-if>
 

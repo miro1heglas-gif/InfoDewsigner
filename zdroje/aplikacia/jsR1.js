@@ -27,7 +27,7 @@
     const KIND = { info: 'Text', photo: 'Fotka', deps: 'Odchody', led: 'Text', clock: 'Čas a dátum', tpl: 'Sekcie podľa vzoru' };
     // snímka podľa vzoru: sekcie s polohou v % (riadky a stĺpce vzoru); SX = údaje pre komponent Slide
     const tplGeo = (x) => { const L = VZ[x.vz] || [[100, [100]]]; const out = []; let y = 0, i = 0; L.forEach((r) => { let xx = 0; r[1].forEach((w) => { const c = (x.secs || [])[i]; if (c) out.push(Object.assign({}, c, { i, x: xx, y, w, h: r[0] })); xx += w; i++; }); y += r[0]; }); return out; };
-    const SX = (x) => x && x.kind === 'tpl' ? JSON.stringify({ secs: tplGeo(x).map((c) => ({ x: c.x, y: c.y, w: c.w, h: c.h, type: c.type, text: c.text || '', bg: c.bg || '', img: c.img || '', cap: c.cap || '' })) }) : '';
+    const SX = (x) => x && x.kind === 'tpl' ? JSON.stringify({ secs: tplGeo(x).map((c) => ({ x: c.x, y: c.y, w: c.w, h: c.h, type: c.type, text: c.text || '', bg: c.bg || '', img: c.img || '', cap: c.cap || '', line: c.line || '', dir: c.dir || '', own: !!c.owner, vid: c.vid || '', url: c.url || '', rad: c.rad || '', tiles: c.tiles || '' })) }) : '';
     const placeById = (id) => s.places.find((p) => p.id === id);
     const placeName = (id) => (placeById(id) || {}).name || '';
     // prihlásený účet a jeho pridelené miesta (Worker, Partner) – zoznamy ukazujú len ich
@@ -171,7 +171,7 @@
     const canEdit = !locked;
     const slRows = pl.slides.map((x, i) => ({
       open: () => locked ? openPrev(pl.id) : nav('sl', { slId: x.id, edSec: 0 }), aria: 'Upraviť: ' + x.title, sx: SX(x), dev: rdev(pl, x), w: thW(pl, x), kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg,
-      meta: (plTotem ? partName(pl, x) + ' · ' : '') + KIND[x.kind] + (x.kind === 'clock' ? '' : ' · ' + x.dur + ' s'), showMove: s.reorder && canEdit, up: () => moveSlide(i, -1), upOff: i === 0 || (pl.slides[i - 1].d || '') !== (x.d || ''), down: () => moveSlide(i, 1), downOff: i === pl.slides.length - 1 || (pl.slides[i + 1].d || '') !== (x.d || ''),
+      meta: (plTotem ? partName(pl, x) + ' · ' : '') + KIND[x.kind] + (x.kind === 'clock' ? '' : ' · ' + x.dur + ' s') + (x.kind === 'tpl' && (x.secs || []).some((c) => c.owner) ? ' · tretia strana: ' + (x.secs || []).filter((c) => c.owner).map((c) => c.owner).filter((v, k, a) => a.indexOf(v) === k).join(', ') : ''), showMove: s.reorder && canEdit, up: () => moveSlide(i, -1), upOff: i === 0 || (pl.slides[i - 1].d || '') !== (x.d || ''), down: () => moveSlide(i, 1), downOff: i === pl.slides.length - 1 || (pl.slides[i + 1].d || '') !== (x.d || ''),
       delK: s.confirm === 'd' + x.id ? 'd' : '', delLbl: s.confirm === 'd' + x.id ? 'Potvrdiť odstránenie z playlistu' : 'Odstrániť z playlistu', del: () => { if (s.confirm === 'd' + x.id) { set({ confirm: '' }); delSlide(x.id); } else { set({ confirm: 'd' + x.id }); say('Ťuknite ešte raz a snímka sa odstráni z playlistu.'); } },
       showChev: !(s.reorder && canEdit)
     }));

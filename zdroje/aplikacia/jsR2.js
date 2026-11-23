@@ -25,7 +25,20 @@
     const edSel = edGeo.length ? Math.min(s.edSec || 0, edGeo.length - 1) : 0;
     const sec = edGeo[edSel] || { name: '', type: 'text', text: '', bg: '', img: '', imgName: '', cap: '' };
     const updSec = (patch) => upd({ secs: (ed.secs || []).map((c, j) => j === edSel ? Object.assign({}, c, patch) : c) });
-    const edZones = edGeo.map((c, j) => ({ name: c.name, on: j === edSel, aria: 'Upraviť sekciu: ' + c.name, pick: () => set({ edSec: j }), s: 'left:' + c.x + '%;top:' + c.y + '%;width:' + c.w + '%;height:' + c.h + '%' }));
+    const canSec = (c) => ACC.partner ? c.owner === ACC.name : !c.owner;
+    const edZones = edGeo.map((c, j) => ({ name: c.name, label: c.owner || c.name, chip: c.name + (c.owner ? ' · ' + c.owner : ''), own: c.owner ? '3' : '', on: j === edSel, aria: c.owner ? 'Upraviť sekciu: ' + c.name + ' (tretia strana: ' + c.owner + ')' : 'Upraviť sekciu: ' + c.name, pick: () => set({ edSec: j }), s: 'left:' + c.x + '%;top:' + c.y + '%;width:' + c.w + '%;height:' + c.h + '%' }));
+    const edOwners = edGeo.filter((c) => c.owner).map((c) => c.owner).filter((v, k, a) => a.indexOf(v) === k);
+    const secCan = canSec(sec);
+    const TTD = { '3': ['Železničná stanica', 'Centrum'], '5': ['Vlčince', 'Centrum'], '14': ['Sídlisko Sever', 'Centrum'], '25': ['Letisko', 'Centrum'], '31': ['Univerzita', 'Centrum'] };
+    const edDevCap = DCAP[pl.dev] || {};
+    const ctWhy = (t) => t[5] && !edDevCap[t[5]] ? NEEDT[t[5]] : t[4] && !(SRC[t[4]] || [0, false])[1] ? 'Chýba zdroj dát: ' + SRC[t[4]][0] : '';
+    const ctOf = (k) => CT.find((t) => t[0] === k) || CT[0];
+    const ctDef = (k) => { const o = { type: k }; const dark = ['deps', 'tt', 'line', 'clock', 'cal']; if (dark.indexOf(k) >= 0 && (!sec.bg || ['photo', 'video', 'web', 'map', 'weather', 'menu'].indexOf(sec.type) >= 0)) o.bg = '#1E2A5A'; if (k === 'text' && !sec.bg) o.bg = '#0E8080'; if (k === 'deps' && !/\d/.test(sec.text || '')) o.text = 'Linky 3 · 5 · 14'; if (k === 'tt' || k === 'line') { o.line = sec.line || '5'; o.dir = sec.dir || TTD[o.line][0]; } if (k === 'video' && !sec.vid) { const v = s.gal.find((g) => g.type === 'vid'); if (v) { o.vid = v.name; o.img = v.col; } } if (k === 'web' && !sec.url) o.url = 'https://www.dpriecany.sk/odchody'; if (k === 'map' && !sec.rad) o.rad = '500 m'; if (k === 'menu' && !sec.tiles) o.tiles = 'Odchody, Mapa, Cenník, Kontakt'; return o; };
+    const ctAll = CT.map((t) => ({ k: t[0], label: t[1], sub: t[2], d: IC[t[3]], why: ctWhy(t), on: sec.type === t[0], pick: () => { if (sec.type !== t[0]) updSec(ctDef(t[0])); set({ sheet: null }); } }));
+    const ctCur = ctOf(sec.type);
+    const secTypes = ctAll.filter((x) => !x.why);
+    const ttLines = Object.keys(TTD).map((l) => ({ label: l, on: sec.line === l, aria: 'Linka ' + l, pick: () => updSec({ line: l, dir: TTD[l][0] }) }));
+    const ttDirs = (TTD[sec.line] || TTD['5']).map((d) => ({ label: d, on: sec.dir === d, pick: () => updSec({ dir: d }) }));
     const secBgSw = BG.map((c, i) => ({ label: 'Pozadie: ' + BGN[i], on: sec.bg === c, pick: () => updSec({ bg: c }), s: 'display:block;width:30px;height:30px;border-radius:50%;background:' + c + ';box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)' }));
 
     // ---------- SCHVAĽOVANIE ----------
@@ -170,6 +183,7 @@
     const addFile = (kind) => {
       const f = makeFile(kind);
       if (gmode) { set({ gal: s.gal.concat([f]), sheet: null }); say('Súbor „' + f.name + '“ je nahratý do galérie.'); return; }
+      if (s.addMode === 'sec') { const f3 = Object.assign({}, f, { used: 1, usedIn: [pl.name] }); updSec({ type: 'photo', img: f3.col, imgName: f3.name }); set({ gal: s.gal.concat([f3]), sheet: null }); say('Fotka „' + f3.name + '“ je v sekcii „' + sec.name + '“.'); return; }
       const f2 = Object.assign({}, f, { used: 1, usedIn: [pl.name] });
       addPhotoSlide(pl.id, f2, s.gal.concat([f2]), true);
       say('Fotka je pridaná na koniec playlistu. Upravte popis a trvanie.');
@@ -177,10 +191,11 @@
     const addOpts = [
       { d: IC.camera, title: 'Odfotiť', sub: 'Otvorí fotoaparát telefónu', pick: () => addFile('cam') },
       { d: IC.image, title: 'Z fotiek v telefóne', sub: 'Vyberte hotovú fotku', pick: () => addFile('ph') },
-      gmode ? { d: IC.upload, title: 'Zo súborov', sub: 'Video z telefónu', pick: () => addFile('vid') } : { d: IC.list, title: 'Z galérie', sub: 'Obrázky a videá už nahraté v systéme', pick: () => set({ sheet: 'pick', pickMode: 'add' }) }
+      gmode ? { d: IC.upload, title: 'Zo súborov', sub: 'Video z telefónu', pick: () => addFile('vid') } : { d: IC.list, title: 'Z galérie', sub: 'Obrázky a videá už nahraté v systéme', pick: () => set({ sheet: 'pick', pickMode: s.addMode === 'sec' ? 'replaceSec' : 'add' }) }
     ];
-    const pickRows = s.gal.filter((g) => g.type !== 'aud').map((g) => ({ aria: 'Vybrať ' + g.name, thS: thFile(g), d: FT[g.type][1], name: g.name, size: g.size, pick: () => {
-      if (s.pickMode === 'replaceSec') { updSec({ img: g.col, imgName: g.name }); set({ gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Obrázok v sekcii „' + sec.name + '“ je zmenený na „' + g.name + '“.'); }
+    const pickRows = s.gal.filter((g) => s.pickMode === 'secVid' ? g.type === 'vid' : g.type !== 'aud').map((g) => ({ aria: 'Vybrať ' + g.name, thS: thFile(g), d: FT[g.type][1], name: g.name, size: g.size, pick: () => {
+      if (s.pickMode === 'secVid') { updSec({ type: 'video', vid: g.name, img: g.col }); set({ gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Video „' + g.name + '“ je v sekcii „' + sec.name + '“.'); }
+      else if (s.pickMode === 'replaceSec') { updSec({ type: 'photo', img: g.col, imgName: g.name }); set({ gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Obrázok v sekcii „' + sec.name + '“ je zmenený na „' + g.name + '“.'); }
       else if (s.pickMode === 'replace') { set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft', slides: p.slides.map((x) => x.id === ed.id ? Object.assign({}, x, { img: g.col, imgName: g.name }) : x), log: logSlide(p.log, ed.id, ed.title) }) : p), gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Obrázok je zmenený na „' + g.name + '“.'); }
       else { addPhotoSlide(pl.id, g, bumpGal(s.gal, g.id, pl.name), true); say('Fotka je pridaná na koniec playlistu. Upravte popis a trvanie.'); }
     } }));
@@ -304,7 +319,8 @@
       edHasBg: !edLedR && ed.kind !== 'photo' && ed.kind !== 'tpl', bgSw, durMinus: () => upd({ dur: Math.max(5, ed.dur - 5) }), durPlus: () => upd({ dur: Math.min(120, ed.dur + 5) }),
       edLed: edLedR, edFieldLbl: ed.kind === 'deps' ? 'Pole za číslom linky' : 'Pole (pozadie za textom)', ledSizes, ledAligns, ledColSw, ledBgSw,
       ledHint: ed.kind === 'deps' ? 'Číslo linky je vždy tmavé na farebnom poli.' : 'S poľom je text tmavý na farebnom podklade. Bez poľa je pozadie čierne.', delSlideEd: delEd, delEdT: s.confirm === 'ed' ? 'Potvrdiť odstránenie' : 'Odstrániť z playlistu',
-      edTpl, edSx: SX(ed), edZones, edSecName: sec.name, edSecT: 'Sekcia: ' + sec.name, secIsText: sec.type === 'text', secIsPhoto: sec.type === 'photo', secIsDeps: sec.type === 'deps', sec, secBgSw, setSecText: (e) => updSec({ text: e.target.value }), setSecCap: (e) => updSec({ cap: e.target.value }), secImgS: 'display:block;width:56px;height:56px;border-radius:10px;flex:none;background:' + GRAD(sec.img || '#C9D2D2'), secImgName: sec.imgName || 'bez obrázka', openPickSec: () => set({ sheet: 'pick', pickMode: 'replaceSec' }), edVzT: 'Rozloženie plochy určuje vzor „' + (ed.vz || '') + '“. V mobilnej aplikácii sa vzor nedá zmeniť ani ďalej rozdeliť.',
+      edTpl, edSx: SX(ed), edZones, edSecName: sec.name, edSecT: 'Sekcia: ' + sec.name, secCan, secLocked: edTpl && !secCan, secLockT: sec.owner && !ACC.partner ? 'Túto sekciu spravuje tretia strana – ' + sec.owner + '. Jej obsah meniť nemôžete.' : 'Túto sekciu spravuje DP Riečany. Upravovať môžete len sekcie svojej plochy.', secMine: ACC.partner && sec.owner === ACC.name, edHasOwn: edOwners.length > 0, edOwnT: 'Šrafované sekcie patria tretej strane: ' + edOwners.join(', ') + '.', secTypes, ctNo: ctAll.filter((x) => x.why), ctHasNo: ctAll.some((x) => x.why), ctDevT: 'Ponuka podľa zdrojov dát a zariadenia: ' + DEV[pl.dev][1] + '.', openCt: () => set({ sheet: 'ct' }), ctCurT: ctCur[1], ctCurSub: ctCur[2], ctCurD: IC[ctCur[3]], ctCurA: 'Zmeniť obsah sekcie: ' + ctCur[1], secSrcHas: secCan && !!ctCur[4], secSrcT: ctCur[4] ? 'Zdroj dát: ' + SRC[ctCur[4]][0] : '', secIsVideo: secCan && sec.type === 'video', secIsWeb: secCan && sec.type === 'web', secIsMap: secCan && sec.type === 'map', secIsWeather: secCan && sec.type === 'weather', secIsLine: secCan && sec.type === 'line', secIsMenu: secCan && sec.type === 'menu', secIsCal: secCan && sec.type === 'cal', secIsClock: secCan && sec.type === 'clock', setSecUrl: (e) => updSec({ url: e.target.value }), setSecTiles: (e) => updSec({ tiles: e.target.value }), mapRads: ['200 m', '500 m', '1 km'].map((r) => ({ label: r, on: sec.rad === r, pick: () => updSec({ rad: r }) })), lineChips: Object.keys(TTD).map((l) => ({ label: l, aria: 'Linka ' + l, on: sec.line === l, pick: () => updSec({ line: l, dir: TTD[l][0] }) })), openPickVid: () => set({ sheet: 'pick', pickMode: 'secVid' }), secVidName: sec.vid || 'bez videa', secVidS: 'display:block;width:56px;height:56px;border-radius:10px;flex:none;background:' + GRAD(sec.img || '#2F62B0'), sh_ct: s.sheet === 'ct', srcRows: Object.keys(SRC).map((k) => ({ name: SRC[k][0], on: SRC[k][1], stK: SRC[k][1] ? 'ok' : 'grey', stT: SRC[k][1] ? 'Pripojený' : 'Nepripojený' })),
+      secIsText: secCan && sec.type === 'text', secIsPhoto: secCan && sec.type === 'photo', secIsDeps: secCan && sec.type === 'deps', secIsTt: secCan && sec.type === 'tt', secHasImg: !!sec.img, secNoImg: !sec.img, ttLines, ttDirs, sec, secBgSw, secBgOn: secCan && ['text', 'deps', 'tt', 'line', 'clock', 'cal'].indexOf(sec.type) >= 0, setSecText: (e) => updSec({ text: e.target.value }), setSecCap: (e) => updSec({ cap: e.target.value }), secImgS: 'display:block;width:56px;height:56px;border-radius:10px;flex:none;background:' + GRAD(sec.img || '#C9D2D2'), secImgName: sec.imgName || 'bez obrázka', openPickSec: () => set({ sheet: 'add', addMode: 'sec' }), edVzT: 'Rozloženie plochy určuje vzor „' + (ed.vz || '') + '“. V mobilnej aplikácii sa vzor nedá zmeniť ani ďalej rozdeliť.',
       // schvaľovanie
       apvTabs, apvRows, apvEmpty: apvRows.length === 0, apvEmptyT: s.apvTab === 'pending' ? (ACC.apv ? 'Všetko je vybavené. Nič nečaká na schválenie.' : 'Nič nečaká na schválenie.') : 'Zatiaľ tu nie je nič vybavené.',
       ad: adObj,
@@ -336,7 +352,7 @@
       swCanBack: W.step === 'dur' || (W.step === 'pc' && W.from === 'pl'), swBack: () => setW({ step: W.step === 'dur' && W.from !== 'pl' ? 'pc' : 'pl' }), swGrps, swTitle, swSub, swSub2, swIsPl: W.step === 'pl', swPls: swPlsRows, swIsPc: W.step === 'pc', swPcs, swIsDur: W.step === 'dur', swPlName: swPlObj ? swPlObj.name : '', swPlaces, swDurs,
       swOff: (W.step === 'pc' && W.places.length === 0) || !swPlObj || (W.step === 'dur' && W.dur === 'custom' && !!cErrT), swNext, swBtn,
       swCustom: W.dur === 'custom', swCFd: CV.cFd, swCFt: CV.cFt, swCTd: CV.cTd, swCTt: CV.cTt, setCFd: (e) => setW({ cFd: e.target.value, cFt: CV.cFt, cTd: CV.cTd, cTt: CV.cTt }), setCFt: (e) => setW({ cFd: CV.cFd, cFt: e.target.value, cTd: CV.cTd, cTt: CV.cTt }), setCTd: (e) => setW({ cFd: CV.cFd, cFt: CV.cFt, cTd: e.target.value, cTt: CV.cTt }), setCTt: (e) => setW({ cFd: CV.cFd, cFt: CV.cFt, cTd: CV.cTd, cTt: e.target.value }), swCErr: W.dur === 'custom' && !!cErrT, swCErrT: cErrT, swMin: isoD(new Date()),
-      addTitle: gmode ? 'Nahrať do galérie' : 'Pridať fotku', addOpts, pickFromAdd: s.pickMode === 'add', pickBack: () => set({ sheet: 'add' }), pickRows
+      addTitle: gmode ? 'Nahrať do galérie' : s.addMode === 'sec' ? 'Fotka do sekcie' : 'Pridať fotku', addOpts, pickFromAdd: s.pickMode === 'add' || (s.pickMode === 'replaceSec' && s.addMode === 'sec'), pickBack: () => set({ sheet: 'add' }), pickRows
     };
   }
 }
