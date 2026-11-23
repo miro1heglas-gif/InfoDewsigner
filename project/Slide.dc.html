@@ -55,13 +55,22 @@ body{margin:0}
         </sc-for>
       </div>
     </sc-if>
+    <sc-if value="{{ isTpl }}" hint-placeholder-val="{{ false }}">
+      <sc-for list="{{ tplSecs }}" as="c" hint-placeholder-count="3">
+        <div style="{{ c.boxS }}">
+          <sc-if value="{{ c.isText }}" hint-placeholder-val="{{ true }}"><div style="{{ c.txS }}">{{ c.text }}</div></sc-if>
+          <sc-if value="{{ c.isPhoto }}" hint-placeholder-val="{{ false }}"><div style="{{ c.phS }}"></div><sc-if value="{{ c.hasCap }}" hint-placeholder-val="{{ true }}"><div style="{{ c.capS }}">{{ c.cap }}</div></sc-if></sc-if>
+          <sc-if value="{{ c.isDeps }}" hint-placeholder-val="{{ false }}"><div style="{{ c.dpS }}"><sc-for list="{{ c.rows }}" as="r" hint-placeholder-count="3"><div style="{{ r.rowS }}"><span style="{{ r.bS }}">{{ r.line }}</span><span style="{{ r.dS }}">{{ r.dest }}</span><span style="{{ r.tS }}">{{ r.min }}</span></div></sc-for></div></sc-if>
+        </div>
+      </sc-for>
+    </sc-if>
     <sc-if value="{{ isLed }}" hint-placeholder-val="{{ false }}">
       <div style="{{ dotS }}"></div>
     </sc-if>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":342,"height":192},"kind":{"editor":"text","default":"info"},"dev":{"editor":"text","default":"lcd"},"title":{"editor":"text","default":"Úvod"},"text":{"editor":"text","default":""},"bg":{"editor":"color","default":"#0E8080"},"img":{"editor":"color","default":"#F2A65A"},"w":{"editor":"text","default":"342"},"r":{"editor":"text","default":"8"},"ledsize":{"editor":"text","default":"M"},"ledalign":{"editor":"text","default":"left"},"ledcol":{"editor":"text","default":""},"ledbg":{"editor":"text","default":""}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":342,"height":192},"sx":{"editor":"text","default":""},"kind":{"editor":"text","default":"info"},"dev":{"editor":"text","default":"lcd"},"title":{"editor":"text","default":"Úvod"},"text":{"editor":"text","default":""},"bg":{"editor":"color","default":"#0E8080"},"img":{"editor":"color","default":"#F2A65A"},"w":{"editor":"text","default":"342"},"r":{"editor":"text","default":"8"},"ledsize":{"editor":"text","default":"M"},"ledalign":{"editor":"text","default":"left"},"ledcol":{"editor":"text","default":""},"ledbg":{"editor":"text","default":""}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props || {};
@@ -105,7 +114,32 @@ class Component extends DCLogic {
     const clkSec = fl.indexOf('s') >= 0;
     const ABS = [1, 3, 6, 9, 12, 16, 21, 25, 31, 38];
     const tallRows = ABS.map((m, i) => { const r = all[i % all.length]; const d = new Date(now.getTime() + m * 60000); return { line: r.line, dest: r.dest.replace('Železničná stanica', 'Žel. stanica'), min: p2(d.getHours()) + ':' + p2(d.getMinutes()) }; });
+    // snímka podľa vzoru: sekcie (poloha v %, obsah) prídu ako JSON v prop sx
+    let tplSecs = [];
+    const isTpl = !led && kind === 'tpl';
+    if (isTpl) {
+      let o = {}; try { o = JSON.parse(p.sx || '{}'); } catch (e) { o = {}; }
+      tplSecs = (o.secs || []).map((c) => {
+        const cw = W * c.w / 100, ch = H * c.h / 100; const pad = Math.round(Math.min(cw, ch) * 0.12) + 6;
+        const fs = Math.round(Math.max(13, Math.min(port ? 26 : 34, ch * 0.34, cw * 0.11)));
+        const ls = String(c.text || '').match(/N?\d+/g) || ['3', '5', '14'];
+        const rf = Math.round(Math.max(11, Math.min(20, ch / 8)));
+        const nr = Math.max(1, Math.min(port ? 6 : 4, Math.floor((ch - 2 * pad) / (rf * 1.9))));
+        const rows = ls.slice(0, nr).map((l, i) => ({ line: l, dest: DEST[l] || 'Centrum', min: MIN[i % MIN.length], rowS: 'display:flex;align-items:center;gap:' + Math.round(rf * 0.5) + 'px',
+          bS: 'min-width:' + Math.round(rf * 2) + 'px;height:' + Math.round(rf * 1.5) + 'px;border-radius:4px;background:' + (LC[l] || '#0E8080') + ';color:#fff;font-weight:700;font-size:' + rf + 'px;display:flex;align-items:center;justify-content:center;flex:none',
+          dS: 'flex:1;min-width:0;font-size:' + rf + 'px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis', tS: 'font-size:' + rf + 'px;font-weight:700;color:#FFD27A;white-space:nowrap' }));
+        return {
+          isText: c.type === 'text', isPhoto: c.type === 'photo', isDeps: c.type === 'deps', text: c.text || '', cap: c.cap || '', hasCap: !!c.cap, rows,
+          boxS: 'position:absolute;left:' + c.x + '%;top:' + c.y + '%;width:' + c.w + '%;height:' + c.h + '%;box-sizing:border-box;overflow:hidden;background:' + (c.type === 'photo' ? '#1A1F1F' : (c.bg || '#1E2A5A')) + ';box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)',
+          txS: 'position:absolute;inset:0;display:flex;align-items:center;padding:0 ' + pad + 'px;box-sizing:border-box;color:#fff;font-weight:700;font-size:' + fs + 'px;line-height:1.15;overflow:hidden',
+          phS: 'position:absolute;inset:0;background:radial-gradient(circle at 72% 30%, rgba(255,255,255,.38), rgba(255,255,255,0) 38%), linear-gradient(135deg,' + (c.img || '#F2A65A') + ',#1A1F1F 160%)',
+          capS: 'position:absolute;left:0;right:0;bottom:0;padding:' + Math.round(pad * 0.6) + 'px ' + pad + 'px;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:' + Math.round(fs * 0.8) + 'px',
+          dpS: 'position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:' + Math.round(rf * 0.4) + 'px;padding:' + pad + 'px;box-sizing:border-box'
+        };
+      });
+    }
     return {
+      isTpl, tplSecs,
       title: p.title || '', text: p.text || '', rows, ledTxt: lt, ledRows: tall ? tallRows : all.slice(0, 3).map((r) => ({ line: r.line, dest: r.dest.replace('Železničná stanica', 'Žel. stanica'), min: r.min.replace(' min', '′') })),
       isInfo: !led && (kind === 'info' || kind === 'led'), isPhoto: !led && kind === 'photo', isDeps: !led && kind === 'deps', isLed: led, isLedDeps, isLedClock, isLedText: led && !isLedDeps && !isLedClock,
       clkTime: p2(now.getHours()) + ':' + p2(now.getMinutes()) + (clkSec ? ':' + p2(now.getSeconds()) : ''), clkHasDate: fl.indexOf('n') < 0, clkDate: (fl.indexOf('w') >= 0 ? ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'][now.getDay()] + ' ' : '') + now.getDate() + '. ' + (now.getMonth() + 1) + '.' + (fl.indexOf('y') >= 0 ? ' ' + now.getFullYear() : ''),

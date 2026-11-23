@@ -3,16 +3,18 @@
 Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy Wertyz (EMLines). Dispečer alebo pracovník dopravného podniku z telefónu:
 
 - pošle rýchlu správu na zariadenia,
-- upraví a zverejní playlist alebo ho prepne na jednom či viacerých miestach (aj na celú skupinu),
+- upraví a zverejní playlist alebo na mieste na zvolený čas prepne iný playlist,
 - pridá fotku do snímky a spravuje galériu,
 - schváli obsah partnera (tretej strany),
 - skontroluje, čo sa kde práve prehráva a ktoré miesta majú hlásenie.
 
-Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria a nastavenie AI asistenta sú vo Viac. AI asistent je chat, ktorý odpovedá z ukážkových údajov prototypu.
+Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, Partner vidí len pridelené plochy a zmeny posiela na schválenie. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria je vo Viac, nastavenie AI asistenta v Nastaveniach. AI asistent je chat, ktorý odpovedá z ukážkových údajov prototypu.
+
+Mobilná aplikácia len upravuje: nevytvára playlisty, nemaže snímky ani súbory a nemení vzory (rozloženie plochy). Snímku môže z playlistu odstrániť, v zozname snímok však ostane.
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia 37 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia 38 návrhu v claude.ai (artefakt typu Design), stav k 20. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -68,10 +70,11 @@ zdroje/
 | Súbor | Čo ukazuje |
 |---|---|
 | `Main` | celá klikateľná aplikácia (domov) |
-| `Obr_Playlisty` | playlisty – zoznam, filter a zariadenie playlistu |
+| `Obr_Playlisty` | playlisty – zoznam, filter, upraviť (ceruzka) a náhľad (play) |
 | `Obr_DetailPlaylistu` | detail playlistu pre displej – poradie, pridanie fotky, odoslanie |
 | `Obr_DetailLED` | detail playlistu pre LED tabuľu – text alebo snímka zo zoznamu |
-| `Obr_UpravaSnimky` | úprava snímky pre displej – text, farba, trvanie |
+| `Obr_UpravaSnimky` | úprava snímky pre displej – text, farba, trvanie, odstránenie z playlistu |
+| `Obr_SnimkaSekcie` | snímka podľa vzoru – ťuknutím na sekciu ju upravíte, vzor sa nemení |
 | `Obr_LED` | úprava textu pre LED tabuľu – veľkosť, farba, pole |
 | `Obr_Oznacnik` | playlist pre označník – LED čas a dátum, LED odchody, e-papier |
 | `Obr_OznacnikNahlad` | náhľad označníka – tri displeje pod sebou |
@@ -81,15 +84,14 @@ zdroje/
 | `Obr_RychlaSprava` | rýchla správa – text, kam, priorita, trvanie |
 | `Obr_VyberMiest` | rýchla správa – výber miest (všetky, skupina, jednotlivo) |
 | `Obr_Miesta` | miesta – stav, filter Hlásenia, zariadenie, úprava a prepnutie playlistu |
-| `Obr_PrepnutiePlaylistu` | prepnutie playlistu – viac miest alebo celá skupina naraz |
-| `Obr_Galeria` | galéria (Viac › Galéria) – súbory, filtre, nahratie, zmazanie |
+| `Obr_PrepnutiePlaylistu` | prepnutie playlistu na mieste – čo prehrať a ako dlho, aj vlastný čas od – do |
+| `Obr_Galeria` | galéria (Viac › Galéria) – súbory, filtre, nahratie, použité v playlistoch |
 | `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenie AI asistenta, nastavenia, jazyk |
 | `Obr_Schvalovanie` | schvaľovanie – čaká a vybavené |
 | `Obr_DetailSchvalenia` | detail schválenia – zmeny, schváliť, vrátiť, zamietnuť |
 | `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova |
 | `Obr_AI` | AI asistent (záložka dole) – chat: návrh textu správy, miesta s hlásením, čo sa kde hrá, schvaľovanie |
-| `Obr_AINastavenie` | nastavenie AI asistenta (Viac › Nastavenie AI asistenta) |
-| `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia a úložisko |
+| `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia, AI asistent a úložisko |
 | `Obr_PrepnutieUctu` | prepnutie účtu – Admin, Director, Worker, Partner |
 | `Obr_Partner` | účet Partner – len pridelené miesta, zmeny idú na schválenie |
 | `Obr_TmavyRezim` | tmavý vzhľad – domovská obrazovka |

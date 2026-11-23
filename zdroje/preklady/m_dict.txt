@@ -597,3 +597,41 @@ Otázka pre AI asistenta ||| Otázka pro AI asistenta ||| Pytanie do asystenta A
 Odoslať otázku ||| Odeslat otázku ||| Wyślij pytanie ||| Send question ||| Frage senden
 Nová konverzácia ||| Nová konverzace ||| Nowa rozmowa ||| New conversation ||| Neue Unterhaltung
 Chat s asistentom otvoríte v záložke AI asistent dole. ||| Chat s asistentem otevřete v záložce AI asistent dole. ||| Czat z asystentem otworzysz w zakładce Asystent AI na dole. ||| Open the chat in the AI assistant tab at the bottom. ||| Den Chat öffnen Sie unten im Tab KI-Assistent.
+
+# ===== v38: mobil len upravuje – bez nového playlistu a mazania; sekcie vzoru; vlastný čas =====
+Náhľad playlistu: {0} ||| Náhled playlistu: {0} ||| Podgląd playlisty: {0} ||| Preview playlist: {0} ||| Playlist-Vorschau: {0}
+Odstrániť z playlistu ||| Odebrat z playlistu ||| Usuń z playlisty ||| Remove from playlist ||| Aus Playlist entfernen
+Potvrdiť odstránenie z playlistu ||| Potvrdit odebrání z playlistu ||| Potwierdź usunięcie z playlisty ||| Confirm removing from playlist ||| Entfernen aus Playlist bestätigen
+Potvrdiť odstránenie ||| Potvrdit odebrání ||| Potwierdź usunięcie z playlisty ||| Confirm removal ||| Entfernen bestätigen
+Ťuknite ešte raz a snímka sa odstráni z playlistu. ||| Klepněte ještě jednou a snímek se odebere z playlistu. ||| Dotknij jeszcze raz, a slajd zostanie usunięty z playlisty. ||| Tap once more to remove the slide from the playlist. ||| Tippen Sie noch einmal, um die Folie aus der Playlist zu entfernen.
+Snímka „{0}“ je odstránená z playlistu. V zozname snímok ostáva. ||| Snímek „{0}“ je odebrán z playlistu. V seznamu snímků zůstává. ||| Slajd „{0}” został usunięty z playlisty. Pozostaje na liście slajdów. ||| Slide “{0}” was removed from the playlist. It stays in the slide list. ||| Folie „{0}“ wurde aus der Playlist entfernt. Sie bleibt in der Folienliste.
+Snímka „{0}“ odstránená z playlistu ||| Snímek „{0}“ odebrán z playlistu ||| Slajd „{0}” usunięty z playlisty ||| Slide “{0}” removed from the playlist ||| Folie „{0}“ aus der Playlist entfernt
+Snímka sa nezmaže, ostane v zozname snímok a môžete ju znova pridať. ||| Snímek se nesmaže, zůstane v seznamu snímků a můžete ho znovu přidat. ||| Slajd nie zostanie skasowany – pozostaje na liście slajdów i można go znowu dodać. ||| The slide is not deleted; it stays in the slide list and you can add it again. ||| Die Folie wird nicht gelöscht; sie bleibt in der Folienliste und kann wieder hinzugefügt werden.
+Sekcie podľa vzoru ||| Sekce podle vzoru ||| Sekcje według szablonu ||| Sections from template ||| Bereiche laut Vorlage
+Ťuknite na časť snímky, ktorú chcete upraviť. ||| Klepněte na část snímku, kterou chcete upravit. ||| Dotknij części slajdu, którą chcesz edytować. ||| Tap the part of the slide you want to edit. ||| Tippen Sie auf den Teil der Folie, den Sie bearbeiten möchten.
+Sekcie snímky ||| Sekce snímku ||| Sekcje slajdu ||| Slide sections ||| Folienbereiche
+Sekcia: {0} ||| Sekce: {0} ||| Sekcja: {0} ||| Section: {0} ||| Bereich: {0}
+Upraviť sekciu: {0} ||| Upravit sekci: {0} ||| Edytuj sekcję: {0} ||| Edit section: {0} ||| Bereich bearbeiten: {0}
+Text sekcie ||| Text sekce ||| Tekst sekcji ||| Section text ||| Bereichstext
+Popis na obrázku ||| Popis na obrázku ||| Podpis na obrazie ||| Caption on image ||| Bildunterschrift
+Odchody sa načítajú automaticky zo zdroja dát. ||| Odjezdy se načítají automaticky ze zdroje dat. ||| Odjazdy wczytują się automatycznie ze źródła danych. ||| Departures load automatically from the data source. ||| Abfahrten werden automatisch aus der Datenquelle geladen.
+Rozloženie plochy určuje vzor „{0}“. V mobilnej aplikácii sa vzor nedá zmeniť ani ďalej rozdeliť. ||| Rozložení plochy určuje vzor „{0}“. V mobilní aplikaci se vzor nedá změnit ani dále rozdělit. ||| Układ powierzchni określa szablon „{0}”. W aplikacji mobilnej szablonu nie można zmienić ani dalej podzielić. ||| The layout is set by the template “{0}”. In the mobile app the template cannot be changed or split further. ||| Das Layout bestimmt die Vorlage „{0}“. In der mobilen App lässt sich die Vorlage weder ändern noch weiter aufteilen.
+Obrázok v sekcii „{0}“ je zmenený na „{1}“. ||| Obrázek v sekci „{0}“ je změněn na „{1}“. ||| Obraz w sekcji „{0}” zmieniono na „{1}”. ||| The image in section “{0}” was changed to “{1}”. ||| Das Bild im Bereich „{0}“ wurde zu „{1}“ geändert.
+Hlavička ||| Záhlaví ||| Nagłówek ||| Header ||| Kopfzeile
+Obsah ||| Obsah ||| Treść ||| Content ||| Inhalt
+Menu ||| Menu ||| Menu ||| Menu ||| Menü
+Vlastný čas ||| Vlastní čas ||| Własny czas ||| Custom time ||| Eigene Zeit
+Vyberte začiatok a koniec ||| Vyberte začátek a konec ||| Wybierz początek i koniec ||| Choose start and end ||| Beginn und Ende wählen
+Začiatok ||| Začátek ||| Początek ||| Start ||| Beginn
+Koniec ||| Konec ||| Koniec ||| End ||| Ende
+Dátum začiatku ||| Datum začátku ||| Data początku ||| Start date ||| Startdatum
+Čas začiatku ||| Čas začátku ||| Godzina początku ||| Start time ||| Startzeit
+Dátum konca ||| Datum konce ||| Data końca ||| End date ||| Enddatum
+Čas konca ||| Čas konce ||| Godzina końca ||| End time ||| Endzeit
+Koniec musí byť neskôr ako začiatok. ||| Konec musí být později než začátek. ||| Koniec musi być później niż początek. ||| The end must be later than the start. ||| Das Ende muss nach dem Beginn liegen.
+Koniec už uplynul. Zvoľte neskorší čas. ||| Konec už uplynul. Zvolte pozdější čas. ||| Koniec już minął. Wybierz późniejszy czas. ||| The end has already passed. Choose a later time. ||| Das Ende ist bereits vorbei. Wählen Sie eine spätere Zeit.
+od {0} do {1} ||| od {0} do {1} ||| od {0} do {1} ||| from {0} to {1} ||| von {0} bis {1}
+Odoslané – „{0}“ sa prepne na {1} od {2} do {3}. ||| Odesláno – „{0}“ se přepne na {1} od {2} do {3}. ||| Wysłano – „{0}” przełączy się w {1} od {2} do {3}. ||| Sent – “{0}” will switch at {1} from {2} to {3}. ||| Gesendet – „{0}“ wird an {1} von {2} bis {3} umgeschaltet.
+Použité v playlistoch ({0}) ||| Použito v playlistech ({0}) ||| Używane w playlistach ({0}) ||| Used in playlists ({0}) ||| Verwendet in Playlists ({0})
+Obrázky, videá a zvuky, nahratie nových súborov ||| Obrázky, videa a zvuky, nahrání nových souborů ||| Obrazy, wideo i dźwięki, przesyłanie nowych plików ||| Images, videos and sounds, upload new files ||| Bilder, Videos und Töne, neue Dateien hochladen
+Vzhľad, upozornenia, AI asistent a úložisko ||| Vzhled, upozornění, AI asistent a úložiště ||| Wygląd, powiadomienia, asystent AI i pamięć ||| Appearance, notifications, AI assistant and storage ||| Aussehen, Benachrichtigungen, KI-Assistent und Speicher

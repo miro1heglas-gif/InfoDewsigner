@@ -27,7 +27,7 @@
    "y": 0,
    "w": 390,
    "h": 844,
-   "title": "Playlisty – zoznam, filter a zariadenie playlistu",
+   "title": "Playlisty – zoznam, filter, upraviť (ceruzka) a náhľad (play); nový playlist sa v mobile nevytvára",
    "page": "app",
    "is_interactive": true
   },
@@ -54,7 +54,7 @@
    "y": 0,
    "w": 390,
    "h": 844,
-   "title": "Úprava snímky pre displej – text, farba, trvanie",
+   "title": "Úprava snímky – text, farba, trvanie; odstránenie z playlistu (snímka sa nezmaže)",
    "page": "app",
    "is_interactive": true
   },
@@ -117,7 +117,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Prepnutie playlistu – viac miest alebo celá skupina naraz",
+   "title": "Prepnutie playlistu na mieste – čo prehrať a ako dlho (aj vlastný čas od – do)",
    "page": "app",
    "is_interactive": true
   },
@@ -126,7 +126,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Galéria (Viac › Galéria) – súbory, filtre, nahratie, zmazanie",
+   "title": "Galéria (Viac › Galéria) – súbory, filtre, nahratie, použité v playlistoch (bez mazania)",
    "page": "app",
    "is_interactive": true
   },
@@ -135,7 +135,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenie AI, nastavenia, jazyk",
+   "title": "Viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenia, jazyk",
    "page": "app",
    "is_interactive": true
   },
@@ -162,7 +162,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Nastavenia – vzhľad (svetlý / tmavý), upozornenia v telefóne a úložisko",
+   "title": "Nastavenia – vzhľad, upozornenia v telefóne, AI asistent, úložisko",
    "page": "app",
    "is_interactive": true
   },
@@ -291,12 +291,12 @@
    "page": "app",
    "is_interactive": true
   },
-  "Obr_AINastavenie.dc.html": {
+  "Obr_SnimkaSekcie.dc.html": {
    "x": 3290,
    "y": 2892,
    "w": 390,
    "h": 844,
-   "title": "Nastavenie AI asistenta (Viac › Nastavenie AI asistenta)",
+   "title": "Snímka podľa vzoru – ťuknutím na sekciu ju upravíte, vzor sa v mobile nemení",
    "page": "app",
    "is_interactive": true
   }
@@ -307,6 +307,7 @@
   "Obr_DetailPlaylistu.dc.html",
   "Obr_DetailLED.dc.html",
   "Obr_UpravaSnimky.dc.html",
+  "Obr_SnimkaSekcie.dc.html",
   "Obr_LED.dc.html",
   "Obr_Oznacnik.dc.html",
   "Obr_OznacnikNahlad.dc.html",
@@ -323,7 +324,6 @@
   "Obr_DetailSchvalenia.dc.html",
   "Obr_Nastavenia.dc.html",
   "Obr_AI.dc.html",
-  "Obr_AINastavenie.dc.html",
   "Obr_HistoriaSprav.dc.html",
   "Obr_Jazyk.dc.html",
   "Obr_Jazyk_CS.dc.html",

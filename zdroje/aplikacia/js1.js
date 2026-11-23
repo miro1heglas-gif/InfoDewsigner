@@ -18,13 +18,13 @@ const IC = {
   speaker: 'M11 5L6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14', gear: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
   film: 'M3 5h18v14H3zM10 9l5 3-5 3z', music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
   shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', db: 'M12 8c4.4 0 8-1.1 8-2.5S16.4 3 12 3 4 4.1 4 5.5 7.6 8 12 8zM4 5.5v13C4 19.9 7.6 21 12 21s8-1.1 8-2.5v-13M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5',
-  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6'
+  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z', edit: 'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z', remove: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12h8', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6'
 };
 const plural = (n, a) => n === 1 ? a[0] : (n >= 2 && n <= 4 ? a[1] : a[2]);
 const mmss = (t) => Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
 const BG = ['#0E8080', '#0B6E6E', '#1E2A5A', '#2F62B0', '#5B2A86', '#E07A2B', '#C8322B', '#1A1F1F'];
 const GRAD = (c) => 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
-const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', aiset: 'more', hist: 'more' };
+const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', hist: 'more' };
 const ROOT = { home: 'home', pls: 'pls', plc: 'plc', ai: 'ai', more: 'more' };
 const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
 const HM = (add) => { const d = new Date(Date.now() + (add || 0) * 60000); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
@@ -41,7 +41,7 @@ const DOWN = ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', '
 const MONG = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna', 'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
 const DOWAGO = (n) => DOWN[new Date(Date.now() - n * 864e5).getDay()];
 const DURS = { get m15() { return ['15 minút', 'do ' + HM(15)]; }, get h1() { return ['1 hodinu', 'do ' + HM(60)]; }, day: ['Do konca dňa', 'do 23:59'], rev: ['Do zrušenia', 'do zrušenia'] };
-const SWD = { today: ['Len dnes', 'do 23:59, potom sa vráti pôvodný plán'], get h1() { return ['Na 1 hodinu', 'do ' + HM(60)]; }, get h4() { return ['Na 4 hodiny', 'do ' + HM(240)]; }, rev: ['Do odvolania', 'kým ho nevrátite ručne'] };
+const SWD = { today: ['Len dnes', 'do 23:59, potom sa vráti pôvodný plán'], get h1() { return ['Na 1 hodinu', 'do ' + HM(60)]; }, get h4() { return ['Na 4 hodiny', 'do ' + HM(240)]; }, rev: ['Do odvolania', 'kým ho nevrátite ručne'], custom: ['Vlastný čas', 'Vyberte začiatok a koniec'] };
 // zariadenie, pre ktoré je playlist vytvorený: [celý názov, krátky názov, šírka náhľadu, šírka miniatúry, šírka v páse]
 const DEV = {
   portrait: ['32″ kiosk – dotyk, reproduktor, APEX, 4 HW tlačidlá', '32″ kiosk', 210, 44, 84],
@@ -51,6 +51,8 @@ const DEV = {
   totem: ['Označník: LED čas a dátum + LED odchody + e-papier', 'Označník LED + e-papier', 104, 44, 84],
   vehicle: ['Vozidlo: LED čelná tabuľa 288 × 48', 'Vozidlo: LED 288 × 48', 358, 120, 240]
 };
+// vzory rozloženia snímky: riadky [výška %, [šírky stĺpcov %]] – v mobile sa nemenia, len sa upravuje obsah sekcií
+const VZ = { 'Kiosk s menu': [[12, [100]], [73, [100]], [15, [100]]], 'Hlavička + 2': [[15, [100]], [85, [50, 50]]], '3 riadky – zastávka': [[14, [100]], [66, [100]], [20, [100]]] };
 const isPort = (d) => d === 'portrait' || d === 'p31';
 // zariadenie s viacerými displejmi pod sebou: [id displeja, názov, vykreslenie, šírka miniatúry, šírka v páse, šírka v editore]
 const PARTS = { totem: [['cas', 'LED čas a dátum', 'ledclock', 72, 150, 300], ['odch', 'LED odchody', 'ledtall', 44, 84, 200], ['ep', 'e-papier 31,5″', 'epaper', 40, 84, 190]] };
@@ -70,9 +72,9 @@ class Component extends DCLogic {
     const PL = (pid, name, dev, st, slides, where, ex) => Object.assign({ id: pid, name, dev, st, slides, where, flow: 'none', plan: 'Po–Pi 6:00–22:00 · bez obmedzenia dátumu', touch: false, log: [] }, ex || {});
     const pls = [
       PL('p7', 'Aquapark – leto', 'portrait', 'expirovany', [PH('Akcia leto -20 %', 12, '#F2A65A', 'leto-akcia.jpg'), SL('info', 'Otváracie hodiny', 'Denne 9:00 – 21:00', 10, '#2F62B0'), SL('info', 'Cenník', 'Dospelí 8 €, deti 5 €', 10, '#0E8080')], [], { plan: 'Platnosť skončila 31. 8.' }),
-      PL('p2', 'Autobusová stanica – nástupištia', 'lcd', 'nahraty', [SL('deps', 'Odchody – nástupište A', 'Linky 3 · 5 · 14', 20, '#1E2A5A'), PH('Letná akcia – nástupište', 12, '#F2A65A', 'leto-akcia.jpg'), SL('info', 'Výluka linky 5', 'Linka 5 je odklonená cez Bulvár.', 10, '#C8322B')], ['asa', 'asb', 'ash']),
+      PL('p2', 'Autobusová stanica – nástupištia', 'lcd', 'nahraty', [SL('tpl', 'Nástupište A – odchody a oznam', '', 20, '#1E2A5A', { vz: 'Hlavička + 2', secs: [{ name: 'Hlavička', type: 'text', text: 'Autobusová stanica – nástupište A', bg: '#0E8080' }, { name: 'Odchody', type: 'deps', text: 'Linky 3 · 5 · 14', bg: '#1E2A5A' }, { name: 'Oznam', type: 'text', text: 'Linka 5 je dnes odklonená cez Bulvár.', bg: '#C8322B' }] }), PH('Letná akcia – nástupište', 12, '#F2A65A', 'leto-akcia.jpg'), SL('info', 'Výluka linky 5', 'Linka 5 je odklonená cez Bulvár.', 10, '#C8322B')], ['asa', 'asb', 'ash']),
       PL('p16', 'Autobusy a trolejbusy – vo vozidle', 'vehicle', 'nahraty', [LED('Nasledujúca zastávka: Hlavná stanica', 8, { ledSize: 'L' }), LED('Nezabudnite si označiť lístok', 8, { ledSize: 'L', ledCol: '#34D8FF' }), LED('Prajeme príjemnú cestu', 6, { ledCol: '#4CFF4C', ledSize: 'L', ledAlign: 'center' })], ['tb12', 'a31']),
-      PL('p3', 'Cestovný poriadok – zima', 'portrait', 'nahraty', [SL('info', 'Cestovný poriadok 12', 'Platný od 1. 11. do 31. 3.', 20, '#0B6E6E'), SL('deps', 'Najbližšie odchody', 'Linky 3 · 5 · 14 · 25', 15, '#1E2A5A'), SL('info', 'Info menu – kiosk', 'Dotknite sa obrazovky', 15, '#2F62B0')], ['hsv', 'nema', 'let'], { touch: true }),
+      PL('p3', 'Cestovný poriadok – zima', 'portrait', 'nahraty', [SL('info', 'Cestovný poriadok 12', 'Platný od 1. 11. do 31. 3.', 20, '#0B6E6E'), SL('deps', 'Najbližšie odchody', 'Linky 3 · 5 · 14 · 25', 15, '#1E2A5A'), SL('tpl', 'Info menu – kiosk', '', 15, '#2F62B0', { vz: 'Kiosk s menu', secs: [{ name: 'Hlavička', type: 'text', text: 'Hlavná stanica – informácie', bg: '#0B6E6E' }, { name: 'Obsah', type: 'photo', img: '#0E8080', imgName: 'autobus.jpg', cap: 'Vitajte v Riečanoch' }, { name: 'Menu', type: 'text', text: 'Odchody · Mapa · Cenník', bg: '#1A1F1F' }] })], ['hsv', 'nema', 'let'], { touch: true }),
       PL('p4', 'Cyklotrasa – mapa', 'lcd', 'nahraty', [PH('Mapa trasy', 15, '#4F7A5A', 'mala-fatra.jpg'), SL('info', 'Servisné body', 'Požičovňa a servis pri stanici', 10, '#0E8080'), SL('info', 'Počasie – Žilina', 'Dnes 7 °C, zamračené', 10, '#2F62B0')], ['pc']),
       PL('p10', 'Divadlo – program', 'portrait', 'nenahraty', [SL('info', 'Divadlo – program', 'Piatok 19:00 · Hlavná scéna', 15, '#5B2A86'), SL('info', 'Vstupenky', 'Predaj v pokladnici od 9:00', 10, '#0E8080')], [], { plan: 'Plán ešte nie je nastavený' }),
       PL('p11', 'Dočasná zastávka Mostná', 'stop', 'nenahraty', [LED('Zastávka je presunutá o 50 m', 10, { ledBg: '#E07A2B', ledSize: 'S' }), SL('deps', 'Najbližšie odchody', 'Linky 5 · 14', 15, '#050505')], ['mos']),
@@ -97,7 +99,7 @@ class Component extends DCLogic {
     ].map((a) => Object.assign({ dev: a[0] }, a[1]));
     const gal = [
       { id: 'g1', name: 'leto-akcia.jpg', title: 'Akcia leto', type: 'img', size: '420 kB', used: 2, usedIn: ['Aquapark – leto', 'Autobusová stanica – nástupištia'], folder: 'Reklamy', col: '#F2A65A' },
-      { id: 'g2', name: 'autobus.jpg', title: 'Autobus', type: 'img', size: '610 kB', used: 1, usedIn: ['Futbalový štadión'], folder: 'Reklamy', col: '#0E8080' },
+      { id: 'g2', name: 'autobus.jpg', title: 'Autobus', type: 'img', size: '610 kB', used: 2, usedIn: ['Futbalový štadión', 'Cestovný poriadok – zima'], folder: 'Reklamy', col: '#0E8080' },
       { id: 'g3', name: 'namestie.jpg', title: 'Námestie', type: 'img', size: '540 kB', used: 0, usedIn: [], folder: 'Oznamy', col: '#6C8EAD' },
       { id: 'g4', name: 'mala-fatra.jpg', title: 'Malá Fatra', type: 'img', size: '880 kB', used: 1, usedIn: ['Cyklotrasa – mapa'], folder: 'Sezónne', col: '#4F7A5A' },
       { id: 'g5', name: 'park.jpg', title: 'Park', type: 'img', size: '470 kB', used: 0, usedIn: [], folder: 'Oznamy', col: '#7FA65A' },
@@ -123,7 +125,7 @@ class Component extends DCLogic {
       ['ss', 'Sídlisko Sever', 'stop', -1, 1, 'exp', 'p13'], ['zu', 'Železničná ulica', 'stop', -1, 0, '', ''], ['hr', 'Hrádok', 'stop', -1, 0, '', ''], ['bul', 'Bulvár', 'stop', 1, 1, 'up', 'p13'], ['vlc', 'Vlčince', 'stop', -1, 1, 'up', 'p13'], ['zst', 'Železničná stanica', 'stop', -1, 1, 'up', 'p13'], ['letz', 'Letisko – zastávka', 'stop', -1, 1, 'up', 'p15']
     ].map((a) => ({ id: a[0], name: a[1], dev: TOT[a[0]] ? 'totem' : P31[a[0]] ? 'p31' : PDEV[a[2]], g: a[3], n: a[4], st: a[5], pl: TOT[a[0]] ? 'p14' : a[6], on: !OFF[a[0]], off: OFF[a[0]] || '', temp: null }));
     const apvs = [
-      { id: 'a1', plId: 'p5', name: 'Kultúra – november', author: 'Kultúrne centrum Riečany', when: 'pred 2 h', own: false, state: 'pending', note: '', changes: [['mod', 'Upravený text snímky „Divadlo – program“ (začiatok o 19:00)'], ['del', 'Zmazaná snímka „Festival – plagát“']], valid: 'Platnosť: ihneď po schválení, do 30. 11.' },
+      { id: 'a1', plId: 'p5', name: 'Kultúra – november', author: 'Kultúrne centrum Riečany', when: 'pred 2 h', own: false, state: 'pending', note: '', changes: [['mod', 'Upravený text snímky „Divadlo – program“ (začiatok o 19:00)'], ['del', 'Snímka „Festival – plagát“ odstránená z playlistu']], valid: 'Platnosť: ihneď po schválení, do 30. 11.' },
       { id: 'a2', plId: 'p12', name: 'Nová linka 25', author: 'Letisko Riečany', when: 'pred 5 h', own: false, state: 'pending', note: '', changes: [['add', 'Pridaná snímka „Nová linka 25“'], ['add', 'Pridaná snímka „Najbližšie odchody“ (linka 25)'], ['add', 'Pridaná snímka „Mapa linky“']], valid: 'Platnosť: od 1. 12. 2026' },
       { id: 'a3', plId: 'p6', name: 'Električky – vo vozidle', author: 'Mesto Riečany', acc: 'partner', when: 'včera 16:10', own: false, state: 'pending', note: '', changes: [['add', 'Pridaný text „Linka 5 je dnes odklonená cez Bulvár“ (oranžové pole)'], ['mod', 'Trvanie textu „Prajeme príjemnú cestu“: 10 s → 6 s']], valid: 'Platnosť: ihneď po schválení, len dnes' },
       { id: 'a4', plId: 'p9', name: 'Halloween v meste', author: 'Mesto Riečany', acc: 'partner', when: '29. 10.', own: false, state: 'approved', note: 'Vyzerá dobre, schvaľujem.', changes: [['add', 'Pridaná snímka „Halloween v meste“ (halloween.png)']], valid: 'Platnosť: 29. 10. – 1. 11.', doneT: 'Schválil Miroslav Heglas · 29. 10. Playlist bol nahratý na 1 miesto.' },
@@ -139,7 +141,7 @@ class Component extends DCLogic {
       screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
       apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
-      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, toast: '', push: null,
+      pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, edSec: 0, toast: '', push: null,
       role: (p && MACC[p.role]) ? p.role : 'admin',
       theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })(),
       fdark: false, samsung: (() => { try { return /SamsungBrowser/i.test(navigator.userAgent || ''); } catch (e) { return false; } })(), fdOk: (() => { try { return localStorage.getItem('wz_m_fdark_ok') === '1'; } catch (e) { return false; } })()
@@ -149,11 +151,11 @@ class Component extends DCLogic {
     const start = (p && p.start) || 'home';
     const S = {
       home: {}, totem: { screen: 'pl', plId: 'p14', stack: ['pls'] }, totempreview: { screen: 'pv', pvPl: 'p14', stack: ['pls', 'pl'] }, playlists: { screen: 'pls' }, playlist: { screen: 'pl', plId: 'p2', stack: ['pls'] }, ledplaylist: { screen: 'pl', plId: 'p1', stack: ['pls'] },
-      slide: { screen: 'sl', plId: 'p2', slId: P('p2').slides[2].id, stack: ['pls', 'pl'] }, led: { screen: 'sl', plId: 'p1', slId: P('p1').slides[1].id, stack: ['pls', 'pl'] },
+      slide: { screen: 'sl', plId: 'p2', slId: P('p2').slides[2].id, stack: ['pls', 'pl'] }, tplslide: { screen: 'sl', plId: 'p3', slId: P('p3').slides[2].id, stack: ['pls', 'pl'], edSec: 1 }, led: { screen: 'sl', plId: 'p1', slId: P('p1').slides[1].id, stack: ['pls', 'pl'] },
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
-      switch: { screen: 'plc', sheet: 'sw', sw: { step: 'pc', from: 'pl', dev: 'portrait', places: ['hsv', 'nema'], pl: 'p3', dur: 'today' } },
+      switch: { screen: 'plc', sheet: 'sw', sw: { step: 'dur', from: 'pl', dev: 'portrait', places: ['hsv'], pl: 'p3', dur: 'custom' } },
       approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }, aiset: { screen: 'aiset', stack: ['more'] }
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }
     };
     Object.assign(st, S[start] || {});
     if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }

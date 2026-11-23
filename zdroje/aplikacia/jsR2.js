@@ -18,7 +18,15 @@
     const flip = (ch) => upd({ text: flag(ch) ? String(ed.text).replace(ch, '') : String(ed.text || '') + ch });
     const clkOpts = [['n', 'Dátum', true], ['s', 'Sekundy', false], ['w', 'Deň v týždni', false], ['y', 'Rok', false]].filter((o) => o[0] === 'n' || o[0] === 's' || !flag('n')).map((o) => ({ title: o[1], on: o[2] ? !flag(o[0]) : flag(o[0]), toggle: () => flip(o[0]) }));
     const edPart = partBy(pl.dev, ed.d);
-    const delEd = () => { if (s.confirm === 'ed') { const sid = ed.id; set(Object.assign({ confirm: '' }, backState())); delSlide(sid); } else { set({ confirm: 'ed' }); say('Ťuknite ešte raz a snímka sa zmaže.'); } };
+    const delEd = () => { if (s.confirm === 'ed') { const sid = ed.id; delSlide(sid); set(Object.assign({ confirm: '' }, backState())); } else { set({ confirm: 'ed' }); say('Ťuknite ešte raz a snímka sa odstráni z playlistu.'); } };
+    // sekcie podľa vzoru: ťuknutím na sekciu v náhľade sa upravuje jej obsah; vzor (rozloženie) sa v mobile nemení
+    const edTpl = ed.kind === 'tpl' && !edLedR;
+    const edGeo = edTpl ? tplGeo(ed) : [];
+    const edSel = edGeo.length ? Math.min(s.edSec || 0, edGeo.length - 1) : 0;
+    const sec = edGeo[edSel] || { name: '', type: 'text', text: '', bg: '', img: '', imgName: '', cap: '' };
+    const updSec = (patch) => upd({ secs: (ed.secs || []).map((c, j) => j === edSel ? Object.assign({}, c, patch) : c) });
+    const edZones = edGeo.map((c, j) => ({ name: c.name, on: j === edSel, aria: 'Upraviť sekciu: ' + c.name, pick: () => set({ edSec: j }), s: 'left:' + c.x + '%;top:' + c.y + '%;width:' + c.w + '%;height:' + c.h + '%' }));
+    const secBgSw = BG.map((c, i) => ({ label: 'Pozadie: ' + BGN[i], on: sec.bg === c, pick: () => updSec({ bg: c }), s: 'display:block;width:30px;height:30px;border-radius:50%;background:' + c + ';box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)' }));
 
     // ---------- SCHVAĽOVANIE ----------
     const AS = { pending: ['warn', 'Čaká'], approved: ['ok', 'Schválené'], returned: ['blue', 'Vrátené'], rejected: ['bad', 'Zamietnuté'] };
@@ -88,7 +96,7 @@
     const pvTot = !!partsOf(pvPl);
     const pvStep = (d) => pvTot ? set({ pvE: Math.max(0, (s.pvE || 0) + d * 5) }) : set({ pvI: (s.pvI + d + pvPl.slides.length) % Math.max(1, pvPl.slides.length), pvT: 0 });
     const pvObj = pvSl || BLANK;
-    const pvParts = pvTot ? partsOf(pvPl).map((q) => { const x = at(pvPl.slides.filter((z) => z.d === q[0]), s.pvE || 0); return x ? Object.assign({}, x, { dev: q[2], w: '112', r: '3' }) : null; }).filter(Boolean) : (pvSl ? [Object.assign({}, pvSl, { dev: pvPl.dev, w: String(isPort(pvPl.dev) ? 230 : fw(358)), r: '10' })] : []);
+    const pvParts = pvTot ? partsOf(pvPl).map((q) => { const x = at(pvPl.slides.filter((z) => z.d === q[0]), s.pvE || 0); return x ? Object.assign({}, x, { dev: q[2], w: '112', r: '3', sx: '' }) : null; }).filter(Boolean) : (pvSl ? [Object.assign({}, pvSl, { dev: pvPl.dev, w: String(isPort(pvPl.dev) ? 230 : fw(358)), r: '10', sx: SX(pvSl) })] : []);
 
     // ---------- RÝCHLA SPRÁVA ----------
     const Q = s.quick;
@@ -133,8 +141,16 @@
     const swToggle = (ids) => { const on = ids.length > 0 && ids.every((x) => W.places.indexOf(x) >= 0); setW({ places: on ? W.places.filter((x) => ids.indexOf(x) < 0) : W.places.concat(ids.filter((x) => W.places.indexOf(x) < 0)) }); };
     const swGrps = [['Všetky', swAll]].concat(GRP.map((g, i) => [g, withDev.filter((p) => p.dev === swDev && p.g === i).map((p) => p.id)])).filter((x) => x[1].length > 0 && (x[0] === 'Všetky' ? swAll.length > 1 : true))
       .map((x) => ({ label: x[0] + ' (' + x[1].length + ')', on: x[1].every((id) => W.places.indexOf(id) >= 0), pick: () => swToggle(x[1]) }));
-    const swDurs = Object.keys(SWD).map((k) => ({ label: SWD[k][0], sub: SWD[k][1], on: W.dur === k, pick: () => setW({ dur: k }) }));
-    const UNTIL = { today: 'do 23:59', h1: 'do ' + HM(60), h4: 'do ' + HM(240), rev: 'do odvolania' };
+    const p2d = (n) => String(n).padStart(2, '0');
+    const isoD = (d) => d.getFullYear() + '-' + p2d(d.getMonth() + 1) + '-' + p2d(d.getDate()); const isoT = (d) => p2d(d.getHours()) + ':' + p2d(d.getMinutes());
+    const cDef = () => { const a = new Date(); a.setSeconds(0, 0); a.setMinutes(Math.ceil((a.getMinutes() + 1) / 15) * 15); const b = new Date(a.getTime() + 2 * 3600000); return { cFd: isoD(a), cFt: isoT(a), cTd: isoD(b), cTt: isoT(b) }; };
+    const CV = W.cFd ? W : Object.assign({}, W, cDef());
+    const cFrom = new Date(CV.cFd + 'T' + (CV.cFt || '00:00')), cTo = new Date(CV.cTd + 'T' + (CV.cTt || '00:00'));
+    const cErrT = isNaN(cFrom) || isNaN(cTo) ? 'Vyberte začiatok a koniec' : cTo <= cFrom ? 'Koniec musí byť neskôr ako začiatok.' : cTo <= new Date() ? 'Koniec už uplynul. Zvoľte neskorší čas.' : '';
+    const fdt = (d) => d.getDate() + '. ' + (d.getMonth() + 1) + '. ' + d.getHours() + ':' + p2d(d.getMinutes());
+    const cLbl = 'od ' + fdt(cFrom) + ' do ' + fdt(cTo);
+    const swDurs = Object.keys(SWD).map((k) => ({ label: SWD[k][0], sub: k === 'custom' && W.dur === 'custom' && !cErrT ? cLbl : SWD[k][1], on: W.dur === k, pick: () => { setW(k === 'custom' && !W.cFd ? Object.assign({ dur: k }, cDef()) : { dur: k }); if (k === 'custom') setTimeout(() => { try { const el = document.querySelector('.sheet .dtr'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 80); } }));
+    const UNTIL = { today: 'do 23:59', h1: 'do ' + HM(60), h4: 'do ' + HM(240), rev: 'do odvolania', custom: cLbl };
     const swPlaces = shortList(names(W.places));
     const swApply = () => {
       if (!swPlObj) return;
@@ -147,7 +163,7 @@
     const swSub = W.step === 'pl' ? 'Miesto: ' + swPlaces : W.step === 'pc' ? 'Playlist: ' + (swPlObj ? swPlObj.name : '') : 'Po skončení sa vráti pôvodný plán prehrávania.';
     const swSub2 = W.step === 'pl' ? 'Ponúkajú sa len playlisty pre zariadenie ' + (DEV[swDev] || [''])[1] + '.' : W.step === 'pc' ? 'Ponúkajú sa len miesta so zariadením ' + (DEV[swDev] || [''])[1] + '.' : '';
     const swBtn = W.step === 'dur' ? 'Použiť na ' + W.places.length + ' ' + plural(W.places.length, ['mieste', 'miestach', 'miestach']) : 'Ďalej';
-    const swNext = () => { if (W.step === 'dur') swApply(); else setW({ step: W.step === 'pl' ? 'pc' : 'dur' }); };
+    const swNext = () => { if (W.step === 'dur') swApply(); else setW({ step: W.step === 'pl' && W.from !== 'pl' ? 'pc' : 'dur' }); };
 
     // ---------- PRIDANIE FOTKY / NAHRATIE ----------
     const gmode = s.addMode === 'gallery';
@@ -164,18 +180,15 @@
       gmode ? { d: IC.upload, title: 'Zo súborov', sub: 'Video z telefónu', pick: () => addFile('vid') } : { d: IC.list, title: 'Z galérie', sub: 'Obrázky a videá už nahraté v systéme', pick: () => set({ sheet: 'pick', pickMode: 'add' }) }
     ];
     const pickRows = s.gal.filter((g) => g.type !== 'aud').map((g) => ({ aria: 'Vybrať ' + g.name, thS: thFile(g), d: FT[g.type][1], name: g.name, size: g.size, pick: () => {
-      if (s.pickMode === 'replace') { set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft', slides: p.slides.map((x) => x.id === ed.id ? Object.assign({}, x, { img: g.col, imgName: g.name }) : x), log: logSlide(p.log, ed.id, ed.title) }) : p), gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Obrázok je zmenený na „' + g.name + '“.'); }
+      if (s.pickMode === 'replaceSec') { updSec({ img: g.col, imgName: g.name }); set({ gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Obrázok v sekcii „' + sec.name + '“ je zmenený na „' + g.name + '“.'); }
+      else if (s.pickMode === 'replace') { set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft', slides: p.slides.map((x) => x.id === ed.id ? Object.assign({}, x, { img: g.col, imgName: g.name }) : x), log: logSlide(p.log, ed.id, ed.title) }) : p), gal: bumpGal(s.gal, g.id, pl.name), sheet: null }); say('Obrázok je zmenený na „' + g.name + '“.'); }
       else { addPhotoSlide(pl.id, g, bumpGal(s.gal, g.id, pl.name), true); say('Fotka je pridaná na koniec playlistu. Upravte popis a trvanie.'); }
     } }));
-    const isNewPl = s.sheet === 'newpl'; const isLang = s.sheet === 'lang'; const isAcc = s.sheet === 'acc';
+    const isLang = s.sheet === 'lang'; const isAcc = s.sheet === 'acc';
     const curLang = WL ? WL.get() : 'sk';
     const pickAcc = (k) => { set({ role: k, sheet: null, screen: 'home', stack: [], reorder: false, confirm: '', pcF: 'all', pq: '', filt: 'all', q: '', apvTab: 'pending', toast: '' }); say('Prepnuté na účet ' + MACC[k].name + '.'); };
-    const lsRows = isAcc ? Object.keys(MACC).map((k) => ({ name: MACC[k].name, meta: MACC[k].role + ' · ' + MACC[k].desc, d: k === s.role ? IC.tick : IC.none, pick: () => pickAcc(k) })) : isLang ? (WL ? WL.list : ['sk']).map((k) => ({ name: WL ? WL.names[k] : 'Slovenčina', meta: '', d: k === curLang ? IC.tick : IC.none, pick: () => { if (WL) WL.set(k); set({ sheet: null }); } })) : isNewPl
-      ? Object.keys(DEV).map((k) => ({ d: IC.next, name: DEV[k][0], meta: PARTS[k] ? 'Tri displeje pod sebou – čas a dátum, odchody, e-papier' : isLedDev(k) ? 'Texty a odchody na LED tabuli' : 'Fotky, texty a odchody', pick: () => createPl(k) }))
+    const lsRows = isAcc ? Object.keys(MACC).map((k) => ({ name: MACC[k].name, meta: MACC[k].role + ' · ' + MACC[k].desc, d: k === s.role ? IC.tick : IC.none, pick: () => pickAcc(k) })) : isLang ? (WL ? WL.list : ['sk']).map((k) => ({ name: WL ? WL.names[k] : 'Slovenčina', meta: '', d: k === curLang ? IC.tick : IC.none, pick: () => { if (WL) WL.set(k); set({ sheet: null }); } }))
       : vPls.filter((p) => p.flow !== 'pending' && !isLedDev(p.dev) && !PARTS[p.dev]).map((p) => ({ d: IC.plus, name: p.name, meta: DEV[p.dev][1] + ' · ' + slMeta(p), pick: () => { addPhotoSlide(p.id, galFile, bumpGal(s.gal, galFile.id, p.name), false); say('Pridané do playlistu „' + p.name + '“. ' + (ACC.pub ? 'Nezabudnite ho zverejniť.' : 'Nezabudnite ho odoslať na schválenie.')); } }));
-    const gdDelete = () => {
-      if (s.confirm === 'gd') { set({ gal: s.gal.filter((g) => g.id !== galFile.id), sheet: null, confirm: '' }); say('Súbor „' + galFile.name + '“ je zmazaný.'); } else set({ confirm: 'gd' });
-    };
 
     const tabs = [['home', 'Domov', IC.home], ['pls', 'Playlisty', IC.list], ['plc', 'Miesta', IC.pin], ['ai', 'AI asistent', IC.spark], ['more', 'Viac', IC.more]].map((t) => ({ label: t[1], d: t[2], cur: tabOf === t[0] ? 'page' : false, pick: () => goTab(t[0]), hasBadge: t[0] === 'more' && pendingOthers.length > 0, badge: String(pendingOthers.length) }));
     const myPend = pendAll.length;
@@ -183,10 +196,9 @@
       { d: IC.users, title: 'Prepnúť účet', sub: ACC.name + ' · ' + ACC.role, hasBadge: false, badge: '', open: () => set({ sheet: 'acc' }) }
     ].concat(ACC.apv ? [{ d: IC.check, title: 'Schvaľovanie', sub: pendingOthers.length ? pendingOthers.length + ' ' + plural(pendingOthers.length, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: pendingOthers.length > 0, badge: String(pendingOthers.length), open: () => nav('apv', { apvTab: 'pending' }) }]
       : ACC.partner ? [{ d: IC.check, title: 'Odoslané na schválenie', sub: myPend ? myPend + ' ' + plural(myPend, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: false, badge: '', open: () => nav('apv', { apvTab: 'pending' }) }] : []).concat([
-      { d: IC.image, title: 'Galéria', sub: 'Obrázky, videá a zvuky, nahratie a zmazanie', hasBadge: false, badge: '', open: () => nav('gal') },
+      { d: IC.image, title: 'Galéria', sub: 'Obrázky, videá a zvuky, nahratie nových súborov', hasBadge: false, badge: '', open: () => nav('gal') },
       { d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') },
-      { d: IC.spark, title: 'Nastavenie AI asistenta', sub: 'Návrh textu rýchlej správy a kontrola pred odoslaním', hasBadge: false, badge: '', open: () => nav('aiset') },
-      { d: IC.gear, title: 'Nastavenia', sub: 'Vzhľad, upozornenia a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
+      { d: IC.gear, title: 'Nastavenia', sub: 'Vzhľad, upozornenia, AI asistent a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
       { d: IC.globe, title: 'Jazyk: ' + (WL ? WL.name() : 'Slovenčina'), sub: 'Jazyk aplikácie', hasBadge: false, badge: '', open: () => set({ sheet: 'lang' }) }
     ]);
     const pvDev = pvPl.dev;
@@ -239,7 +251,7 @@
       const r = base; const A = (label, fn) => r.acts.push({ label, fn });
       if (m.kind === 'draft') { r.text = AIH[m.sit]; r.sugg = AIS[m.sit][2].map((t) => ({ text: t, use: aiUse(m.sit, t) })); r.note = 'Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.'; }
       else if (m.kind === 'sitask') { r.text = 'O čom má byť správa? Vyberte situáciu.'; Object.keys(AIS).forEach((k) => A(AIS[k][0], () => aiAsk(AIQ[k], true))); }
-      else if (m.kind === 'aioff') { r.text = 'Návrh textu správy je vypnutý v nastavení AI asistenta.'; A('Otvoriť nastavenie', () => nav('aiset')); }
+      else if (m.kind === 'aioff') { r.text = 'Návrh textu správy je vypnutý v nastavení AI asistenta.'; A('Otvoriť nastavenie', () => nav('set')); }
       else if (m.kind === 'prob') { const ps = vPlaces.filter(pcProb); if (!ps.length) r.text = 'Všetky miesta sú v poriadku.'; else { r.text = 'Tieto miesta majú hlásenie:'; r.items = ps.map((p) => Object.assign(aiItemP(p), { sub: p.on ? 'Expirovaný playlist' : 'offline ' + p.off })); A('Zobraziť v Miestach', () => set({ screen: 'plc', stack: [], sheet: null, pcF: 'prob', pq: '' })); } }
       else if (m.kind === 'exp') { const ps = vPls.filter((p) => p.st === 'expirovany'); if (!ps.length) r.text = 'Žiadny playlist neexpiroval.'; else { r.text = 'Tieto playlisty expirovali:'; r.items = ps.map((p) => ({ name: p.name, sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => nav('pl', { plId: p.id }), aria: 'Upraviť playlist: ' + p.name })); A('Zobraziť v Playlistoch', () => set({ screen: 'pls', stack: [], sheet: null, filt: 'expirovany', q: '' })); } }
       else if (m.kind === 'play') { r.text = 'Na týchto miestach sa teraz prehráva:'; r.items = m.ids.map(placeById).filter(Boolean).filter((p) => vPlaces.indexOf(p) >= 0).map(aiItemP); }
@@ -268,15 +280,15 @@
       hdS: 'background:' + (dark ? 'var(--hddk)' : 'var(--sf)') + ';color:' + (dark ? '#fff' : 'var(--tx)') + ';' + (dark ? '' : 'border-bottom:1px solid var(--ln)'),
       subS: 'color:' + (dark ? '#B4C6C6' : 'var(--mut)'),
       hasBack: !tabRoot, goBack, hdLogo, hdTitle, hasSub: !!hdSub, hdSub, hdActs, tabs,
-      s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_aiset: sc === 'aiset', s_pv: sc === 'pv',
-      sh_quick: s.sheet === 'quick', sh_sw: s.sheet === 'sw', sh_add: s.sheet === 'add', sh_pick: s.sheet === 'pick', sh_gd: s.sheet === 'gd', sh_lib: s.sheet === 'lib', sh_list: s.sheet === 'gpl' || isNewPl || isLang || isAcc,
+      s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_pv: sc === 'pv',
+      sh_quick: s.sheet === 'quick', sh_sw: s.sheet === 'sw', sh_add: s.sheet === 'add', sh_pick: s.sheet === 'pick', sh_gd: s.sheet === 'gd', sh_lib: s.sheet === 'lib', sh_list: s.sheet === 'gpl' || isLang || isAcc,
       closeSheet, bgClose: (e) => { if (e && e.target === e.currentTarget) closeSheet(); }, hasToast: !!s.toast, toast: s.toast, hasPush: !!s.push, pushTitle: s.push ? s.push.title : '', pushText: s.push ? s.push.text : '', closePush: () => set({ push: null }),
       // domov
       openQuick, hasQa: qaRows.length > 0, qa: qaRows, hasPend: pendingOthers.length > 0, goApprovals: () => nav('apv', { apvTab: 'pending' }), pendT: pendingOthers.map((a) => a.name).slice(0, 2).join(' · ') + (pendingOthers.length > 2 ? ' · …' : ''), pendN: String(pendingOthers.length),
       nowRows, pcOn: String(pcOnN), pcDev: String(withDev.length), goPlaces: () => set({ screen: 'plc', stack: [], sheet: null, reorder: false, confirm: '', pq: '', pcF: withDev.some(pcProb) ? 'prob' : 'all' }), pcBarS: 'height:100%;border-radius:4px;background:#2E9E4F;width:' + (withDev.length ? Math.round(100 * pcOnN / withDev.length) : 0) + '%',
       pcOff: withDev.filter((p) => !p.on).map((p) => ({ name: p.name, since: p.off })), pcHasExp: expN > 0, pcExpT: expN + ' ' + plural(expN, ['miesto má', 'miesta majú', 'miest má']) + ' expirovaný playlist', qh: qhRows, qhHas: qhRows.length > 0, qhEmpty: qhRows.length === 0,
       // playlisty
-      q: s.q, setQ: (e) => set({ q: e.target.value }), plChips, plRows, plEmpty: plRows.length === 0, newPl: () => set({ sheet: 'newpl' }),
+      q: s.q, setQ: (e) => set({ q: e.target.value }), plChips, plRows, plEmpty: plRows.length === 0,
       // detail playlistu
       hasSlides: pl.slides.length > 0, noSlides: pl.slides.length === 0, prvParts: prvOf(pl, 104), prvS: stackS(pl), noSlidesT: plTotem ? 'Playlist zatiaľ nemá žiadnu snímku. Pridajte snímku zo zoznamu.' : plLed ? 'Playlist zatiaľ nemá žiadnu snímku. Pridajte text alebo snímku zo zoznamu.' : 'Playlist zatiaľ nemá žiadnu snímku. Pridajte fotku alebo snímku zo zoznamu.',
       plNotLed: !plLed && !plTotem, plDevT: DEV[pl.dev][0],
@@ -289,13 +301,14 @@
       edLcd: !edLedR, edLedText, edLedLen: ed.title.length + ' znakov' + (edR === 'vehicle' ? ' · dlhší text po tabuli beží' : ' · dlhší text sa zalomí do riadkov'),
       edHasText: ed.kind === 'deps' || (!edLedR && ed.kind === 'info'), edTextLbl: ed.kind === 'deps' ? 'Zobrazené linky' : 'Text snímky', edTextRows: ed.kind === 'deps' ? 1 : 3,
       edIsPhoto: !edLedR && ed.kind === 'photo', edImgS: 'display:block;width:56px;height:56px;border-radius:10px;flex:none;background:' + GRAD(ed.img || '#C9D2D2'), edImgName: ed.imgName || 'bez obrázka', openPickReplace: () => set({ sheet: 'pick', pickMode: 'replace' }),
-      edHasBg: !edLedR && ed.kind !== 'photo', bgSw, durMinus: () => upd({ dur: Math.max(5, ed.dur - 5) }), durPlus: () => upd({ dur: Math.min(120, ed.dur + 5) }),
+      edHasBg: !edLedR && ed.kind !== 'photo' && ed.kind !== 'tpl', bgSw, durMinus: () => upd({ dur: Math.max(5, ed.dur - 5) }), durPlus: () => upd({ dur: Math.min(120, ed.dur + 5) }),
       edLed: edLedR, edFieldLbl: ed.kind === 'deps' ? 'Pole za číslom linky' : 'Pole (pozadie za textom)', ledSizes, ledAligns, ledColSw, ledBgSw,
-      ledHint: ed.kind === 'deps' ? 'Číslo linky je vždy tmavé na farebnom poli.' : 'S poľom je text tmavý na farebnom podklade. Bez poľa je pozadie čierne.', delSlideEd: delEd, delEdT: s.confirm === 'ed' ? 'Potvrdiť zmazanie' : 'Zmazať snímku',
+      ledHint: ed.kind === 'deps' ? 'Číslo linky je vždy tmavé na farebnom poli.' : 'S poľom je text tmavý na farebnom podklade. Bez poľa je pozadie čierne.', delSlideEd: delEd, delEdT: s.confirm === 'ed' ? 'Potvrdiť odstránenie' : 'Odstrániť z playlistu',
+      edTpl, edSx: SX(ed), edZones, edSecName: sec.name, edSecT: 'Sekcia: ' + sec.name, secIsText: sec.type === 'text', secIsPhoto: sec.type === 'photo', secIsDeps: sec.type === 'deps', sec, secBgSw, setSecText: (e) => updSec({ text: e.target.value }), setSecCap: (e) => updSec({ cap: e.target.value }), secImgS: 'display:block;width:56px;height:56px;border-radius:10px;flex:none;background:' + GRAD(sec.img || '#C9D2D2'), secImgName: sec.imgName || 'bez obrázka', openPickSec: () => set({ sheet: 'pick', pickMode: 'replaceSec' }), edVzT: 'Rozloženie plochy určuje vzor „' + (ed.vz || '') + '“. V mobilnej aplikácii sa vzor nedá zmeniť ani ďalej rozdeliť.',
       // schvaľovanie
       apvTabs, apvRows, apvEmpty: apvRows.length === 0, apvEmptyT: s.apvTab === 'pending' ? (ACC.apv ? 'Všetko je vybavené. Nič nečaká na schválenie.' : 'Nič nečaká na schválenie.') : 'Zatiaľ tu nie je nič vybavené.',
       ad: adObj,
-      adSlides: adPl.slides.map((x) => ({ dev: rdev(adPl, x), w: String(stW(adPl, x)), itemS: 'flex:none;width:' + stW(adPl, x) + 'px', kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg })), adChanges: ad.changes.map((c) => ({ k: CHG[c[0]][0], sym: CHG[c[0]][1], text: c[1] })),
+      adSlides: adPl.slides.map((x) => ({ sx: SX(x), dev: rdev(adPl, x), w: String(stW(adPl, x)), itemS: 'flex:none;width:' + stW(adPl, x) + 'px', kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg })), adChanges: ad.changes.map((c) => ({ k: CHG[c[0]][0], sym: CHG[c[0]][1], text: c[1] })),
       adCanAct, apvNote: s.apvNote, setApvNote: (e) => set({ apvNote: e.target.value }), adDone: ad.state !== 'pending',
       apvApprove: () => decide('approved', (ACC.f ? 'Schválila ' : 'Schválil ') + ACC.name + ' · teraz. Playlist sa nahráva na ' + nPlaces(adPl.where.length || 1) + '.', 'Schválené a zverejnené: ' + ad.name),
       apvReturn: () => decide('returned', (ACC.f ? 'Vrátila na úpravu ' : 'Vrátil na úpravu ') + ACC.name + ' · teraz.', 'Vrátené autorovi na úpravu: ' + ad.name),
@@ -303,8 +316,8 @@
       adOwn: isOwn(ad) && ad.state === 'pending', apvWithdraw: () => { set(Object.assign({ apvs: s.apvs.filter((a) => a.id !== ad.id), pls: s.pls.map((p) => p.id === ad.plId ? Object.assign({}, p, { flow: 'draft' }) : p) }, backState())); say('Vzaté späť. Playlist môžete znova upravovať.'); },
       // galéria
       galChips, galRows, galEmpty: galRows.length === 0, openUpload: () => set({ sheet: 'add', addMode: 'gallery' }),
-      gd, gdUsed: galFile.used > 0, gdDelete, gdDelT: s.confirm === 'gd' ? 'Potvrdiť zmazanie' : 'Zmazať súbor', gdCanUse: galFile.type !== 'aud', gdAddToPl: () => set({ sheet: 'gpl', gplFile: galFile.id }),
-      lsTitle: isAcc ? 'Prepnúť účet' : isLang ? 'Jazyk aplikácie' : isNewPl ? 'Nový playlist – pre aké zariadenie' : 'Pridať do playlistu', lsSub: isAcc ? 'Prototyp: aplikácia sa zobrazí tak, ako ju vidí vybraný účet.' : isLang ? 'Zmení sa jazyk tlačidiel, nadpisov a hlásení. Obsah playlistov a názvy miest ostávajú tak, ako ste ich napísali.' : isNewPl ? 'Playlist sa potom dá upravovať a prehrávať len na tomto type zariadenia.' : 'Súbor „' + galFile.name + '“ sa pridá ako nová snímka na koniec playlistu. Ponúkajú sa len playlisty pre displeje.', lsRows,
+      gd, gdUsed: galFile.used > 0, gdUseRows: galFile.usedIn.map((n) => { const p = s.pls.find((x) => x.name === n); return { name: n, sub: p ? DEV[p.dev][1] + ' · ' + slMeta(p) : '', canOpen: !!p && vPls.indexOf(p) >= 0, noOpen: !(p && vPls.indexOf(p) >= 0), open: () => { if (p) nav('pl', { plId: p.id, sheet: null }); }, aria: 'Upraviť playlist: ' + n }; }), gdUseH: 'Použité v playlistoch (' + galFile.usedIn.length + ')', gdCanUse: galFile.type !== 'aud', gdAddToPl: () => set({ sheet: 'gpl', gplFile: galFile.id }),
+      lsTitle: isAcc ? 'Prepnúť účet' : isLang ? 'Jazyk aplikácie' : 'Pridať do playlistu', lsSub: isAcc ? 'Prototyp: aplikácia sa zobrazí tak, ako ju vidí vybraný účet.' : isLang ? 'Zmení sa jazyk tlačidiel, nadpisov a hlásení. Obsah playlistov a názvy miest ostávajú tak, ako ste ich napísali.' : 'Súbor „' + galFile.name + '“ sa pridá ako nová snímka na koniec playlistu. Ponúkajú sa len playlisty pre displeje.', lsRows,
       // viac / miesta / nastavenia / AI
       moreRows, logout: () => say('Prototyp: odhlásenie nie je zapojené.'), pq: s.pq, setPq: (e) => set({ pq: e.target.value }), pcChips, pcRows, pcEmpty: pcRows.length === 0, pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + vPlaces.length + ' miest',
       notifRows, aiRows,
@@ -320,8 +333,9 @@
       qShowAll: !qsl, qAllOn: Q.all, qToggleAll: () => set({ quick: Object.assign({}, Q, Q.all ? { all: false, ids: [] } : { all: true, ids: [] }), qOrd: null }), qAllT: 'Všetky miesta (' + devIds.length + ')', qPcs, qPcEmpty: qPcs.length === 0,
       qPcOff: qN === 0, qPcBtn: qN ? 'Hotovo · ' + nPlaces(qN) : 'Vyberte aspoň jedno miesto', qOff: !Q.text.trim() || !qN, qSend, qSendT: !Q.text.trim() ? 'Napíšte text správy' : qN ? 'Odoslať na ' + nPlaces(qN) : 'Vyberte miesto',
       // prepnutie playlistu
-      swCanBack: W.step === 'dur' || (W.step === 'pc' && W.from === 'pl'), swBack: () => setW({ step: W.step === 'dur' ? 'pc' : 'pl' }), swGrps, swTitle, swSub, swSub2, swIsPl: W.step === 'pl', swPls: swPlsRows, swIsPc: W.step === 'pc', swPcs, swIsDur: W.step === 'dur', swPlName: swPlObj ? swPlObj.name : '', swPlaces, swDurs,
-      swOff: (W.step === 'pc' && W.places.length === 0) || !swPlObj, swNext, swBtn,
+      swCanBack: W.step === 'dur' || (W.step === 'pc' && W.from === 'pl'), swBack: () => setW({ step: W.step === 'dur' && W.from !== 'pl' ? 'pc' : 'pl' }), swGrps, swTitle, swSub, swSub2, swIsPl: W.step === 'pl', swPls: swPlsRows, swIsPc: W.step === 'pc', swPcs, swIsDur: W.step === 'dur', swPlName: swPlObj ? swPlObj.name : '', swPlaces, swDurs,
+      swOff: (W.step === 'pc' && W.places.length === 0) || !swPlObj || (W.step === 'dur' && W.dur === 'custom' && !!cErrT), swNext, swBtn,
+      swCustom: W.dur === 'custom', swCFd: CV.cFd, swCFt: CV.cFt, swCTd: CV.cTd, swCTt: CV.cTt, setCFd: (e) => setW({ cFd: e.target.value, cFt: CV.cFt, cTd: CV.cTd, cTt: CV.cTt }), setCFt: (e) => setW({ cFd: CV.cFd, cFt: e.target.value, cTd: CV.cTd, cTt: CV.cTt }), setCTd: (e) => setW({ cFd: CV.cFd, cFt: CV.cFt, cTd: e.target.value, cTt: CV.cTt }), setCTt: (e) => setW({ cFd: CV.cFd, cFt: CV.cFt, cTd: CV.cTd, cTt: e.target.value }), swCErr: W.dur === 'custom' && !!cErrT, swCErrT: cErrT, swMin: isoD(new Date()),
       addTitle: gmode ? 'Nahrať do galérie' : 'Pridať fotku', addOpts, pickFromAdd: s.pickMode === 'add', pickBack: () => set({ sheet: 'add' }), pickRows
     };
   }
