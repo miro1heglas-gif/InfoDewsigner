@@ -231,11 +231,6 @@
       <div class="sheet-b">
         <div class="mut sm">{{ ctDevT }}</div>
         <div class="ctg" role="radiogroup" aria-label="Čo sa zobrazí v sekcii"><sc-for list="{{ secTypes }}" as="t" hint-placeholder-count="8"><button class="ctb" role="radio" aria-checked="{{ t.on }}" onClick="{{ t.pick }}"><span class="cti"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.d }}"></path></svg></span><span style="min-width: 0"><span class="ctt">{{ t.label }}</span><span class="cts">{{ t.sub }}</span></span></button></sc-for></div>
-        <sc-if value="{{ ctHasNo }}" hint-placeholder-val="{{ true }}">
-          <div class="h2">Nedostupné</div>
-          <div class="list"><sc-for list="{{ ctNo }}" as="t" hint-placeholder-count="3"><div class="row" style="min-height: 52px; opacity: .8"><span class="cti" style="opacity: .55"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.d }}"></path></svg></span><span style="flex: 1; min-width: 0"><span class="nm" style="font-size: 15px">{{ t.label }}</span><span class="mut sm" style="display: block">{{ t.why }}</span></span></div></sc-for></div>
-          <div class="mut sm">Zdroje dát a typy zariadení sa nastavujú v desktopovej aplikácii.</div>
-        </sc-if>
       </div>
     </div></div>
   </sc-if>
