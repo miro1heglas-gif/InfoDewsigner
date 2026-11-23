@@ -8,15 +8,17 @@ Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy W
 - schváli obsah partnera (tretej strany),
 - skontroluje, čo sa kde práve prehráva a ktoré miesta majú hlásenie.
 
-Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach. Partner (tretia strana) upravuje celý len vlastný playlist; v playliste dopravcu mení len svoje sekcie a ostatné si môže len pozrieť. Zmeny posiela na schválenie a rýchle správy písať nemôže. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria je vo Viac, nastavenie AI asistenta v Nastaveniach. AI asistent je chat, ktorý odpovedá z ukážkových údajov prototypu.
+Prototyp má prepínanie účtov (Viac › Prepnúť účet): Admin a Director zverejňujú a schvaľujú, Worker zverejňuje na pridelených miestach, píše rýchle správy, vidí správy zobrazené na svojich miestach a môže ich tam zrušiť; históriu správ nevidí. Históriu správ a detail správy (komu išla, kto a kedy ju odoslal, ako skončila) vidí len Admin a Director. Partner (tretia strana) upravuje celý len vlastný playlist; v playliste dopravcu mení len svoje sekcie a ostatné si môže len pozrieť. Zmeny posiela na schválenie a rýchle správy písať nemôže. V Nastaveniach sa dá prepnúť svetlý alebo tmavý vzhľad. Dolná lišta má záložky Domov, Playlisty, Miesta, AI asistent a Viac; Galéria je vo Viac, nastavenie AI asistenta v Nastaveniach. AI asistent je chat, ktorý odpovedá z ukážkových údajov prototypu.
 
 Mobilná aplikácia len upravuje: nevytvára playlisty, nemaže snímky ani súbory a nemení vzory (rozloženie plochy). Snímku môže z playlistu odstrániť, v zozname snímok však ostane. Snímky podľa zložených vzorov (sekcie v riadkoch a stĺpcoch, ako v desktopovom editore vzorov) sa upravujú ťuknutím na sekciu: obsah sekcie sa vyberá z rovnakých typov ako v desktope (text, obrázok, video, odchody vozidiel, cestovné poriadky, odkaz, mapa, počasie, detail linky, info menu, vozidlová trasa, kalendár, vodné merania, čas). Ponúknu sa len typy, pre ktoré má organizácia pripojený zdroj dát a ktoré zariadenie zvládne (napríklad info menu len na dotykovom kiosku). Ostatné sú vypísané ako nedostupné s dôvodom. Prehľad zdrojov dát je vo Viac › Nastavenia. Sekcie, ktoré patria tretej strane (napríklad Mesto Riečany), sú šrafované a označené jej menom. Dopravca ich obsah nemení, partner upravuje len svoje sekcie.
 
 Ochrana pred chybou: poslednú snímku playlistu ani čas a dátum označníka nejde odstrániť, snímka nemôže ostať bez názvu, zobrazené linky sa vyberajú ťuknutím namiesto písania, odstránenie sa potvrdzuje druhým ťuknutím (potvrdenie po 5 sekundách samo zmizne), pri vrátení alebo zamietnutí schválenia je povinný komentár a pri prepnutí playlistu sa nedá zvoliť ten, ktorý na mieste už hrá. Worker zruší len rýchlu správu, ktorú poslal sám alebo ktorá ide len na jeho miesta. Neodoslané úpravy playlistu sú vypísané v jeho detaile a dajú sa naraz zahodiť (Zahodiť zmeny); zamietnutie schválenia vráti playlist do stavu pred zmenami.
 
+Vlastný čas (začiatok a koniec) sa pri prepnutí playlistu aj pri rýchlej správe nastavuje kolieskami dňa, hodiny a minút priamo v aplikácii. Rýchla správa so začiatkom v budúcnosti sa naplánuje a na Domove je v časti Naplánované správy. Nepoužíva sa výber dátumu a času prehliadača, preto ovládanie vyzerá rovnako na Androide aj iPhone. Posun začiatku posunie aj koniec, takže dĺžka prehrávania ostane rovnaká.
+
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia 44 návrhu v claude.ai (artefakt typu Design), stav k 23. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia 47 návrhu v claude.ai (artefakt typu Design), stav k 23. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -46,7 +48,7 @@ index.html                 úvodná stránka: telefón + zoznam obrazoviek
 project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
-  Obr_*.dc.html            33 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
+  Obr_*.dc.html            34 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
   i18n.js                  preklady (generované zo zdroje/preklady)
   canvas.json              rozmiestnenie obrazoviek na plátne v claude.ai (na beh netreba)
   manifest.json            údaje pre pridanie na plochu telefónu (názov, ikony, farby)
@@ -94,7 +96,8 @@ zdroje/
 | `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenie AI asistenta, nastavenia, jazyk |
 | `Obr_Schvalovanie` | schvaľovanie – čaká a vybavené |
 | `Obr_DetailSchvalenia` | detail schválenia – zmeny, schváliť, vrátiť, zamietnuť |
-| `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova |
+| `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova (len Admin a Director) |
+| `Obr_DetailSpravy` | detail správy z histórie – komu išla, kto a kedy ju odoslal, ako skončila |
 | `Obr_AI` | AI asistent (záložka dole) – chat: návrh textu správy, miesta s hlásením, čo sa kde hrá, schvaľovanie |
 | `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia, AI asistent a úložisko |
 | `Obr_PrepnutieUctu` | prepnutie účtu – Admin, Director, Worker, Partner |
