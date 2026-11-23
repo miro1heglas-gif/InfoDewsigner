@@ -6,7 +6,7 @@
         <div class="chips"><sc-for list="{{ pcChips }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}<span class="cn">{{ c.n }}</span></button></sc-for></div>
       </div>
       <div class="sc" style="padding-top: 12px">
-        <div class="list"><sc-for list="{{ pcRows }}" as="p" hint-placeholder-count="6">
+        <div class="list sep"><sc-for list="{{ pcRows }}" as="p" hint-placeholder-count="6">
           <div class="row wrap" style="align-items: flex-start">
             <span class="dot" data-k="{{ p.dotK }}" style="margin-top: 7px"></span>
             <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ p.name }}</span><span class="sm" style="display: block; font-weight: 600; color: var(--tx2)">{{ p.devT }}</span><span class="mut sm" style="display: block"><span translate="no">{{ p.plNm }}</span>{{ p.plT }}</span><sc-if value="{{ p.hasDev }}" hint-placeholder-val="{{ true }}"><span style="display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; align-items: center"><span class="pill" data-k="{{ p.stK }}">{{ p.stT }}</span><sc-if value="{{ p.offline }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="bad">Offline</span></sc-if><sc-if value="{{ p.temp }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="blue">Dočasne · {{ p.until }}</span><button class="lnk" onClick="{{ p.revert }}">Vrátiť pôvodný</button></sc-if></span></sc-if></span>
@@ -104,11 +104,11 @@
     <!-- ===== HISTÓRIA SPRÁV (Viac › História správ) ===== -->
     <sc-if value="{{ s_hist }}" hint-placeholder-val="{{ false }}">
       <div class="sc">
-        <div class="mut sm">Rýchle správy, ktoré už skončili alebo boli zrušené. Správu môžete poslať znova – pred odoslaním ju ešte upravíte.</div>
+        <div class="mut sm">Rýchle správy, ktoré už skončili alebo boli zrušené. Ťuknutím na správu zobrazíte detail – komu išla, kto a kedy ju odoslal. Správu môžete poslať znova – pred odoslaním ju ešte upravíte.</div>
         <sc-if value="{{ qhHas }}" hint-placeholder-val="{{ true }}">
           <div class="list"><sc-for list="{{ qh }}" as="h" hint-placeholder-count="4">
             <div class="row">
-              <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ h.text }}</span><span class="mut sm" style="display: block">{{ h.meta }}</span></span>
+              <button class="rowmain" onClick="{{ h.open }}" aria-label="{{ h.openA }}"><span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ h.text }}</span><span class="mut sm" style="display: block">{{ h.meta }}</span></span></button>
               <button class="btn sm" aria-label="{{ h.againA }}" onClick="{{ h.again }}">Poslať znova</button>
             </div>
           </sc-for></div>
@@ -201,7 +201,25 @@
             <button class="pickrow" onClick="{{ qOpenPlaces }}"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.pin }}"></path></svg></span><span style="flex: 1; min-width: 0; text-align: left"><span class="nm">{{ qTgtT }}</span><span class="mut sm" style="display: block">{{ qTgtSub }}</span></span><span class="lnk" style="display: flex; align-items: center">Vybrať</span></button></div>
           <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Priorita</div><div class="seg"><sc-for list="{{ qPrios }}" as="c" hint-placeholder-count="2"><button aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div></div>
           <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Kde na obrazovke</div><div class="seg"><sc-for list="{{ qPoss }}" as="c" hint-placeholder-count="3"><button aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div></div>
-          <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Ako dlho</div><div class="chips" style="flex-wrap: wrap"><sc-for list="{{ qDurs }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div></div>
+          <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Ako dlho</div><div class="chips" style="flex-wrap: wrap"><sc-for list="{{ qDurs }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}</button></sc-for></div>
+            <sc-if value="{{ qCustom }}" hint-placeholder-val="{{ false }}">
+              <div class="card form dtc" style="gap: 8px">
+                <button class="dtv" aria-expanded="{{ qFOn }}" onClick="{{ qEdF }}"><span class="lbl">Začiatok</span><span class="dtvv" translate="no">{{ qFT }}</span></button>
+                <sc-if value="{{ qFOn }}" hint-placeholder-val="{{ true }}"><div class="wh">
+                <div class="whc" data-k="d" role="listbox" tabindex="0" aria-label="Deň" onScroll="{{ whScD }}" onKeyDown="{{ whKeyD }}"><sc-for list="{{ whDays }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="h" role="listbox" tabindex="0" aria-label="Hodina" onScroll="{{ whScH }}" onKeyDown="{{ whKeyH }}"><sc-for list="{{ whHours }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="m" role="listbox" tabindex="0" aria-label="Minúta" onScroll="{{ whScM }}" onKeyDown="{{ whKeyM }}"><sc-for list="{{ whMins }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+              </div></sc-if>
+                <button class="dtv" aria-expanded="{{ qTOn }}" onClick="{{ qEdT }}"><span class="lbl">Koniec</span><span class="dtvv" translate="no">{{ qTT }}</span></button>
+                <sc-if value="{{ qTOn }}" hint-placeholder-val="{{ false }}"><div class="wh">
+                <div class="whc" data-k="d" role="listbox" tabindex="0" aria-label="Deň" onScroll="{{ whScD }}" onKeyDown="{{ whKeyD }}"><sc-for list="{{ whDays }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="h" role="listbox" tabindex="0" aria-label="Hodina" onScroll="{{ whScH }}" onKeyDown="{{ whKeyH }}"><sc-for list="{{ whHours }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="m" role="listbox" tabindex="0" aria-label="Minúta" onScroll="{{ whScM }}" onKeyDown="{{ whKeyM }}"><sc-for list="{{ whMins }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+              </div></sc-if>
+                <sc-if value="{{ qCErr }}" hint-placeholder-val="{{ false }}"><div class="err" role="alert">{{ qCErrT }}</div></sc-if>
+                <div class="mut sm">Ťuknite na Začiatok alebo Koniec a hodnotu nastavte posunutím.</div>
+              </div>
+            </sc-if></div>
         </div>
         <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" disabled="{{ qOff }}" onClick="{{ qSend }}">{{ qSendT }}</button></div>
       </sc-if>
@@ -249,12 +267,21 @@
           <div class="lbl">Ako dlho sa má prehrávať</div>
           <div class="list"><sc-for list="{{ swDurs }}" as="d" hint-placeholder-count="4"><button class="row" style="min-height: 56px" onClick="{{ d.pick }}" role="radio" aria-checked="{{ d.on }}"><span class="rad" aria-hidden="true"></span><span style="flex: 1; min-width: 0"><span class="nm">{{ d.label }}</span><span class="mut sm" style="display: block">{{ d.sub }}</span></span></button></sc-for></div>
           <sc-if value="{{ swCustom }}" hint-placeholder-val="{{ false }}">
-            <div class="card form">
-              <div class="lbl">Začiatok</div>
-              <div class="dtr"><input type="date" class="inp" value="{{ swCFd }}" min="{{ swMin }}" onInput="{{ setCFd }}" onChange="{{ setCFd }}" aria-label="Dátum začiatku"><input type="time" class="inp" value="{{ swCFt }}" step="300" onInput="{{ setCFt }}" onChange="{{ setCFt }}" aria-label="Čas začiatku"></div>
-              <div class="lbl">Koniec</div>
-              <div class="dtr"><input type="date" class="inp" value="{{ swCTd }}" min="{{ swMin }}" onInput="{{ setCTd }}" onChange="{{ setCTd }}" aria-label="Dátum konca"><input type="time" class="inp" value="{{ swCTt }}" step="300" onInput="{{ setCTt }}" onChange="{{ setCTt }}" aria-label="Čas konca"></div>
+            <div class="card form dtc" style="gap: 8px">
+              <button class="dtv" aria-expanded="{{ swFOn }}" onClick="{{ swEdF }}"><span class="lbl">Začiatok</span><span class="dtvv" translate="no">{{ swFT }}</span></button>
+              <sc-if value="{{ swFOn }}" hint-placeholder-val="{{ true }}"><div class="wh">
+                <div class="whc" data-k="d" role="listbox" tabindex="0" aria-label="Deň" onScroll="{{ whScD }}" onKeyDown="{{ whKeyD }}"><sc-for list="{{ whDays }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="h" role="listbox" tabindex="0" aria-label="Hodina" onScroll="{{ whScH }}" onKeyDown="{{ whKeyH }}"><sc-for list="{{ whHours }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="m" role="listbox" tabindex="0" aria-label="Minúta" onScroll="{{ whScM }}" onKeyDown="{{ whKeyM }}"><sc-for list="{{ whMins }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+              </div></sc-if>
+              <button class="dtv" aria-expanded="{{ swTOn }}" onClick="{{ swEdT }}"><span class="lbl">Koniec</span><span class="dtvv" translate="no">{{ swTT }}</span></button>
+              <sc-if value="{{ swTOn }}" hint-placeholder-val="{{ false }}"><div class="wh">
+                <div class="whc" data-k="d" role="listbox" tabindex="0" aria-label="Deň" onScroll="{{ whScD }}" onKeyDown="{{ whKeyD }}"><sc-for list="{{ whDays }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="h" role="listbox" tabindex="0" aria-label="Hodina" onScroll="{{ whScH }}" onKeyDown="{{ whKeyH }}"><sc-for list="{{ whHours }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+                <div class="whc" data-k="m" role="listbox" tabindex="0" aria-label="Minúta" onScroll="{{ whScM }}" onKeyDown="{{ whKeyM }}"><sc-for list="{{ whMins }}" as="x" hint-placeholder-count="5"><div class="whi" role="option" aria-selected="{{ x.on }}" translate="no" onClick="{{ x.pick }}">{{ x.label }}</div></sc-for></div>
+              </div></sc-if>
               <sc-if value="{{ swCErr }}" hint-placeholder-val="{{ false }}"><div class="err" role="alert">{{ swCErrT }}</div></sc-if>
+              <div class="mut sm">Ťuknite na Začiatok alebo Koniec a hodnotu nastavte posunutím.</div>
             </div>
           </sc-if>
         </sc-if>
@@ -281,6 +308,29 @@
       <div class="sheet-b"><div class="grid"><sc-for list="{{ pickRows }}" as="g" hint-placeholder-count="6">
         <button class="gt" onClick="{{ g.pick }}" aria-label="{{ g.aria }}"><span style="{{ g.thS }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ g.d }}"></path></svg></span><span class="nm" style="font-size: 14px" translate="no">{{ g.name }}</span><span class="mut sm">{{ g.size }}</span></button>
       </sc-for></div></div>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== DETAIL SPRÁVY Z HISTÓRIE (len Admin a Director) ===== -->
+  <sc-if value="{{ sh_qd }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 92%" role="dialog" aria-label="Detail správy">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">Detail správy</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b" tabindex="0" role="region" aria-label="Detail správy">
+        <div class="card" style="display: flex; flex-direction: column; gap: 8px"><span class="pill" data-k="{{ qd.prioK }}" style="align-self: flex-start">{{ qd.prioT }}</span><div class="nm" style="font-size: 18px" translate="no">{{ qd.text }}</div></div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <div class="card" style="padding: 10px 12px"><div class="mut sm">Odosielateľ</div><div class="nm" translate="no">{{ qd.by }}</div><div class="mut sm" translate="no">{{ qd.byRole }}</div></div>
+          <div class="card" style="padding: 10px 12px"><div class="mut sm">Odoslané</div><div class="nm">{{ qd.sentT }}</div></div>
+          <div class="card" style="padding: 10px 12px"><div class="mut sm">{{ qd.endLbl }}</div><div class="nm">{{ qd.endT }}</div><sc-if value="{{ qd.hasEndBy }}" hint-placeholder-val="{{ false }}"><div class="mut sm" translate="no">{{ qd.endBy }}</div></sc-if></div>
+          <div class="card" style="padding: 10px 12px"><div class="mut sm">Trvanie</div><div class="nm">{{ qd.durT }}</div></div>
+          <div class="card" style="padding: 10px 12px; grid-column: 1 / -1"><div class="mut sm">Kde na obrazovke</div><div class="nm">{{ qd.posT }}</div></div>
+        </div>
+        <div><div class="h2" style="margin-bottom: 6px">{{ qd.whereH }}</div>
+          <sc-if value="{{ qd.isAll }}" hint-placeholder-val="{{ false }}"><div class="card"><div class="nm">{{ qd.allT }}</div><div class="mut sm">Každé miesto, ktoré má zariadenie</div></div></sc-if>
+          <sc-if value="{{ qd.notAll }}" hint-placeholder-val="{{ true }}"><div class="list"><sc-for list="{{ qd.places }}" as="x" hint-placeholder-count="3"><div class="row" style="min-height: 52px"><span style="flex: 1; min-width: 0"><span class="nm" style="font-size: 15px" translate="no">{{ x.name }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span></div></sc-for></div></sc-if>
+        </div>
+      </div>
+      <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" onClick="{{ qdAgain }}">Poslať znova</button></div>
     </div></div>
   </sc-if>
 

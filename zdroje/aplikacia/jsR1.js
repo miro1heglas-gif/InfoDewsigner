@@ -45,6 +45,8 @@
     const fullEd = (p) => !ACC.partner || plOwnBy(p);
     const canEditPl = (p) => !!p && (fullEd(p) || p.slides.some(slOwn));
     const canQuick = !ACC.partner;
+    // históriu správ a ich detail (kto a kedy odoslal) vidí len Admin a Director
+    const canHist = !!ACC.apv;
     const vPls = s.pls.filter((p) => !SCOPE || p.mine === s.role || plOwnBy(p) || p.where.some((id) => SCOPE.indexOf(id) >= 0) || s.apvs.some((a) => a.plId === p.id && isOwn(a)));
     const names = (ids) => ids.map(placeName);
     const shortList = (nm) => nm.length ? (nm.length > 3 ? nm.slice(0, 3).join(' · ') + ' a ' + (nm.length - 3) + ' ' + plural(nm.length - 3, ['ďalšie', 'ďalšie', 'ďalších']) : nm.join(' · ')) : '—';
@@ -154,9 +156,21 @@
     const POS = { top: 'horný pás', bottom: 'dolný pás', full: 'celá obrazovka' };
 
     // ---------- DOMOV ----------
-    const qaRows = s.qa.map((m) => ({
-      k: PRIO[m.prio][1], prioT: PRIO[m.prio][0], text: m.text, meta: POS[m.pos] + ' · ' + (m.until || DURS[m.dur][1]) + ' · ' + tgtLabel(m),
-      canCancel: m.acc === s.role || (ACC.pub && (!SCOPE || (!m.all && m.ids.length > 0 && m.ids.every((id) => SCOPE.indexOf(id) >= 0)))), cancelA: 'Zrušiť správu: ' + m.text, cancel: () => { set({ qa: s.qa.filter((x) => x.id !== m.id), qh: [Object.assign({}, m, { when: 'Dnes ' + HM() + ' · zrušená' })].concat(s.qh) }); say('Správa je zrušená a z displejov zmizne do pár sekúnd.'); }
+    // účet s pridelenými miestami vidí len správy, ktoré sa zobrazujú na jeho miestach; zrušiť ich môže na svojich miestach
+    const allDev = s.places.filter((p) => p.n > 0).map((p) => p.id);
+    const mIds = (m) => m.all ? allDev : m.ids;
+    const mMine = (m) => mIds(m).filter((id) => !SCOPE || SCOPE.indexOf(id) >= 0);
+    const endNow = () => ({ when: 'Dnes ' + HM() + ' · zrušená', endKind: 'cancel', endT: 'Dnes ' + HM(), endBy: ACC.name });
+    const cancelMsg = (m) => {
+      const plan = !!m.from && m.from > Date.now(); const mine = mMine(m); const whole = !SCOPE || m.acc === s.role || mine.length === mIds(m).length;
+      if (whole) { set({ qa: s.qa.filter((x) => x.id !== m.id), qh: [Object.assign({}, m, endNow())].concat(s.qh) }); say(plan ? 'Naplánovaná správa je zrušená.' : 'Správa je zrušená a z displejov zmizne do pár sekúnd.'); return; }
+      // správa ide aj na cudzie miesta: zruší sa len na miestach účtu, inde ostáva
+      set({ qa: s.qa.map((x) => x.id === m.id ? Object.assign({}, x, { all: false, ids: mIds(m).filter((id) => mine.indexOf(id) < 0) }) : x), qh: [Object.assign({}, m, endNow(), { id: 'q' + self.nid(), all: false, ids: mine })].concat(s.qh) });
+      say('Správa je zrušená na vašich miestach (' + mine.length + '). Na ostatných miestach ostáva.');
+    };
+    const qaRows = s.qa.filter((m) => !SCOPE || mMine(m).length > 0).map((m) => ({
+      k: PRIO[m.prio][1], prioT: PRIO[m.prio][0], text: m.text, meta: POS[m.pos] + ' · ' + (m.until || DURS[m.dur][1]) + ' · ' + tgtLabel(m), plan: !!m.from && m.from > Date.now(),
+      canCancel: !!ACC.pub, cancelA: 'Zrušiť správu: ' + m.text, cancel: () => cancelMsg(m)
     }));
     const openQuick = () => { if (canQuick) set({ sheet: 'quick', qStep: 'main', qSearch: '', qTplAll: false }); };
     const effPl = (pc) => plById(pc.temp ? pc.temp.pl : pc.pl);
@@ -171,7 +185,7 @@
     const nowRows = nowIds.map((id) => { const pc = placeById(id); const ep = effPl(pc); return Object.assign({ thS: 'width:48px;height:48px;border-radius:10px;flex:none;background:' + tile(ep), place: pc.name, plName: ep ? ep.name : '—', temp: !!pc.temp, until: pc.temp ? pc.temp.until : '', change: () => swForPlace(id), canSw: ACC.pub, changeA: 'Prepnúť playlist na mieste: ' + pc.name, edit: () => editAtPlace(id) }, plBtn(ep)); });
     const pcOnN = withDev.filter((p) => p.on).length;
     const expN = withDev.filter((p) => p.st === 'exp').length;
-    const qhRows = s.qh.map((h) => ({ againA: 'Poslať znova: ' + h.text, text: h.text, meta: h.when + ' · ' + tgtLabel(h) + ' · ' + PRIO[h.prio][0], again: () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: { text: h.text, prio: h.prio, pos: h.pos, dur: h.dur, all: h.all, ids: h.ids.slice() } }) }));
+    const qhRows = s.qh.map((h) => ({ open: () => set({ sheet: 'qd', qdId: h.id }), openA: 'Detail správy: ' + h.text, againA: 'Poslať znova: ' + h.text, text: h.text, meta: h.when + ' · ' + tgtLabel(h) + ' · ' + PRIO[h.prio][0], again: () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: { text: h.text, prio: h.prio, pos: h.pos, dur: h.dur === 'custom' ? 'day' : h.dur, all: h.all, ids: h.ids.slice() } }) }));
 
     // ---------- PLAYLISTY ----------
     const cnt = (k) => vPls.filter((p) => p.st === k).length;

@@ -134,8 +134,8 @@
     const qTpls = (s.qTplAll ? QTPL_ON : QTPL_ON.slice(0, TPL_N)).map((c) => ({ label: c[0], pick: () => setQ({ text: Tx(c[1]), prio: c[2], pos: c[3] }) }));
     const qPrios = [['info', 'Oznam'], ['warn', 'Výstraha']].map((c) => ({ label: c[1], on: Q.prio === c[0], pick: () => setQ({ prio: c[0] }) }));
     const qPoss = [['top', 'Horný pás'], ['bottom', 'Dolný pás'], ['full', 'Celá obrazovka']].map((c) => ({ label: c[1], on: Q.pos === c[0], pick: () => setQ({ pos: c[0] }) }));
-    const qDurs = ['m15', 'h1', 'day', 'rev'].map((k) => ({ label: DURS[k][0], on: Q.dur === k, pick: () => setQ({ dur: k }) }));
-    const qSel = Q.all ? devIds : Q.ids;
+    const qDurs = ['m15', 'h1', 'day', 'rev', 'custom'].map((k) => ({ label: DURS[k][0], on: Q.dur === k, pick: () => { setQ(k === 'custom' && !Q.cFd ? Object.assign({ dur: k }, self.cDef(true)) : { dur: k }); if (k === 'custom') { self.whSync(false); setTimeout(() => { try { const el = document.querySelector('.sheet .dtc'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 80); } } }));
+    const qSel = Q.all ? devIds : Q.ids.filter((id) => devIds.indexOf(id) >= 0);
     const setSel = (ids) => setQ(ids.length === devIds.length ? { all: true, ids: [] } : { all: false, ids });
     const qGrps = GRP.map((g, i) => { const gi = grpIds(i); const on = gi.length > 0 && gi.every((x) => qSel.indexOf(x) >= 0); return { label: g + ' (' + gi.length + ')', on, pick: () => setSelOrd(on ? qSel.filter((x) => gi.indexOf(x) < 0) : qSel.concat(gi.filter((x) => qSel.indexOf(x) < 0))) }; });
     const qsl = s.qSearch.trim().toLowerCase();
@@ -148,10 +148,12 @@
     const qPcs = withDevO.filter((p) => !qsl || p.name.toLowerCase().indexOf(qsl) >= 0).map((p) => { const on = qSel.indexOf(p.id) >= 0; return { name: p.name, sub: DEV[p.dev][1] + (p.g >= 0 ? ' · ' + GRP[p.g] : '') + (p.on ? '' : ' · offline'), on, pick: () => setSel(on ? qSel.filter((x) => x !== p.id) : qSel.concat([p.id])) }; });
     const qN = qSel.length;
     const qSend = () => {
-      if (!Q.text.trim() || !qN) return;
-      const m = { id: 'q' + self.nid(), text: Q.text.trim(), prio: Q.prio, pos: Q.pos, dur: Q.dur, until: DURS[Q.dur][1], all: SCOPE ? false : Q.all, ids: SCOPE && Q.all ? devIds.slice() : Q.ids.slice(), acc: s.role };
-      set({ qa: [m].concat(s.qa), sheet: null, qStep: 'main', qSearch: '', qTplAll: false, quick: Object.assign({}, Q, { text: '' }) });
-      say('Správa je odoslaná na ' + nPlaces(qN) + ' a zobrazí sa do pár sekúnd.');
+      if (!Q.text.trim() || !qN || qcErrT) return;
+      const cust = Q.dur === 'custom';
+      const m = { id: 'q' + self.nid(), text: Q.text.trim(), prio: Q.prio, pos: Q.pos, dur: Q.dur, until: cust ? qcLbl : DURS[Q.dur][1], from: cust ? qcFrom.getTime() : 0, by: ACC.name, byRole: ACC.role, sentT: 'Dnes ' + HM(), all: SCOPE ? false : Q.all, ids: SCOPE && Q.all ? devIds.slice() : qSel.slice(), acc: s.role };
+      // po odoslaní sa vlastný čas vráti na predvolené „Do konca dňa“, aby pri ďalšej správe neostal starý termín
+      set({ qa: [m].concat(s.qa), sheet: null, qStep: 'main', qSearch: '', qTplAll: false, quick: Object.assign({}, Q, { text: '', dur: cust ? 'day' : Q.dur, cFd: '', cFt: '', cTd: '', cTt: '', cEd: 'f' }) });
+      say(qPlan ? 'Správa je naplánovaná na ' + nPlaces(qN) + ' ' + qcLbl + '.' : 'Správa je odoslaná na ' + nPlaces(qN) + ' a zobrazí sa do pár sekúnd.');
     };
 
     // ---------- PREPNUTIE PLAYLISTU ----------
@@ -170,13 +172,40 @@
       .map((x) => ({ label: x[0] + ' (' + x[1].length + ')', on: x[1].every((id) => W.places.indexOf(id) >= 0), pick: () => swToggle(x[1]) }));
     const p2d = (n) => String(n).padStart(2, '0');
     const isoD = (d) => d.getFullYear() + '-' + p2d(d.getMonth() + 1) + '-' + p2d(d.getDate()); const isoT = (d) => p2d(d.getHours()) + ':' + p2d(d.getMinutes());
-    const cDef = () => { const a = new Date(); a.setSeconds(0, 0); a.setMinutes(Math.ceil((a.getMinutes() + 1) / 15) * 15); const b = new Date(a.getTime() + 2 * 3600000); return { cFd: isoD(a), cFt: isoT(a), cTd: isoD(b), cTt: isoT(b) }; };
+    const cDef = () => self.cDef();
     const CV = W.cFd ? W : Object.assign({}, W, cDef());
     const cFrom = new Date(CV.cFd + 'T' + (CV.cFt || '00:00')), cTo = new Date(CV.cTd + 'T' + (CV.cTt || '00:00'));
     const cErrT = isNaN(cFrom) || isNaN(cTo) ? 'Vyberte začiatok a koniec' : cTo <= cFrom ? 'Koniec musí byť neskôr ako začiatok.' : cTo <= new Date() ? 'Koniec už uplynul. Zvoľte neskorší čas.' : '';
     const fdt = (d) => d.getDate() + '. ' + (d.getMonth() + 1) + '. ' + d.getHours() + ':' + p2d(d.getMinutes());
     const cLbl = 'od ' + fdt(cFrom) + ' do ' + fdt(cTo);
-    const swDurs = Object.keys(SWD).map((k) => ({ label: SWD[k][0], sub: k === 'custom' && W.dur === 'custom' && !cErrT ? cLbl : SWD[k][1], on: W.dur === k, pick: () => { setW(k === 'custom' && !W.cFd ? Object.assign({ dur: k }, cDef()) : { dur: k }); if (k === 'custom') setTimeout(() => { try { const el = document.querySelector('.sheet .dtr'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 80); } }));
+    const swDurs = Object.keys(SWD).map((k) => ({ label: SWD[k][0], sub: k === 'custom' && W.dur === 'custom' && !cErrT ? cLbl : SWD[k][1], on: W.dur === k, pick: () => { setW(k === 'custom' && !W.cFd ? Object.assign({ dur: k }, cDef()) : { dur: k }); if (k === 'custom') { self.whSync(false); setTimeout(() => { try { const el = document.querySelector('.sheet .dtc'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 80); } } }));
+    // dátum a čas sa vyberajú kolieskami priamo v aplikácii – rovnako vo všetkých prehliadačoch (bez výberu systému)
+    const cEd = W.cEd === 't' ? 't' : 'f';
+    const whLang = { sk: 'sk-SK', cs: 'cs-CZ', pl: 'pl-PL', en: 'en-GB', de: 'de-DE' }[WL ? WL.get() : 'sk'] || 'sk-SK';
+    const day0 = new Date(); day0.setHours(0, 0, 0, 0);
+    const dayAt = (i) => { const d = new Date(day0.getTime()); d.setDate(d.getDate() + i); return d; };
+    const dayLbl = (i) => { if (i === 0) return Tx('Dnes'); if (i === 1) return Tx('Zajtra'); const d = dayAt(i); try { return d.toLocaleDateString(whLang, { weekday: 'short', day: 'numeric', month: 'numeric' }); } catch (e) { return d.getDate() + '. ' + (d.getMonth() + 1) + '.'; } };
+    // kolieska patria panelu, ktorý je práve otvorený: prepnutie playlistu alebo rýchla správa
+    const whIx = self.whIdx(s.sheet === 'quick' ? Q : W);
+    const whApply = (k, i) => self.setState((st) => { const hk = st.sheet === 'quick' ? 'quick' : 'sw'; const w0 = st[hk]; const b0 = w0.cFd ? w0 : Object.assign({}, w0, self.cDef()); const ed = b0.cEd === 't' ? 't' : 'f'; const dK = ed === 'f' ? 'cFd' : 'cTd', tK = ed === 'f' ? 'cFt' : 'cTt'; const nx = Object.assign({}, self.whIdx(b0), { [k]: i }); const nd = isoD(dayAt(Math.max(0, Math.min(60, nx.d)))); const nt = p2d(Math.max(0, Math.min(23, nx.h))) + ':' + p2d(Math.max(0, Math.min(11, nx.m)) * 5); if (w0.cFd && nd === b0[dK] && nt === b0[tK]) return null;
+      // posun začiatku posunie aj koniec, aby dĺžka prehrávania ostala rovnaká (koniec sa tak nedostane pred začiatok)
+      const ex = {}; if (ed === 'f') { const oS = new Date(b0.cFd + 'T' + b0.cFt), nS = new Date(nd + 'T' + nt), oE = new Date(b0.cTd + 'T' + b0.cTt); if (!isNaN(oS) && !isNaN(nS) && !isNaN(oE) && oE > oS) { const nE = new Date(oE.getTime() + (nS - oS)); ex.cTd = isoD(nE); ex.cTt = p2d(nE.getHours()) + ':' + p2d(nE.getMinutes()); } }
+      return { [hk]: Object.assign({}, b0, ex, { [dK]: nd, [tK]: nt }) }; });
+    self._tw = self._tw || {};
+    const whScroll = (k) => (e) => { const el = e.currentTarget; clearTimeout(self._tw[k]); self._tw[k] = setTimeout(() => whApply(k, Math.round(el.scrollTop / 44)), 130); };
+    const whKey = (k) => (e) => { const dlt = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0; if (!dlt) return; e.preventDefault(); whApply(k, Math.max(0, Math.min({ d: 60, h: 23, m: 11 }[k], self.whIdx(self.state.sheet === 'quick' ? self.state.quick : self.state.sw)[k] + dlt))); self.whSync(false); };
+    const whCol = (k, n, lbl) => Array.from({ length: n }, (_, i) => ({ label: lbl(i), on: whIx[k] === i, pick: () => { whApply(k, i); self.whSync(true); } }));
+    const whDays = whCol('d', 61, dayLbl), whHours = whCol('h', 24, (i) => String(i)), whMins = whCol('m', 12, (i) => p2d(i * 5));
+    const dtT = (ds, t) => { const d1 = new Date(ds + 'T00:00'); const i = Math.round((d1 - day0) / 864e5); const tt = t || '00:00'; return (i >= 0 && i <= 60 ? dayLbl(i) : d1.getDate() + '. ' + (d1.getMonth() + 1) + '.') + ' ' + parseInt(tt.slice(0, 2), 10) + ':' + tt.slice(3, 5); };
+    const swEd = (x) => () => { setW(Object.assign({}, W.cFd ? {} : cDef(), { cEd: x })); self.whSync(false); };
+    // rýchla správa: vlastný čas od – do (rovnaké kolieska)
+    const QV = Q.cFd ? Q : Object.assign({}, Q, self.cDef(true));
+    const qcFrom = new Date(QV.cFd + 'T' + (QV.cFt || '00:00')), qcTo = new Date(QV.cTd + 'T' + (QV.cTt || '00:00'));
+    const qcErrT = Q.dur !== 'custom' ? '' : isNaN(qcFrom) || isNaN(qcTo) ? 'Vyberte začiatok a koniec' : qcTo <= qcFrom ? 'Koniec musí byť neskôr ako začiatok.' : qcTo <= new Date() ? 'Koniec už uplynul. Zvoľte neskorší čas.' : '';
+    const qcLbl = 'od ' + fdt(qcFrom) + ' do ' + fdt(qcTo);
+    const qPlan = Q.dur === 'custom' && !qcErrT && qcFrom.getTime() > Date.now() + 30000;
+    const qEd = Q.cEd === 't' ? 't' : 'f';
+    const qEdSet = (x) => () => { setQ(Object.assign({}, Q.cFd ? {} : self.cDef(true), { cEd: x })); self.whSync(false); };
     const UNTIL = { today: 'do 23:59', h1: 'do ' + HM(60), h4: 'do ' + HM(240), rev: 'do odvolania', custom: cLbl };
     const swPlaces = shortList(names(W.places));
     const swApply = () => {
@@ -217,7 +246,7 @@
     } }));
     const isLang = s.sheet === 'lang'; const isAcc = s.sheet === 'acc';
     const curLang = WL ? WL.get() : 'sk';
-    const pickAcc = (k) => { set({ role: k, sheet: null, screen: 'home', stack: [], reorder: false, confirm: '', pcF: 'all', pq: '', filt: 'all', q: '', apvTab: 'pending', toast: '' }); say('Prepnuté na účet ' + MACC[k].name + '.'); };
+    const pickAcc = (k) => { set({ role: k, sheet: null, screen: 'home', stack: [], reorder: false, confirm: '', pcF: 'all', pq: '', filt: 'all', q: '', apvTab: 'pending', toast: '', quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qOrd: null }); say('Prepnuté na účet ' + MACC[k].name + '.'); };
     const lsRows = isAcc ? Object.keys(MACC).map((k) => ({ name: MACC[k].name, meta: MACC[k].role + ' · ' + MACC[k].desc, d: k === s.role ? IC.tick : IC.none, pick: () => pickAcc(k) })) : isLang ? (WL ? WL.list : ['sk']).map((k) => ({ name: WL ? WL.names[k] : 'Slovenčina', meta: '', d: k === curLang ? IC.tick : IC.none, pick: () => { if (WL) WL.set(k); set({ sheet: null }); } }))
       : vPls.filter((p) => p.flow !== 'pending' && !isLedDev(p.dev) && !PARTS[p.dev]).map((p) => ({ d: IC.plus, name: p.name, meta: DEV[p.dev][1] + ' · ' + slMeta(p), pick: () => { addPhotoSlide(p.id, galFile, bumpGal(s.gal, galFile.id, p.name), false); say('Pridané do playlistu „' + p.name + '“. ' + (ACC.pub ? 'Nezabudnite ho zverejniť.' : 'Nezabudnite ho odoslať na schválenie.')); } }));
 
@@ -228,11 +257,18 @@
     ].concat(ACC.apv ? [{ d: IC.check, title: 'Schvaľovanie', sub: pendingOthers.length ? pendingOthers.length + ' ' + plural(pendingOthers.length, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: pendingOthers.length > 0, badge: String(pendingOthers.length), open: () => nav('apv', { apvTab: 'pending' }) }]
       : ACC.partner ? [{ d: IC.check, title: 'Odoslané na schválenie', sub: myPend ? myPend + ' ' + plural(myPend, ['playlist čaká', 'playlisty čakajú', 'playlistov čaká']) + ' na schválenie' : 'Nič nečaká na schválenie', hasBadge: false, badge: '', open: () => nav('apv', { apvTab: 'pending' }) }] : []).concat([
       { d: IC.image, title: 'Galéria', sub: 'Obrázky, videá a zvuky, nahratie nových súborov', hasBadge: false, badge: '', open: () => nav('gal') },
-    ]).concat(canQuick ? [{ d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') }] : []).concat([
+    ]).concat(canHist ? [{ d: IC.msg, title: 'História správ', sub: 'Skončené a zrušené rýchle správy, poslať znova', hasBadge: false, badge: '', open: () => nav('hist') }] : []).concat([
       { d: IC.gear, title: 'Nastavenia', sub: 'Vzhľad, upozornenia, AI asistent a úložisko', hasBadge: false, badge: '', open: () => nav('set') },
       { d: IC.globe, title: 'Jazyk: ' + (WL ? WL.name() : 'Slovenčina'), sub: 'Jazyk aplikácie', hasBadge: false, badge: '', open: () => set({ sheet: 'lang' }) }
     ]);
     const pvDev = pvPl.dev;
+    // detail správy z histórie: text, komu, ako dlho, kto a kedy ju odoslal a ako skončila
+    const qdM = s.qh.find((h) => h.id === s.qdId) || s.qh[0] || { id: '', text: '', prio: 'info', pos: 'top', dur: 'day', all: true, ids: [] };
+    const POSL = { top: 'Horný pás', bottom: 'Dolný pás', full: 'Celá obrazovka' };
+    const qdObj = { text: qdM.text, prioK: PRIO[qdM.prio][1], prioT: PRIO[qdM.prio][0], posT: POSL[qdM.pos] || '', durT: qdM.dur === 'custom' ? (qdM.until || DURS.custom[0]) : (DURS[qdM.dur] || ['', ''])[0],
+      by: qdM.by || '—', byRole: qdM.byRole || '', sentT: qdM.sentT || qdM.when || '—', endLbl: qdM.endKind === 'cancel' ? 'Zrušená' : 'Skončila', endT: qdM.endT || '—', hasEndBy: qdM.endKind === 'cancel' && !!qdM.endBy, endBy: qdM.endBy || '',
+      allT: 'Všetky miesta (' + allDev.length + ')', isAll: !!qdM.all, notAll: !qdM.all, places: (qdM.all ? [] : qdM.ids.map(placeById).filter(Boolean)).map((x) => ({ name: x.name, sub: DEV[x.dev][1] })), whereH: 'Kam bola poslaná' + (qdM.all ? '' : ' (' + qdM.ids.length + ')') };
+    const qdAgain = () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: { text: qdM.text, prio: qdM.prio, pos: qdM.pos, dur: qdM.dur === 'custom' ? 'day' : qdM.dur, all: qdM.all, ids: qdM.ids.slice() } });
 
     // ---------- AI ASISTENT: chat ----------
     const AIQ = { delay: 'Napíš správu o meškaní', detour: 'Napíš správu o odklone', outage: 'Napíš správu o výluke', closed: 'Napíš správu o zatvorenej zastávke' };
@@ -292,7 +328,7 @@
         else if (ACC.partner) { if (!pendAll.length) r.text = 'Nič nečaká na schválenie.'; else { r.text = 'Na schválenie ste odoslali:'; r.items = pendAll.map((a) => ({ name: a.name, subD: '', sub: a.when, canTap: false, noTap: true, tap: () => {}, aria: '' })); A('Otvoriť schvaľovanie', () => nav('apv', { apvTab: 'pending' })); } }
         else r.text = 'Zmeny zverejňujete priamo, schvaľovanie robí správca.';
       }
-      else if (m.kind === 'qa') { if (!qaRows.length) r.text = 'Teraz nie je zobrazená žiadna rýchla správa.'; else { r.text = 'Na displejoch sú teraz tieto správy:'; r.items = qaRows.map((x) => ({ name: x.text, subD: '', sub: x.prioT + ' · ' + x.meta, canTap: false, noTap: true, tap: () => {}, aria: '' })); } if (canQuick) A('Nová rýchla správa', openQuick); }
+      else if (m.kind === 'qa') { r.text = qaRows.some((x) => !x.plan) ? 'Na displejoch sú teraz tieto správy:' : 'Teraz nie je zobrazená žiadna rýchla správa.'; r.items = qaRows.filter((x) => !x.plan).concat(qaRows.filter((x) => x.plan)).map((x) => ({ name: x.text, subD: '', sub: (x.plan ? 'Naplánovaná · ' : '') + x.prioT + ' · ' + x.meta, canTap: false, noTap: true, tap: () => {}, aria: '' })); if (canQuick) A('Nová rýchla správa', openQuick); }
       else if (m.kind === 'noquick') r.text = 'Rýchle správy posiela len dopravca. Váš účet ich písať nemôže.';
       else if (m.kind === 'help') r.text = canQuick ? 'Viem napísať text rýchlej správy, nájsť miesta s hlásením, povedať, čo sa kde prehráva, a ukázať, čo čaká na schválenie alebo je zobrazené.' : 'Viem nájsť miesta s hlásením, povedať, čo sa kde prehráva, a ukázať, čo ste odoslali na schválenie alebo čo je zobrazené.';
       else if (m.kind === 'thanks') r.text = 'Rado sa stalo. Ak treba, pýtajte sa ďalej.';
@@ -313,10 +349,10 @@
       subS: 'color:' + (dark ? '#B4C6C6' : 'var(--mut)'),
       hasBack: !tabRoot, goBack, hdLogo, hdTitle, hasSub: !!hdSub, hdSub, hdActs, tabs, hdT1Tr: sc === 'pl' ? 'no' : 'yes', hdT2Tr: sc === 'sl' || sc === 'pv' ? 'no' : 'yes',
       s_home: sc === 'home', s_pls: sc === 'pls', s_pl: sc === 'pl', s_sl: sc === 'sl', s_apv: sc === 'apv', s_ad: sc === 'ad', s_gal: sc === 'gal', s_more: sc === 'more', s_hist: sc === 'hist', s_plc: sc === 'plc', s_set: sc === 'set', s_ai: sc === 'ai', s_pv: sc === 'pv',
-      sh_quick: s.sheet === 'quick', sh_sw: s.sheet === 'sw', sh_add: s.sheet === 'add', sh_pick: s.sheet === 'pick', sh_gd: s.sheet === 'gd', sh_lib: s.sheet === 'lib', sh_list: s.sheet === 'gpl' || isLang || isAcc,
+      sh_quick: s.sheet === 'quick', sh_sw: s.sheet === 'sw', sh_add: s.sheet === 'add', sh_pick: s.sheet === 'pick', sh_gd: s.sheet === 'gd', sh_lib: s.sheet === 'lib', sh_list: s.sheet === 'gpl' || isLang || isAcc, sh_qd: s.sheet === 'qd' && canHist, qd: qdObj, qdAgain,
       closeSheet, bgClose: (e) => { if (e && e.target === e.currentTarget) closeSheet(); }, hasToast: !!s.toast, toast: s.toast, hasPush: !!s.push, pushTitle: s.push ? s.push.title : '', pushText: s.push ? s.push.text : '', closePush: () => set({ push: null }),
       // domov
-      openQuick, hasQa: qaRows.length > 0, qa: qaRows, hasPend: pendingOthers.length > 0, goApprovals: () => nav('apv', { apvTab: 'pending' }), pendT: pendingOthers.map((a) => a.name).slice(0, 2).join(' · ') + (pendingOthers.length > 2 ? ' · …' : ''), pendN: String(pendingOthers.length),
+      openQuick, hasQa: qaRows.some((x) => !x.plan), qa: qaRows.filter((x) => !x.plan), hasQaPlan: qaRows.some((x) => x.plan), qaPlan: qaRows.filter((x) => x.plan), hasPend: pendingOthers.length > 0, goApprovals: () => nav('apv', { apvTab: 'pending' }), pendT: pendingOthers.map((a) => a.name).slice(0, 2).join(' · ') + (pendingOthers.length > 2 ? ' · …' : ''), pendN: String(pendingOthers.length),
       nowRows, pcOn: String(pcOnN), pcDev: String(withDev.length), goPlaces: () => set({ screen: 'plc', stack: [], sheet: null, reorder: false, confirm: '', pq: '', pcF: withDev.some(pcProb) ? 'prob' : 'all' }), pcBarS: 'height:100%;border-radius:4px;background:#2E9E4F;width:' + (withDev.length ? Math.round(100 * pcOnN / withDev.length) : 0) + '%',
       pcOff: withDev.filter((p) => !p.on).map((p) => ({ name: p.name, since: p.off })), pcHasExp: expN > 0, pcExpT: expN + ' ' + plural(expN, ['miesto má', 'miesta majú', 'miest má']) + ' expirovaný playlist', qh: qhRows, qhHas: qhRows.length > 0, qhEmpty: qhRows.length === 0,
       // playlisty
@@ -372,11 +408,13 @@
       qTgtT: Q.all ? 'Všetky miesta (' + devIds.length + ')' : qN ? tgtLabel(Q) : 'Nie je vybrané žiadne miesto', qTgtSub: Q.all ? 'Každé miesto, ktoré má zariadenie' : qN ? shortList(names(Q.ids)) : 'Vyberte aspoň jedno miesto',
       qOpenPlaces: () => set({ qStep: 'places', qSearch: '', qOrd: snapOrd(qSel) }), qClosePlaces: () => set({ qStep: 'main', qSearch: '' }), qSearch: s.qSearch, setQSearch: (e) => set({ qSearch: e.target.value }), qGrps,
       qShowAll: !qsl, qAllOn: Q.all, qToggleAll: () => set({ quick: Object.assign({}, Q, Q.all ? { all: false, ids: [] } : { all: true, ids: [] }), qOrd: null }), qAllT: 'Všetky miesta (' + devIds.length + ')', qPcs, qPcEmpty: qPcs.length === 0,
-      qPcOff: qN === 0, qPcBtn: qN ? 'Hotovo · ' + nPlaces(qN) : 'Vyberte aspoň jedno miesto', qOff: !Q.text.trim() || !qN, qSend, qSendT: !Q.text.trim() ? 'Napíšte text správy' : qN ? 'Odoslať na ' + nPlaces(qN) : 'Vyberte miesto',
+      qPcOff: qN === 0, qPcBtn: qN ? 'Hotovo · ' + nPlaces(qN) : 'Vyberte aspoň jedno miesto', qOff: !Q.text.trim() || !qN || !!qcErrT, qSend, qSendT: !Q.text.trim() ? 'Napíšte text správy' : !qN ? 'Vyberte miesto' : qcErrT ? 'Opravte začiatok a koniec' : (qPlan ? 'Naplánovať na ' : 'Odoslať na ') + nPlaces(qN),
+      qCustom: Q.dur === 'custom', qFOn: qEd === 'f', qTOn: qEd === 't', qEdF: qEdSet('f'), qEdT: qEdSet('t'), qFT: dtT(QV.cFd, QV.cFt), qTT: dtT(QV.cTd, QV.cTt), qCErr: !!qcErrT, qCErrT: qcErrT,
       // prepnutie playlistu
       swCanBack: W.step === 'dur' || (W.step === 'pc' && W.from === 'pl'), swBack: () => setW({ step: W.step === 'dur' && W.from !== 'pl' ? 'pc' : 'pl' }), swGrps, swTitle, swSub, swSubD, swSub2, swIsPl: W.step === 'pl', swPls: swPlsRows, swIsPc: W.step === 'pc', swPcs, swIsDur: W.step === 'dur', swPlName: swPlObj ? swPlObj.name : '', swPlaces, swDurs,
       swOff: (W.step === 'pc' && W.places.length === 0) || !swPlObj || (W.step === 'pl' && W.pl === W.cur) || (W.step === 'dur' && W.dur === 'custom' && !!cErrT), swNext, swBtn, swNoOther, swNoPc: W.step === 'pc' && swCand.length === 0,
-      swCustom: W.dur === 'custom', swCFd: CV.cFd, swCFt: CV.cFt, swCTd: CV.cTd, swCTt: CV.cTt, setCFd: (e) => setW({ cFd: e.target.value, cFt: CV.cFt, cTd: CV.cTd, cTt: CV.cTt }), setCFt: (e) => setW({ cFd: CV.cFd, cFt: e.target.value, cTd: CV.cTd, cTt: CV.cTt }), setCTd: (e) => setW({ cFd: CV.cFd, cFt: CV.cFt, cTd: e.target.value, cTt: CV.cTt }), setCTt: (e) => setW({ cFd: CV.cFd, cFt: CV.cFt, cTd: CV.cTd, cTt: e.target.value }), swCErr: W.dur === 'custom' && !!cErrT, swCErrT: cErrT, swMin: isoD(new Date()),
+      swCustom: W.dur === 'custom', swFOn: cEd === 'f', swTOn: cEd === 't', swEdF: swEd('f'), swEdT: swEd('t'), swFT: dtT(CV.cFd, CV.cFt), swTT: dtT(CV.cTd, CV.cTt), whDays, whHours, whMins,
+      whScD: whScroll('d'), whScH: whScroll('h'), whScM: whScroll('m'), whKeyD: whKey('d'), whKeyH: whKey('h'), whKeyM: whKey('m'), swCErr: W.dur === 'custom' && !!cErrT, swCErrT: cErrT,
       addTitle: gmode ? 'Nahrať do galérie' : s.addMode === 'sec' ? 'Fotka do sekcie' : s.addMode === 'ed' ? 'Fotka do snímky' : 'Pridať fotku', addOpts, pickFromAdd: s.pickMode === 'add' || (s.pickMode === 'replaceSec' && s.addMode === 'sec'), pickBack: () => set({ sheet: 'add' }), pickRows
     };
   }

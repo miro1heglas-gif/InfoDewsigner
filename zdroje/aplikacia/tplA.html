@@ -43,6 +43,17 @@
             </sc-for></div>
           </div>
         </sc-if>
+        <sc-if value="{{ hasQaPlan }}" hint-placeholder-val="{{ false }}">
+          <div class="sec"><h2 class="h2">Naplánované správy</h2>
+            <div class="list"><sc-for list="{{ qaPlan }}" as="m" hint-placeholder-count="1">
+              <div class="row" style="align-items: flex-start">
+                <span style="display: flex; flex-direction: column; gap: 4px; flex: none"><span class="pill" data-k="blue">Naplánovaná</span><span class="pill" data-k="{{ m.k }}">{{ m.prioT }}</span></span>
+                <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ m.text }}</span><span class="mut sm" style="display: block">{{ m.meta }}</span></span>
+                <sc-if value="{{ m.canCancel }}" hint-placeholder-val="{{ true }}"><button class="btn sm" data-k="d" aria-label="{{ m.cancelA }}" onClick="{{ m.cancel }}">Zrušiť</button></sc-if>
+              </div>
+            </sc-for></div>
+          </div>
+        </sc-if>
         <sc-if value="{{ hasPend }}" hint-placeholder-val="{{ true }}">
           <button class="card tap" onClick="{{ goApprovals }}" style="display: flex; align-items: center; gap: 12px; text-align: left; width: 100%">
             <span class="ico" style="background: var(--wnb); color: var(--wnt)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.check }}"></path></svg></span>
@@ -51,7 +62,7 @@
           </button>
         </sc-if>
         <div class="sec"><h2 class="h2">Čo sa teraz prehráva</h2>
-          <div class="list"><sc-for list="{{ nowRows }}" as="n" hint-placeholder-count="4">
+          <div class="list sep"><sc-for list="{{ nowRows }}" as="n" hint-placeholder-count="4">
             <div class="row wrap">
               <span style="{{ n.thS }}"></span>
               <span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ n.place }}</span><span class="mut sm" style="display: block" translate="no">{{ n.plName }}</span><sc-if value="{{ n.temp }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="blue" style="margin-top: 4px">Dočasne · {{ n.until }}</span></sc-if></span>
@@ -78,7 +89,7 @@
         <div class="chips"><sc-for list="{{ plChips }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}<span class="cn">{{ c.n }}</span></button></sc-for></div>
       </div>
       <div class="sc" style="padding-top: 12px">
-        <div class="list"><sc-for list="{{ plRows }}" as="p" hint-placeholder-count="6">
+        <div class="list sep"><sc-for list="{{ plRows }}" as="p" hint-placeholder-count="6">
           <div class="row plrow">
             <button class="rowmain" onClick="{{ p.open }}">
             <span style="{{ p.thS }}">{{ p.nSl }}</span>

@@ -40,7 +40,7 @@ const ME = { org: 'DP Riečany' };
 const DOWN = ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'];
 const MONG = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna', 'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
 const DOWAGO = (n) => DOWN[new Date(Date.now() - n * 864e5).getDay()];
-const DURS = { get m15() { return ['15 minút', 'do ' + HM(15)]; }, get h1() { return ['1 hodinu', 'do ' + HM(60)]; }, day: ['Do konca dňa', 'do 23:59'], rev: ['Do zrušenia', 'do zrušenia'] };
+const DURS = { get m15() { return ['15 minút', 'do ' + HM(15)]; }, get h1() { return ['1 hodinu', 'do ' + HM(60)]; }, day: ['Do konca dňa', 'do 23:59'], rev: ['Do zrušenia', 'do zrušenia'], custom: ['Vlastný čas', ''] };
 const SWD = { today: ['Len dnes', 'do 23:59, potom sa vráti pôvodný plán'], get h1() { return ['Na 1 hodinu', 'do ' + HM(60)]; }, get h4() { return ['Na 4 hodiny', 'do ' + HM(240)]; }, rev: ['Do odvolania', 'kým ho nevrátite ručne'], custom: ['Vlastný čas', 'Vyberte začiatok a koniec'] };
 // zariadenie, pre ktoré je playlist vytvorený: [celý názov, krátky názov, šírka náhľadu, šírka miniatúry, šírka v páse]
 const DEV = {
@@ -138,17 +138,17 @@ class Component extends DCLogic {
       { id: 'a4', plId: 'p9', name: 'Halloween v meste', author: 'Mesto Riečany', acc: 'partner', when: '29. 10.', own: false, state: 'approved', note: 'Vyzerá dobre, schvaľujem.', changes: [['add', 'Pridaná snímka „Halloween v meste“ (halloween.png)']], valid: 'Platnosť: 29. 10. – 1. 11.', doneT: 'Schválil Miroslav Heglas · 29. 10. Playlist bol nahratý na 1 miesto.' },
       { id: 'a5', plId: 'p11', name: 'Dočasná zastávka Mostná', author: 'Mesto Riečany', acc: 'partner', when: '27. 10.', own: false, state: 'returned', note: 'Doplňte vzdialenosť k novej zastávke.', changes: [['add', 'Pridaný text „Zastávka je presunutá“']], valid: 'Platnosť: od 28. 10.', doneT: 'Vrátil na úpravu Miroslav Heglas · 27. 10.' }
     ];
-    const qa = [{ id: 'q1', text: 'Linka 5 je dnes odklonená cez Bulvár.', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }];
+    const qa = [{ id: 'q1', text: 'Linka 5 je dnes odklonená cez Bulvár.', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [], by: 'Jana Kováčová', byRole: 'Director', sentT: 'Dnes 6:40' }];
     const qh = [
-      { id: 'h1', text: 'Nemocnica: hlavný vchod je uzavretý, použite vchod B.', prio: 'info', pos: 'bottom', dur: 'h1', all: false, ids: ['nem', 'nema', 'uni'], when: 'Včera 14:20' },
-      { id: 'h2', text: 'Električky T1 a T2 nepremávajú, nahrádza ich autobus.', prio: 'warn', pos: 'top', dur: 'day', all: false, ids: ['t1', 't2', 't3'], when: DOWAGO(3) + ' 7:05' },
-      { id: 'h3', text: 'Dnes bezplatná doprava pre deti do 15 rokov.', prio: 'info', pos: 'bottom', dur: 'day', all: true, ids: [], when: DOWAGO(3) + ' 6:30' }
+      { id: 'h1', text: 'Nemocnica: hlavný vchod je uzavretý, použite vchod B.', prio: 'info', pos: 'bottom', dur: 'h1', all: false, ids: ['nem', 'nema', 'uni'], when: 'Včera 14:20', by: 'Miroslav Heglas', byRole: 'Admin', sentT: 'Včera 14:20', endKind: 'exp', endT: 'Včera 15:20' },
+      { id: 'h2', text: 'Električky T1 a T2 nepremávajú, nahrádza ich autobus.', prio: 'warn', pos: 'top', dur: 'day', all: false, ids: ['t1', 't2', 't3'], when: DOWAGO(3) + ' 7:05', by: 'Jana Kováčová', byRole: 'Director', sentT: DOWAGO(3) + ' 7:05', endKind: 'cancel', endT: DOWAGO(3) + ' 16:40', endBy: 'Miroslav Heglas' },
+      { id: 'h3', text: 'Dnes bezplatná doprava pre deti do 15 rokov.', prio: 'info', pos: 'bottom', dur: 'day', all: true, ids: [], when: DOWAGO(3) + ' 6:30', by: 'Miroslav Heglas', byRole: 'Admin', sentT: DOWAGO(3) + ' 6:30', endKind: 'exp', endT: DOWAGO(3) + ' 23:59' }
     ];
     this.state = {
       screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
       apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: { text: '', prio: 'warn', pos: 'top', dur: 'day', all: true, ids: [] }, qStep: 'main', qSearch: '', qTplAll: false,
-      snap: {}, pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, edSec: 0, toast: '', push: null,
+      snap: {}, qdId: 'h2', pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, edSec: 0, toast: '', push: null,
       role: (p && MACC[p.role]) ? p.role : 'admin',
       theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })(),
       fdark: false, samsung: (() => { try { return /SamsungBrowser/i.test(navigator.userAgent || ''); } catch (e) { return false; } })(), fdOk: (() => { try { return localStorage.getItem('wz_m_fdark_ok') === '1'; } catch (e) { return false; } })()
@@ -162,12 +162,12 @@ class Component extends DCLogic {
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
       switch: { screen: 'plc', sheet: 'sw', sw: { step: 'dur', from: 'pl', dev: 'portrait', places: ['hsv'], pl: 'p10', cur: 'p3', dur: 'custom' } },
       approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, msgdetail: { screen: 'hist', stack: ['more'], sheet: 'qd', qdId: 'h2' }, more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }
     };
     Object.assign(st, S[start] || {});
     if (start === 'quickplaces') { const wd = st.places.filter((p) => p.n > 0); const sel = st.quick.ids; st.qOrd = wd.filter((p) => sel.indexOf(p.id) >= 0).concat(wd.filter((p) => sel.indexOf(p.id) < 0)).map((p) => p.id); }
   }
-  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { this._mq = window.matchMedia('(prefers-color-scheme: dark)'); this._mqf = () => { if (this.state.theme === 'auto') this.forceUpdate(); }; if (this._mq.addEventListener) this._mq.addEventListener('change', this._mqf); } catch (e) {} try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} this.detectForcedDark(); }
+  componentDidMount() { this._tm = setInterval(() => this.tick(), 1000); try { this._mq = window.matchMedia('(prefers-color-scheme: dark)'); this._mqf = () => { if (this.state.theme === 'auto') this.forceUpdate(); }; if (this._mq.addEventListener) this._mq.addEventListener('change', this._mqf); } catch (e) {} try { if (window.WZ_LANG) { this._unL = window.WZ_LANG.on(() => this.forceUpdate()); const fl = this.props && this.props.lang; if (fl) window.WZ_LANG.force(fl); } } catch (e) {} this.detectForcedDark(); if (this.state.sheet === 'sw' && this.state.sw && this.state.sw.dur === 'custom') { this.whSync(); this._twb = setTimeout(() => this.whSync(), 500); } }
   detectForcedDark() {
     const hit = () => this.setState({ fdark: true });
     try {
@@ -179,7 +179,15 @@ class Component extends DCLogic {
       img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IndoaXRlIi8+PC9zdmc+';
     } catch (e) {}
   }
-  componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); clearTimeout(this._tai); clearTimeout(this._tc); }
+  componentWillUnmount() { try { if (this._unL) this._unL(); if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._mqf); } catch (e) {} clearInterval(this._tm); clearTimeout(this._tt); clearTimeout(this._tp); clearTimeout(this._tp2); clearTimeout(this._ta); clearTimeout(this._tai); clearTimeout(this._tc); clearTimeout(this._twa); clearTimeout(this._twb); if (this._tw) Object.keys(this._tw).forEach((k) => clearTimeout(this._tw[k])); }
+  // vlastný čas prepnutia: predvolený začiatok (najbližšia štvrťhodina) a koniec o 2 hodiny
+  // now = true: začiatok je teraz (zaokrúhlený nadol na 5 minút) – rýchla správa sa má zobraziť hneď
+  cDef(now) { const p2 = (n) => String(n).padStart(2, '0'); const iD = (d) => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); const iT = (d) => p2(d.getHours()) + ':' + p2(d.getMinutes()); const a = new Date(); a.setSeconds(0, 0); if (now) a.setMinutes(Math.floor(a.getMinutes() / 5) * 5); else a.setMinutes(Math.ceil((a.getMinutes() + 1) / 15) * 15); const b = new Date(a.getTime() + 2 * 3600000); return { cFd: iD(a), cFt: iT(a), cTd: iD(b), cTt: iT(b) }; }
+  // kolieska dátumu a času: poloha podľa zvolenej hodnoty (deň od dneška, hodina, minúty po 5)
+  whIdx(w0) { const b = w0 && w0.cFd ? w0 : Object.assign({}, w0 || {}, this.cDef()); const ed = b.cEd === 't' ? 't' : 'f'; const ds = ed === 'f' ? b.cFd : b.cTd; const t = (ed === 'f' ? b.cFt : b.cTt) || '00:00'; const d0 = new Date(); d0.setHours(0, 0, 0, 0); const dd = new Date(ds + 'T00:00'); return { d: Math.max(0, Math.min(60, Math.round((dd - d0) / 864e5) || 0)), h: Math.max(0, Math.min(23, parseInt(t.slice(0, 2), 10) || 0)), m: Math.max(0, Math.min(11, Math.round((parseInt(t.slice(3, 5), 10) || 0) / 5))) }; }
+  whSync(smooth) { clearTimeout(this._twa); this._twa = setTimeout(() => { try { const ix = this.whIdx(this.state.sheet === 'quick' ? this.state.quick : this.state.sw); document.querySelectorAll('.sheet .whc').forEach((el) => { const top = (ix[el.getAttribute('data-k')] || 0) * 44; if (Math.abs(el.scrollTop - top) > 1) { if (smooth && el.scrollTo) el.scrollTo({ top, behavior: 'smooth' }); else el.scrollTop = top; } }); } catch (e) {} }, 40); }
+  // kolieska sa po každom novom vykreslení (otvorenie panela, návrat z iného kroku) nastavia na zvolenú hodnotu
+  componentDidUpdate() { try { const els = document.querySelectorAll('.sheet .whc'); if (els.length && !els[0].__wzAl) { els.forEach((e) => { e.__wzAl = 1; }); this.whSync(false); } } catch (e) {} }
   tick() {
     this.setState((st) => {
       if (st.screen !== 'pv' || !st.pvPlay) return null;
