@@ -242,7 +242,7 @@
    "y": 2892,
    "w": 390,
    "h": 844,
-   "title": "História správ – skončené a zrušené rýchle správy, poslať znova (Viac › História správ)",
+   "title": "História správ – ťuknutím detail správy, poslať znova; len Admin a Director (Viac › História správ)",
    "page": "app",
    "is_interactive": true
   },
@@ -326,6 +326,15 @@
    "title": "Vzor „Nástenka 2 × 2 na šírku“ (55″) – štyri sekcie",
    "page": "app",
    "is_interactive": true
+  },
+  "Obr_DetailSpravy.dc.html": {
+   "x": 3290,
+   "y": 2892,
+   "w": 390,
+   "h": 844,
+   "title": "Detail správy z histórie – komu išla, kto a kedy ju odoslal, ako skončila (len Admin a Director)",
+   "page": "app",
+   "is_interactive": true
   }
  },
  "order": [
@@ -355,6 +364,7 @@
   "Obr_Nastavenia.dc.html",
   "Obr_AI.dc.html",
   "Obr_HistoriaSprav.dc.html",
+  "Obr_DetailSpravy.dc.html",
   "Obr_Jazyk.dc.html",
   "Obr_Jazyk_CS.dc.html",
   "Obr_Jazyk_PL.dc.html",
