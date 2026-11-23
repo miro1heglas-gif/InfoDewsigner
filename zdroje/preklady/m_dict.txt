@@ -129,7 +129,7 @@ LED tabuľa 192 × 64 – zastávka ||| LED tabule 192 × 64 – zastávka ||| T
 LED čelná tabuľa vozidla 288 × 48 ||| Čelní LED tabule vozidla 288 × 48 ||| Czołowa tablica LED pojazdu 288 × 48 ||| Vehicle front LED display 288 × 48 ||| LED-Frontanzeige Fahrzeug 288 × 48
 LED vozidlo 288 × 48 ||| LED vozidlo 288 × 48 ||| LED pojazd 288 × 48 ||| Vehicle LED 288 × 48 ||| Fahrzeug-LED 288 × 48
 Označník: LED čas a dátum + LED odchody + e-papier ||| Označník: LED čas a datum + LED odjezdy + e-papír ||| Słupek: LED czas i data + LED odjazdy + e-papier ||| Stop totem: LED time and date + LED departures + e-paper ||| Stele: LED Uhrzeit und Datum + LED Abfahrten + E-Paper
-Označník LED + e-papier ||| Označník LED + e-papír ||| Słupek LED + e-papier ||| Totem LED + e-paper ||| Stele LED + E-Paper
+Označník LED + e-papier ||| Označník LED + e-papír ||| Słupek LED + e-papier ||| Stop totem LED + e-paper ||| Stele LED + E-Paper
 LED čas a dátum ||| LED čas a datum ||| LED czas i data ||| LED time and date ||| LED Uhrzeit und Datum
 LED odchody ||| LED odjezdy ||| LED odjazdy ||| LED departures ||| LED Abfahrten
 e-papier 31,5″ ||| e-papír 31,5″ ||| e-papier 31,5″ ||| 31.5″ e-paper ||| E-Paper 31,5″
@@ -557,8 +557,8 @@ Dobrý deň. S čím vám pomôžem? ||| Dobrý den. S čím vám pomůžu? ||| 
 Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie. ||| Napíšu text rychlé zprávy, najdu místa s hlášením, řeknu, co se kde přehrává, a ukážu, co čeká na schválení. ||| Napiszę tekst szybkiej wiadomości, znajdę miejsca ze zgłoszeniami, powiem, co gdzie jest odtwarzane, i pokażę, co czeka na zatwierdzenie. ||| I can write a quick message, find places with alerts, tell you what is playing where and show what is waiting for approval. ||| Ich schreibe den Text einer Schnellmeldung, finde Standorte mit Meldungen, sage, was wo läuft, und zeige, was auf Freigabe wartet.
 Prototyp: AI odpovedá z ukážkových údajov aplikácie. ||| Prototyp: AI odpovídá z ukázkových dat aplikace. ||| Prototyp: AI odpowiada na podstawie przykładowych danych aplikacji. ||| Prototype: the AI answers from the app's sample data. ||| Prototyp: Die KI antwortet anhand der Beispieldaten der App.
 Napíš správu o meškaní ||| Napiš zprávu o zpoždění ||| Napisz wiadomość o opóźnieniu ||| Write a message about a delay ||| Schreib eine Meldung zur Verspätung
-Napíš správu o odklone ||| Napiš zprávu o objížďce ||| Napisz wiadomość o objeździe ||| Write a message about a detour ||| Schreib eine Meldung zur Umleitung
-Napíš správu o výluke ||| Napiš zprávu o výluce ||| Napisz wiadomość o wyłączeniu ruchu ||| Write a message about a service closure ||| Schreib eine Meldung zur Streckensperrung
+Napíš správu o odklone ||| Napiš zprávu o objížďce ||| Napisz wiadomość o objeździe ||| Write a message about a diversion ||| Schreib eine Meldung zur Umleitung
+Napíš správu o výluke ||| Napiš zprávu o výluce ||| Napisz wiadomość o wyłączeniu ruchu ||| Write a message about a service suspension ||| Schreib eine Meldung zur Betriebsunterbrechung
 Napíš správu o zatvorenej zastávke ||| Napiš zprávu o uzavřené zastávce ||| Napisz wiadomość o zamkniętym przystanku ||| Write a message about a closed stop ||| Schreib eine Meldung zur geschlossenen Haltestelle
 Ktoré miesta majú hlásenie? ||| Která místa mají hlášení? ||| Które miejsca mają zgłoszenia? ||| Which places have alerts? ||| Welche Standorte haben Meldungen?
 Čo sa hrá na Hlavnej stanici? ||| Co se hraje na místě Hlavná stanica? ||| Co jest odtwarzane w miejscu Hlavná stanica? ||| What is playing at Hlavná stanica? ||| Was läuft am Standort Hlavná stanica?
@@ -566,8 +566,8 @@ Ktoré playlisty expirovali? ||| Které playlisty expirovaly? ||| Które playlis
 Čo čaká na schválenie? ||| Co čeká na schválení? ||| Co czeka na zatwierdzenie? ||| What is waiting for approval? ||| Was wartet auf Freigabe?
 Ktoré správy sú zobrazené? ||| Které zprávy jsou zobrazené? ||| Które wiadomości są wyświetlane? ||| Which messages are on display? ||| Welche Meldungen werden angezeigt?
 Návrhy správy o meškaní: ||| Návrhy zprávy o zpoždění: ||| Propozycje wiadomości o opóźnieniu: ||| Message suggestions for a delay: ||| Vorschläge für eine Verspätungsmeldung:
-Návrhy správy o odklone: ||| Návrhy zprávy o objížďce: ||| Propozycje wiadomości o objeździe: ||| Message suggestions for a detour: ||| Vorschläge für eine Umleitungsmeldung:
-Návrhy správy o výluke: ||| Návrhy zprávy o výluce: ||| Propozycje wiadomości o wyłączeniu ruchu: ||| Message suggestions for a service closure: ||| Vorschläge für eine Sperrungsmeldung:
+Návrhy správy o odklone: ||| Návrhy zprávy o objížďce: ||| Propozycje wiadomości o objeździe: ||| Message suggestions for a diversion: ||| Vorschläge für eine Umleitungsmeldung:
+Návrhy správy o výluke: ||| Návrhy zprávy o výluce: ||| Propozycje wiadomości o wyłączeniu ruchu: ||| Message suggestions for a service suspension: ||| Vorschläge für eine Meldung zur Betriebsunterbrechung:
 Návrhy správy o zatvorenej zastávke: ||| Návrhy zprávy o uzavřené zastávce: ||| Propozycje wiadomości o zamkniętym przystanku: ||| Message suggestions for a closed stop: ||| Vorschläge für eine Meldung zur geschlossenen Haltestelle:
 O čom má byť správa? Vyberte situáciu. ||| O čem má být zpráva? Vyberte situaci. ||| Czego ma dotyczyć wiadomość? Wybierz sytuację. ||| What should the message be about? Choose a situation. ||| Worum soll es in der Meldung gehen? Wählen Sie die Situation.
 Návrh textu správy je vypnutý v nastavení AI asistenta. ||| Návrh textu zprávy je vypnutý v nastavení AI asistenta. ||| Propozycja tekstu wiadomości jest wyłączona w ustawieniach asystenta AI. ||| Message text suggestions are turned off in the AI assistant settings. ||| Textvorschläge sind in den Einstellungen des KI-Assistenten ausgeschaltet.
@@ -652,7 +652,8 @@ Pruh ||| Pruh ||| Pasek ||| Strip ||| Streifen
 Čo sa zobrazí v sekcii ||| Co se zobrazí v sekci ||| Co ma się wyświetlać w sekcji ||| What the section shows ||| Was der Bereich zeigt
 Cestovný poriadok ||| Jízdní řád ||| Rozkład jazdy ||| Timetable ||| Fahrplan
 Linka ||| Linka ||| Linia ||| Line ||| Linie
-Linka {0} ||| Linka {0} ||| Linia {0} ||| Line {0} ||| Linie {0}
+Linka # ||| Linka # ||| Linia # ||| Line # ||| Linie #
+Linka N# ||| Linka N# ||| Linia N# ||| Line N# ||| Linie N#
 Smer ||| Směr ||| Kierunek ||| Direction ||| Richtung
 Cestovný poriadok sa načíta zo zdroja dát pre zvolenú linku a smer. ||| Jízdní řád se načte ze zdroje dat pro zvolenou linku a směr. ||| Rozkład jazdy wczyta się ze źródła danych dla wybranej linii i kierunku. ||| The timetable loads from the data source for the chosen line and direction. ||| Der Fahrplan wird für die gewählte Linie und Richtung aus der Datenquelle geladen.
 Fotka do sekcie ||| Fotka do sekce ||| Zdjęcie do sekcji ||| Photo for the section ||| Foto für den Bereich
@@ -719,3 +720,71 @@ Zdroje dát ||| Zdroje dat ||| Źródła danych ||| Data sources ||| Datenquelle
 Pripojený ||| Připojený ||| Połączone ||| Connected ||| Verbunden
 Nepripojený ||| Nepřipojený ||| Niepołączone ||| Not connected ||| Nicht verbunden
 Podľa zdrojov dát sa ponúka obsah sekcií snímky. Pripájajú sa v desktopovej aplikácii. ||| Podle zdrojů dat se nabízí obsah sekcí snímku. Připojují se v desktopové aplikaci. ||| Według źródeł danych oferowana jest treść sekcji slajdu. Podłącza się je w aplikacji desktopowej. ||| Section content is offered based on data sources. They are connected in the desktop app. ||| Der Bereichsinhalt richtet sich nach den Datenquellen. Sie werden in der Desktop-App verbunden.
+# v42 – obrázok v sekcii
+Sekcia zatiaľ nemá obrázok. ||| Sekce zatím nemá obrázek. ||| Sekcja nie ma jeszcze obrazu. ||| This section has no image yet. ||| Dieser Bereich hat noch kein Bild.
+Pridaná fotka sa uloží aj do galérie. ||| Přidaná fotka se uloží i do galerie. ||| Dodane zdjęcie zostanie zapisane także w galerii. ||| An added photo is also saved to the gallery. ||| Ein hinzugefügtes Foto wird auch in der Galerie gespeichert.
+Nová fotka z telefónu ||| Nová fotka z telefonu ||| Nowe zdjęcie z telefonu ||| New photo from phone ||| Neues Foto vom Telefon
+uložená v galérii ||| uložená v galerii ||| zapisane w galerii ||| saved in the gallery ||| in der Galerie gespeichert
+# v43 – kontrola celej aplikácie
+Nezverejnené zmeny ||| Nezveřejněné změny ||| Nieopublikowane zmiany ||| Unpublished changes ||| Unveröffentlichte Änderungen
+Prehrať na mieste ||| Přehrát na místě ||| Odtwórz w miejscu ||| Play at a place ||| Am Standort abspielen
+Zverejnené. Ťuknite na „Prehrať na mieste“ a vyberte miesta. ||| Zveřejněno. Klepněte na „Přehrát na místě“ a vyberte místa. ||| Opublikowano. Stuknij „Odtwórz w miejscu” i wybierz miejsca. ||| Published. Tap “Play at a place” and choose the places. ||| Veröffentlicht. Tippen Sie auf „Am Standort abspielen“ und wählen Sie die Standorte.
+Prepnúť na {0} ||| Přepnout na {0} ||| Przełącz w {0} ||| Switch at {0} ||| An {0} umschalten
+Vyberte playlist ||| Vyberte playlist ||| Wybierz playlistę ||| Choose a playlist ||| Playlist wählen
+Teraz sa prehráva ||| Právě se přehrává ||| Teraz odtwarzana ||| Playing now ||| Läuft gerade
+Pre toto zariadenie nie je iný playlist, na ktorý by sa dalo prepnúť. ||| Pro toto zařízení není jiný playlist, na který by šlo přepnout. ||| Dla tego urządzenia nie ma innej playlisty, na którą można przełączyć. ||| There is no other playlist for this device to switch to. ||| Für dieses Gerät gibt es keine andere Playlist zum Umschalten.
+Playlist sa už prehráva na všetkých miestach s týmto zariadením. ||| Playlist se už přehrává na všech místech s tímto zařízením. ||| Playlista jest już odtwarzana we wszystkich miejscach z tym urządzeniem. ||| The playlist is already playing at every place with this device. ||| Die Playlist läuft bereits an allen Standorten mit diesem Gerät.
+Miesto: ||| Místo: ||| Miejsce: ||| Place: ||| Standort:
+Playlist: ||| Playlist: ||| Playlista: ||| Playlist: ||| Playlist:
+Názov nemôže byť prázdny. ||| Název nemůže být prázdný. ||| Nazwa nie może być pusta. ||| The name cannot be empty. ||| Der Name darf nicht leer sein.
+Text nemôže byť prázdny. ||| Text nemůže být prázdný. ||| Tekst nie może być pusty. ||| The text cannot be empty. ||| Der Text darf nicht leer sein.
+Doplňte názov snímky. ||| Doplňte název snímku. ||| Uzupełnij nazwę slajdu. ||| Enter the slide name. ||| Geben Sie den Foliennamen ein.
+Doplňte text snímky. ||| Doplňte text snímku. ||| Uzupełnij tekst slajdu. ||| Enter the slide text. ||| Geben Sie den Folientext ein.
+Je to jediná snímka playlistu, preto sa nedá odstrániť. Najprv pridajte inú. ||| Je to jediný snímek playlistu, proto ho nelze odebrat. Nejdřív přidejte jiný. ||| To jedyny slajd playlisty, dlatego nie można go usunąć. Najpierw dodaj inny. ||| This is the only slide in the playlist, so it cannot be removed. Add another one first. ||| Dies ist die einzige Folie der Playlist und kann daher nicht entfernt werden. Fügen Sie zuerst eine andere hinzu.
+Je to jediná snímka tohto displeja, preto sa nedá odstrániť. Najprv pridajte inú. ||| Je to jediný snímek tohoto displeje, proto ho nelze odebrat. Nejdřív přidejte jiný. ||| To jedyny slajd tego wyświetlacza, dlatego nie można go usunąć. Najpierw dodaj inny. ||| This is the only slide on this display, so it cannot be removed. Add another one first. ||| Dies ist die einzige Folie dieses Displays und kann daher nicht entfernt werden. Fügen Sie zuerst eine andere hinzu.
+Čas a dátum sa z tohto displeja nedá odstrániť. ||| Čas a datum nelze z tohoto displeje odebrat. ||| Czasu i daty nie można usunąć z tego wyświetlacza. ||| Time and date cannot be removed from this display. ||| Uhrzeit und Datum können von diesem Display nicht entfernt werden.
+Jediná snímka sa nedá odstrániť ||| Jediný snímek nelze odebrat ||| Jedynego slajdu nie można usunąć ||| The only slide cannot be removed ||| Die einzige Folie kann nicht entfernt werden
+Odstrániť z playlistu: {0} ||| Odebrat z playlistu: {0} ||| Usuń z playlisty: {0} ||| Remove from playlist: {0} ||| Aus Playlist entfernen: {0}
+Potvrdiť odstránenie z playlistu: {0} ||| Potvrdit odebrání z playlistu: {0} ||| Potwierdź usunięcie z playlisty: {0} ||| Confirm removing from playlist: {0} ||| Entfernen aus Playlist bestätigen: {0}
+Odstrániť ||| Odebrat ||| Usuń ||| Remove ||| Entfernen
+Musí ostať aspoň jedna linka. ||| Musí zůstat alespoň jedna linka. ||| Musi pozostać co najmniej jedna linia. ||| At least one line must remain. ||| Mindestens eine Linie muss bleiben.
+Komentár pre autora ||| Komentář pro autora ||| Komentarz dla autora ||| Comment for the author ||| Kommentar für den Autor
+Pri vrátení na úpravu a zamietnutí je komentár povinný. ||| Při vrácení k úpravě a zamítnutí je komentář povinný. ||| Przy zwrocie do poprawy i odrzuceniu komentarz jest wymagany. ||| A comment is required when returning for changes or rejecting. ||| Beim Zurückgeben und Ablehnen ist ein Kommentar erforderlich.
+Napíšte autorovi, čo má upraviť alebo prečo zmenu zamietate. ||| Napište autorovi, co má upravit nebo proč změnu zamítáte. ||| Napisz autorowi, co ma poprawić lub dlaczego odrzucasz zmianę. ||| Tell the author what to change or why you are rejecting it. ||| Schreiben Sie dem Autor, was zu ändern ist oder warum Sie ablehnen.
+Použité v hláseniach ({0}) ||| Použito v hlášeních ({0}) ||| Używane w komunikatach ({0}) ||| Used in announcements ({0}) ||| Verwendet in Durchsagen ({0})
+Vybrať video ||| Vybrat video ||| Wybierz wideo ||| Choose video ||| Video wählen
+Fotka do snímky ||| Fotka do snímku ||| Zdjęcie do slajdu ||| Photo for the slide ||| Foto für die Folie
+Nahraté ||| Nahrané ||| Wgrane ||| Uploaded ||| Hochgeladen
+Zrušiť správu: {0} ||| Zrušit zprávu: {0} ||| Anuluj wiadomość: {0} ||| Cancel message: {0} ||| Meldung abbrechen: {0}
+Použiť návrh: {0} ||| Použít návrh: {0} ||| Użyj propozycji: {0} ||| Use suggestion: {0} ||| Vorschlag verwenden: {0}
+Zobraziť miesta ||| Zobrazit místa ||| Pokaż miejsca ||| Show places ||| Standorte anzeigen
+Náhľad: {0} ||| Náhled: {0} ||| Podgląd: {0} ||| Preview: {0} ||| Vorschau: {0}
+Odchody – CIS DP Riečany ||| Odjezdy – CIS DP Riečany ||| Odjazdy – CIS DP Riečany ||| Departures – CIS DP Riečany ||| Abfahrten – CIS DP Riečany
+Cestovné poriadky – GTFS ||| Jízdní řády – GTFS ||| Rozkłady jazdy – GTFS ||| Timetables – GTFS ||| Fahrpläne – GTFS
+Mapové podklady – OpenStreetMap ||| Mapové podklady – OpenStreetMap ||| Podkłady mapowe – OpenStreetMap ||| Map data – OpenStreetMap ||| Kartendaten – OpenStreetMap
+Počasie – SHMÚ ||| Počasí – SHMÚ ||| Pogoda – SHMÚ ||| Weather – SHMÚ ||| Wetter – SHMÚ
+Vodné merania – SHMÚ ||| Vodní měření – SHMÚ ||| Pomiary wody – SHMÚ ||| Water measurements – SHMÚ ||| Wassermessungen – SHMÚ
+# v44 – partner len vlastné sekcie, bez rýchlych správ; zahodenie zmien; video
+Zobraziť playlist ||| Zobrazit playlist ||| Pokaż playlistę ||| View playlist ||| Playlist anzeigen
+Zobraziť playlist: {0} ||| Zobrazit playlist: {0} ||| Pokaż playlistę: {0} ||| View playlist: {0} ||| Playlist anzeigen: {0}
+Váš playlist ||| Váš playlist ||| Twoja playlista ||| Your playlist ||| Ihre Playlist
+Tretia strana: {0} ||| Třetí strana: {0} ||| Strona trzecia: {0} ||| Third party: {0} ||| Dritter: {0}
+vaša sekcia: {0} ||| vaše sekce: {0} ||| Twoja sekcja: {0} ||| your section: {0} ||| Ihr Bereich: {0}
+vaše sekcie: {0} ||| vaše sekce: {0} ||| Twoje sekcje: {0} ||| your sections: {0} ||| Ihre Bereiche: {0}
+Playlist spravuje DP Riečany. Upravovať môžete len svoje sekcie – snímky s vašou sekciou sú označené. ||| Playlist spravuje DP Riečany. Upravovat můžete jen své sekce – snímky s vaší sekcí jsou označené. ||| Playlistą zarządza DP Riečany. Możesz edytować tylko swoje sekcje – slajdy z Twoją sekcją są oznaczone. ||| The playlist is managed by DP Riečany. You can only edit your own sections – slides with your section are marked. ||| Die Playlist wird von DP Riečany verwaltet. Sie können nur Ihre eigenen Bereiche bearbeiten – Folien mit Ihrem Bereich sind markiert.
+Playlist spravuje DP Riečany. Môžete si ho len pozrieť. ||| Playlist spravuje DP Riečany. Můžete si ho jen prohlédnout. ||| Playlistą zarządza DP Riečany. Możesz ją tylko obejrzeć. ||| The playlist is managed by DP Riečany. You can only view it. ||| Die Playlist wird von DP Riečany verwaltet. Sie können sie nur ansehen.
+Zahodiť zmeny ||| Zahodit změny ||| Odrzuć zmiany ||| Discard changes ||| Änderungen verwerfen
+Potvrdiť zahodenie ||| Potvrdit zahození ||| Potwierdź odrzucenie ||| Confirm discard ||| Verwerfen bestätigen
+Ťuknite ešte raz a všetky zmeny sa zahodia. ||| Klepněte ještě jednou a všechny změny se zahodí. ||| Stuknij jeszcze raz, a wszystkie zmiany zostaną odrzucone. ||| Tap once more to discard all changes. ||| Tippen Sie noch einmal, um alle Änderungen zu verwerfen.
+Zmeny sú zahodené. Playlist je taký ako pred úpravami. ||| Změny jsou zahozeny. Playlist je stejný jako před úpravami. ||| Zmiany odrzucono. Playlista jest taka jak przed edycją. ||| Changes discarded. The playlist is as it was before editing. ||| Änderungen verworfen. Die Playlist ist wie vor der Bearbeitung.
+Upravená sekcia „{0}“ v snímke „{1}“ ||| Upravena sekce „{0}“ ve snímku „{1}“ ||| Zmieniono sekcję „{0}” w slajdzie „{1}” ||| Edited section “{0}” in slide “{1}” ||| Bereich „{0}“ in Folie „{1}“ bearbeitet
+Rýchle správy posiela len dopravca. Váš účet ich písať nemôže. ||| Rychlé zprávy posílá jen dopravce. Váš účet je psát nemůže. ||| Szybkie wiadomości wysyła tylko przewoźnik. Twoje konto nie może ich pisać. ||| Quick messages are sent only by the operator. Your account cannot write them. ||| Schnellmeldungen sendet nur der Verkehrsbetrieb. Ihr Konto kann keine schreiben.
+Viem nájsť miesta s hlásením, povedať, čo sa kde prehráva, a ukázať, čo ste odoslali na schválenie alebo čo je zobrazené. ||| Umím najít místa s hlášením, říct, co se kde přehrává, a ukázat, co jste odeslali ke schválení nebo co je zobrazeno. ||| Potrafię znaleźć miejsca ze zgłoszeniem, powiedzieć, co gdzie jest odtwarzane, i pokazać, co wysłano do zatwierdzenia lub co jest wyświetlane. ||| I can find places with alerts, tell you what is playing where and show what you sent for approval or what is on display. ||| Ich kann Standorte mit Meldungen finden, sagen, was wo läuft, und zeigen, was Sie zur Freigabe gesendet haben oder was angezeigt wird.
+Nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo ste odoslali na schválenie. ||| Najdu místa s hlášením, řeknu, co se kde přehrává, a ukážu, co jste odeslali ke schválení. ||| Znajdę miejsca ze zgłoszeniem, powiem, co gdzie jest odtwarzane, i pokażę, co wysłano do zatwierdzenia. ||| I will find places with alerts, tell you what is playing where and show what you sent for approval. ||| Ich finde Standorte mit Meldungen, sage, was wo läuft, und zeige, was Sie zur Freigabe gesendet haben.
+Video je pridané na koniec playlistu. Upravte názov a trvanie. ||| Video je přidáno na konec playlistu. Upravte název a trvání. ||| Wideo dodano na koniec playlisty. Popraw nazwę i czas trwania. ||| The video has been added to the end of the playlist. Edit the name and duration. ||| Das Video wurde am Ende der Playlist hinzugefügt. Bearbeiten Sie Namen und Dauer.
+Video je zmenené na „{0}“. ||| Video je změněno na „{0}“. ||| Wideo zmieniono na „{0}”. ||| The video has been changed to “{0}”. ||| Das Video wurde in „{0}“ geändert.
+Video z galérie ||| Video z galerie ||| Wideo z galerii ||| Video from the gallery ||| Video aus der Galerie
+prehráva sa bez zvuku ||| přehrává se bez zvuku ||| odtwarzane bez dźwięku ||| plays without sound ||| läuft ohne Ton
+Snímka: ||| Snímek: ||| Slajd: ||| Slide: ||| Folie:
+Čo sa hrá na Parkovisku Centrum? ||| Co se hraje na Parkovisku Centrum? ||| Co jest odtwarzane na Parkovisko Centrum? ||| What is playing at Parkovisko Centrum? ||| Was läuft am Parkovisko Centrum?
+

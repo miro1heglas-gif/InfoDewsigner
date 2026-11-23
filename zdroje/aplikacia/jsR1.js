@@ -25,6 +25,7 @@
     const nPlaces = (n) => n + ' ' + plural(n, ['miesto', 'miesta', 'miest']);
     const nWhere = (n) => n ? nPlaces(n) : 'nikde sa neprehráva';
     const KIND = { info: 'Text', photo: 'Fotka', deps: 'Odchody', led: 'Text', clock: 'Čas a dátum', tpl: 'Sekcie podľa vzoru' };
+    const kindT = (x) => x.kind === 'photo' && x.isVid ? 'Video' : KIND[x.kind];
     // snímka podľa vzoru: sekcie s polohou v % (riadky a stĺpce vzoru); SX = údaje pre komponent Slide
     const tplGeo = (x) => { const L = VZ[x.vz] || [[100, [100]]]; const out = []; let y = 0, i = 0; L.forEach((r) => { let xx = 0; r[1].forEach((w) => { const c = (x.secs || [])[i]; if (c) out.push(Object.assign({}, c, { i, x: xx, y, w, h: r[0] })); xx += w; i++; }); y += r[0]; }); return out; };
     const SX = (x) => x && x.kind === 'tpl' ? JSON.stringify({ secs: tplGeo(x).map((c) => ({ x: c.x, y: c.y, w: c.w, h: c.h, type: c.type, text: c.text || '', bg: c.bg || '', img: c.img || '', cap: c.cap || '', line: c.line || '', dir: c.dir || '', own: !!c.owner, vid: c.vid || '', url: c.url || '', rad: c.rad || '', tiles: c.tiles || '' })) }) : '';
@@ -37,17 +38,30 @@
     const vPlaces = s.places.filter(inScope);
     const withDev = vPlaces.filter((p) => p.n > 0);
     const isOwn = (a) => !!a.acc && a.acc === s.role;
-    const vPls = s.pls.filter((p) => !SCOPE || p.mine === s.role || p.where.some((id) => SCOPE.indexOf(id) >= 0) || s.apvs.some((a) => a.plId === p.id && isOwn(a)));
+    // Partner: vlastný playlist upravuje celý, v playliste dopravcu len svoje sekcie; rýchle správy nepíše
+    const plOwnBy = (p) => !!p && !!p.owner && p.owner === ACC.name;
+    const secOwn = (c) => !!c.owner && c.owner === ACC.name;
+    const slOwn = (x) => x.kind === 'tpl' && (x.secs || []).some(secOwn);
+    const fullEd = (p) => !ACC.partner || plOwnBy(p);
+    const canEditPl = (p) => !!p && (fullEd(p) || p.slides.some(slOwn));
+    const canQuick = !ACC.partner;
+    const vPls = s.pls.filter((p) => !SCOPE || p.mine === s.role || plOwnBy(p) || p.where.some((id) => SCOPE.indexOf(id) >= 0) || s.apvs.some((a) => a.plId === p.id && isOwn(a)));
     const names = (ids) => ids.map(placeName);
     const shortList = (nm) => nm.length ? (nm.length > 3 ? nm.slice(0, 3).join(' · ') + ' a ' + (nm.length - 3) + ' ' + plural(nm.length - 3, ['ďalšie', 'ďalšie', 'ďalších']) : nm.join(' · ')) : '—';
-    const nav = (screen, o) => set(Object.assign({ screen, stack: s.stack.concat(sc), sheet: null, reorder: false, confirm: '' }, o || {}));
-    const goTab = (t) => set({ screen: ROOT[t], stack: [], sheet: null, reorder: false, confirm: '' });
+    const nav = (screen, o) => set(Object.assign({ screen, stack: s.stack.concat(sc), sheet: null, reorder: false, confirm: '', apvErr: false }, o || {}));
+    // poka-yoke: z editora sa nedá odísť s prázdnym názvom (snímka by v zozname ostala bez mena)
+    const edCur0 = sc === 'sl' ? pl.slides.find((x) => x.id === s.slId) : null;
+    const edEmpty = !!edCur0 && edCur0.kind !== 'clock' && !String(edCur0.title || '').trim();
+    const edBlock = () => { if (!edEmpty) return false; say(edCur0.kind === 'led' ? 'Doplňte text snímky.' : 'Doplňte názov snímky.'); setTimeout(() => { try { const el = document.getElementById(edCur0.kind === 'led' ? 'ed-led' : 'ed-title'); if (el) { el.scrollIntoView({ block: 'center' }); el.focus(); } } catch (e) {} }, 60); return true; };
+    // potvrdenie odstránenia platí len 5 sekúnd, potom sa samo zruší
+    const armConfirm = (k) => { set({ confirm: k }); clearTimeout(self._tc); self._tc = setTimeout(() => { if (self.state.confirm === k) self.setState({ confirm: '' }); }, 5000); };
+    const goTab = (t) => { if (edBlock()) return; set({ screen: ROOT[t], stack: [], sheet: null, reorder: false, confirm: '' }); };
     const backState = () => s.stack.length ? { screen: s.stack[s.stack.length - 1], stack: s.stack.slice(0, -1) } : { screen: ROOT[tabOf], stack: [] };
-    const goBack = () => set(Object.assign({ sheet: null, reorder: false, confirm: '' }, backState()));
+    const goBack = () => { if (edBlock()) return; set(Object.assign({ sheet: null, reorder: false, confirm: '' }, backState())); };
     const closeSheet = () => set({ sheet: null, confirm: '', qStep: 'main', qSearch: '' });
     const pendingOthers = ACC.apv ? s.apvs.filter((a) => a.state === 'pending' && !isOwn(a)) : [];
     const ST = { nahraty: ['ok', 'Nahratý'], expirovany: ['bad', 'Expirovaný'], nenahraty: ['grey', 'Nenahratý'] };
-    const FLOW = { draft: ['blue', 'Neodoslané zmeny'], pending: ['warn', 'Čaká na schválenie'] };
+    const FLOW = { draft: ['blue', ACC.pub ? 'Nezverejnené zmeny' : 'Neodoslané zmeny'], pending: ['warn', 'Čaká na schválenie'] };
     const ownApv = (pid) => s.apvs.find((a) => a.plId === pid && a.state === 'pending' && isOwn(a));
     const tabRoot = ['home', 'pls', 'plc', 'ai', 'more'].indexOf(sc) >= 0;
     const dark = tabRoot || sc === 'pv';
@@ -72,20 +86,23 @@
       if (lg.some((x) => x[2] === 'a' + sid)) return lg.map((x) => x[2] === 'a' + sid ? [x[0], 'Pridaná snímka „' + title + '“', x[2]] : x);
       return lg.filter((x) => x[2] !== 'm' + sid).concat([['mod', 'Upravená snímka „' + title + '“', 'm' + sid]]);
     };
-    const mutate = (pid, fn) => set({ pls: s.pls.map((p) => p.id === pid ? Object.assign({}, fn(p), { flow: 'draft' }) : p) });
+    const snapFor = (pid) => { const cur = s.snap || {}; const p0 = plById(pid); if (cur[pid] || !p0 || p0.flow !== 'none') return cur; return Object.assign({}, cur, { [pid]: { slides: p0.slides } }); };
+    const snapDrop = (pid) => { const cur = Object.assign({}, s.snap || {}); delete cur[pid]; return cur; };
+    const mutate = (pid, fn) => set({ pls: s.pls.map((p) => p.id === pid ? Object.assign({}, fn(p), { flow: 'draft' }) : p), snap: snapFor(pid) });
     const updSlide = (sid, patch) => mutate(pl.id, (p) => { const slides = p.slides.map((x) => x.id === sid ? Object.assign({}, x, patch) : x); const t = slides.find((x) => x.id === sid); return Object.assign({}, p, { slides, log: logSlide(p.log, sid, t ? t.title : '') }); });
     const newSl = (kind, title, text, durn, bg, ex) => Object.assign({ id: self.nid(), kind, title, text, dur: durn, bg, img: '', imgName: '', ledSize: 'M', ledAlign: 'left', ledCol: '', ledBg: '', d: '' }, ex || {});
     const delSlide = (sid) => {
       const t0 = pl.slides.find((x) => x.id === sid);
       const keep = t0 && t0.kind !== 'clock' && !s.pls.some((p) => p.id !== pl.id && p.dev === pl.dev && p.slides.some((x) => x.title === t0.title && (x.d || '') === (t0.d || ''))) && !s.libX.some((x) => x.dev === pl.dev && x.title === t0.title && (x.d || '') === (t0.d || ''));
-      set({ pls: s.pls.map((p) => { if (p.id !== pl.id) return p; const t = p.slides.find((x) => x.id === sid); const added = p.log.some((x) => x[2] === 'a' + sid); const lg = p.log.filter((x) => x[2] !== 'a' + sid && x[2] !== 'm' + sid); return Object.assign({}, p, { slides: p.slides.filter((x) => x.id !== sid), flow: 'draft', log: added ? lg : lg.concat([['del', 'Snímka „' + (t ? t.title : '') + '“ odstránená z playlistu', 'd' + sid]]) }); }), libX: keep ? s.libX.concat([Object.assign({}, t0, { dev: pl.dev })]) : s.libX });
+      set({ pls: s.pls.map((p) => { if (p.id !== pl.id) return p; const t = p.slides.find((x) => x.id === sid); const added = p.log.some((x) => x[2] === 'a' + sid); const lg = p.log.filter((x) => x[2] !== 'a' + sid && x[2] !== 'm' + sid && String(x[2]).indexOf('c' + sid + '_') !== 0); return Object.assign({}, p, { slides: p.slides.filter((x) => x.id !== sid), flow: 'draft', log: added ? lg : lg.concat([['del', 'Snímka „' + (t ? t.title : '') + '“ odstránená z playlistu', 'd' + sid]]) }); }), libX: keep ? s.libX.concat([Object.assign({}, t0, { dev: pl.dev })]) : s.libX, snap: snapFor(pl.id) });
       say('Snímka „' + (t0 ? t0.title : '') + '“ je odstránená z playlistu. V zozname snímok ostáva.');
     };
     const moveSlide = (i, d) => mutate(pl.id, (p) => { const a = p.slides.slice(); const t = a[i]; a[i] = a[i + d]; a[i + d] = t; return Object.assign({}, p, { slides: a, log: p.log.filter((x) => x[2] !== 'o').concat([['ord', 'Zmenené poradie snímok', 'o']]) }); });
-    const pushSlide = (pid, sl, logT, extra) => set(Object.assign({ pls: s.pls.map((p) => p.id === pid ? Object.assign({}, p, { slides: insertSl(p, sl), flow: 'draft', log: p.log.concat([['add', logT, 'a' + sl.id]]) }) : p), slId: sl.id, sheet: null }, extra || {}));
+    const pushSlide = (pid, sl, logT, extra) => set(Object.assign({ pls: s.pls.map((p) => p.id === pid ? Object.assign({}, p, { slides: insertSl(p, sl), flow: 'draft', log: p.log.concat([['add', logT, 'a' + sl.id]]) }) : p), slId: sl.id, sheet: null, snap: snapFor(pid) }, extra || {}));
     const toEditor = { screen: 'sl', stack: s.stack.concat(sc), reorder: false, confirm: '' };
     const addPhotoSlide = (pid, file, galNext, goEdit) => {
-      const sl = newSl('photo', file.title, '', 10, '#1A1F1F', { img: file.col, imgName: file.name });
+      const vid = file.type === 'vid'; const vs = vid ? String(file.dur || '').split(':') : [];
+      const sl = newSl('photo', file.title, '', vid && vs.length === 2 ? Math.max(5, parseInt(vs[0], 10) * 60 + parseInt(vs[1], 10)) : 10, '#1A1F1F', { img: file.col, imgName: file.name, isVid: vid });
       pushSlide(pid, sl, 'Pridaná snímka „' + file.title + '“ (' + file.name + ')', Object.assign({ gal: galNext }, goEdit ? toEditor : {}));
     };
     const bumpGal = (gal, fid, pname) => gal.map((g) => g.id === fid ? Object.assign({}, g, { used: g.used + 1, usedIn: g.usedIn.concat([pname]) }) : g);
@@ -102,7 +119,8 @@
       set({ apvs: [a].concat(s.apvs), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'pending', log: [] }) : p), reorder: false });
       say('Odoslané na schválenie. Dáme vám vedieť, keď ho správca DP Riečany schváli.');
     };
-    const withdraw = () => { set({ apvs: s.apvs.filter((a) => !(a.plId === pl.id && isOwn(a) && a.state === 'pending')), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft' }) : p) }); say('Vzaté späť. Playlist môžete znova upravovať.'); };
+    const backLog = (a) => a ? a.changes.map((c, i) => [c[0], c[1], 'w' + i]) : [];
+    const withdraw = () => { const a0 = s.apvs.find((a) => a.plId === pl.id && isOwn(a) && a.state === 'pending'); set({ apvs: s.apvs.filter((a) => a !== a0), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft', log: backLog(a0) }) : p) }); say('Vzaté späť. Playlist môžete znova upravovať.'); };
 
     // ---------- hlavička ----------
     const act = (label, d, fn, badge) => ({ label, d, fn, isIcon: true, isText: false, hasBadge: !!badge, badge: badge || '' });
@@ -138,29 +156,30 @@
     // ---------- DOMOV ----------
     const qaRows = s.qa.map((m) => ({
       k: PRIO[m.prio][1], prioT: PRIO[m.prio][0], text: m.text, meta: POS[m.pos] + ' · ' + (m.until || DURS[m.dur][1]) + ' · ' + tgtLabel(m),
-      canCancel: ACC.pub || m.acc === s.role, cancel: () => { set({ qa: s.qa.filter((x) => x.id !== m.id), qh: [Object.assign({}, m, { when: 'Dnes ' + HM() + ' · zrušená' })].concat(s.qh) }); say('Správa je zrušená a z displejov zmizne do pár sekúnd.'); }
+      canCancel: m.acc === s.role || (ACC.pub && (!SCOPE || (!m.all && m.ids.length > 0 && m.ids.every((id) => SCOPE.indexOf(id) >= 0)))), cancelA: 'Zrušiť správu: ' + m.text, cancel: () => { set({ qa: s.qa.filter((x) => x.id !== m.id), qh: [Object.assign({}, m, { when: 'Dnes ' + HM() + ' · zrušená' })].concat(s.qh) }); say('Správa je zrušená a z displejov zmizne do pár sekúnd.'); }
     }));
-    const openQuick = () => set({ sheet: 'quick', qStep: 'main', qSearch: '', qTplAll: false });
+    const openQuick = () => { if (canQuick) set({ sheet: 'quick', qStep: 'main', qSearch: '', qTplAll: false }); };
     const effPl = (pc) => plById(pc.temp ? pc.temp.pl : pc.pl);
     // úprava playlistu, ktorý sa práve prehráva na mieste
-    const editAtPlace = (pid) => { const pc = placeById(pid); const ep = effPl(pc); if (!ep) return; nav('pl', { plId: ep.id }); if (ep.where.length > 1) say('Zmeny sa prejavia na všetkých ' + ep.where.length + ' miestach, kde sa playlist prehráva.'); };
-    const swForPlace = (pid) => { const pc = placeById(pid); const ep = effPl(pc); set({ sheet: 'sw', sw: { step: 'pl', from: 'pl', dev: pc.dev, places: [pid], pl: ep ? ep.id : '', dur: 'today' } }); };
+    const editAtPlace = (pid) => { const pc = placeById(pid); const ep = effPl(pc); if (!ep) return; nav('pl', { plId: ep.id }); if (ep.where.length > 1 && canEditPl(ep)) say('Zmeny sa prejavia na všetkých ' + ep.where.length + ' miestach, kde sa playlist prehráva.'); };
+    const plBtn = (ep) => ({ canEdit: !!ep, editT: ep && !canEditPl(ep) ? 'Zobraziť playlist' : 'Upraviť playlist', editA: (ep && !canEditPl(ep) ? 'Zobraziť playlist: ' : 'Upraviť playlist: ') + (ep ? ep.name : ''), editK: ep && !canEditPl(ep) ? '' : 'p2' });
+    const swForPlace = (pid) => { const pc = placeById(pid); const ep = effPl(pc); set({ sheet: 'sw', sw: { step: 'pl', from: 'pl', dev: pc.dev, places: [pid], pl: '', cur: ep ? ep.id : '', dur: 'today' } }); };
     const swForPl = (plid) => set({ sheet: 'sw', sw: { step: 'pc', from: 'pc', dev: (plById(plid) || {}).dev, places: [], pl: plid, dur: 'today' } });
     const ledLook = (d) => isLedDev(d) || !!PARTS[d];
     const tile = (p) => { const f = p && p.slides[0]; return ledLook(p ? p.dev : '') ? '#050505' : GRAD(f ? (f.kind === 'photo' ? f.img : f.bg) : '#C9D2D2'); };
     const nowIds = SCOPE ? withDev.filter((p, i, arr) => { const e = effPl(p); return e && arr.findIndex((q) => (effPl(q) || {}).id === e.id) === i; }).slice(0, 4).map((p) => p.id) : ['hsv', 'snp', 'asa', 't1'];
-    const nowRows = nowIds.map((id) => { const pc = placeById(id); const ep = effPl(pc); return { thS: 'width:48px;height:48px;border-radius:10px;flex:none;background:' + tile(ep), place: pc.name, plName: ep ? ep.name : '—', temp: !!pc.temp, until: pc.temp ? pc.temp.until : '', change: () => swForPlace(id), canSw: ACC.pub, changeA: 'Prepnúť playlist na mieste: ' + pc.name, canEdit: !!ep, edit: () => editAtPlace(id), editA: 'Upraviť playlist: ' + (ep ? ep.name : '') }; });
+    const nowRows = nowIds.map((id) => { const pc = placeById(id); const ep = effPl(pc); return Object.assign({ thS: 'width:48px;height:48px;border-radius:10px;flex:none;background:' + tile(ep), place: pc.name, plName: ep ? ep.name : '—', temp: !!pc.temp, until: pc.temp ? pc.temp.until : '', change: () => swForPlace(id), canSw: ACC.pub, changeA: 'Prepnúť playlist na mieste: ' + pc.name, edit: () => editAtPlace(id) }, plBtn(ep)); });
     const pcOnN = withDev.filter((p) => p.on).length;
     const expN = withDev.filter((p) => p.st === 'exp').length;
     const qhRows = s.qh.map((h) => ({ againA: 'Poslať znova: ' + h.text, text: h.text, meta: h.when + ' · ' + tgtLabel(h) + ' · ' + PRIO[h.prio][0], again: () => set({ sheet: 'quick', qStep: 'main', qSearch: '', quick: { text: h.text, prio: h.prio, pos: h.pos, dur: h.dur, all: h.all, ids: h.ids.slice() } }) }));
 
     // ---------- PLAYLISTY ----------
     const cnt = (k) => vPls.filter((p) => p.st === k).length;
-    const plChips = [['all', 'Všetko', vPls.length], ['nahraty', 'Nahratý', cnt('nahraty')], ['expirovany', 'Expirovaný', cnt('expirovany')], ['nenahraty', 'Nenahratý', cnt('nenahraty')]].map((c) => ({ label: c[1], n: c[2], on: s.filt === c[0], pick: () => set({ filt: c[0] }) }));
+    const plChips = [['all', 'Všetky', vPls.length], ['nahraty', 'Nahraté', cnt('nahraty')], ['expirovany', 'Expirované', cnt('expirovany')], ['nenahraty', 'Nenahraté', cnt('nenahraty')]].map((c) => ({ label: c[1], n: c[2], on: s.filt === c[0], pick: () => set({ filt: c[0] }) }));
     const ql = s.q.trim().toLowerCase();
     const plList = vPls.filter((p) => (s.filt === 'all' || p.st === s.filt) && (!ql || p.name.toLowerCase().indexOf(ql) >= 0));
     const plRows = plList.map((p) => ({
-      open: () => nav('pl', { plId: p.id }), prev: () => openPrev(p.id), editA: 'Upraviť playlist: ' + p.name, prevA: 'Náhľad playlistu: ' + p.name, thS: 'width:52px;height:52px;border-radius:12px;flex:none;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;color:' + (ledLook(p.dev) ? '#FFB000' : '#fff') + ';background:' + tile(p), nSl: String(p.slides.length),
+      open: () => nav('pl', { plId: p.id }), prev: () => openPrev(p.id), canEd: canEditPl(p), editA: 'Upraviť playlist: ' + p.name, openA: (canEditPl(p) ? 'Upraviť playlist: ' : 'Zobraziť playlist: ') + p.name, mineOwn: plOwnBy(p), hasOwner: !!p.owner && !plOwnBy(p), ownerT: 'Tretia strana: ' + (p.owner || ''), prevA: 'Náhľad playlistu: ' + p.name, thS: 'width:52px;height:52px;border-radius:12px;flex:none;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;color:' + (ledLook(p.dev) ? '#FFB000' : '#fff') + ';background:' + tile(p), nSl: String(p.slides.length),
       name: p.name, devT: DEV[p.dev][1], meta: slMeta(p) + ' · ' + nWhere(p.where.length), stK: ST[p.st][0], stT: ST[p.st][1], touch: p.touch, hasFlow: p.flow !== 'none', flowK: (FLOW[p.flow] || ['', ''])[0], flowT: (FLOW[p.flow] || ['', ''])[1]
     }));
 
@@ -169,30 +188,42 @@
     const mineApv = ownApv(pl.id);
     const otherApv = s.apvs.find((a) => a.plId === pl.id && a.state === 'pending' && !isOwn(a));
     const canEdit = !locked;
+    const plFull = fullEd(pl);
+    const slCanEd = (x) => plFull || slOwn(x);
+    // odstrániť sa dá len snímka, po ktorej na displeji ešte niečo ostane (čas a dátum označníka nikdy)
+    const canDel = (x) => !!x && x.kind !== 'clock' && pl.slides.filter((y) => (y.d || '') === (x.d || '')).length > 1;
+    const inOrd = s.reorder && canEdit && plFull;
     const slRows = pl.slides.map((x, i) => ({
-      open: () => locked ? openPrev(pl.id) : nav('sl', { slId: x.id, edSec: 0 }), aria: 'Upraviť: ' + x.title, sx: SX(x), dev: rdev(pl, x), w: thW(pl, x), kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg,
-      meta: (plTotem ? partName(pl, x) + ' · ' : '') + KIND[x.kind] + (x.kind === 'clock' ? '' : ' · ' + x.dur + ' s') + (x.kind === 'tpl' && (x.secs || []).some((c) => c.owner) ? ' · tretia strana: ' + (x.secs || []).filter((c) => c.owner).map((c) => c.owner).filter((v, k, a) => a.indexOf(v) === k).join(', ') : ''), showMove: s.reorder && canEdit, up: () => moveSlide(i, -1), upOff: i === 0 || (pl.slides[i - 1].d || '') !== (x.d || ''), down: () => moveSlide(i, 1), downOff: i === pl.slides.length - 1 || (pl.slides[i + 1].d || '') !== (x.d || ''),
-      delK: s.confirm === 'd' + x.id ? 'd' : '', delLbl: s.confirm === 'd' + x.id ? 'Potvrdiť odstránenie z playlistu' : 'Odstrániť z playlistu', del: () => { if (s.confirm === 'd' + x.id) { set({ confirm: '' }); delSlide(x.id); } else { set({ confirm: 'd' + x.id }); say('Ťuknite ešte raz a snímka sa odstráni z playlistu.'); } },
-      showChev: !(s.reorder && canEdit)
+      open: () => locked || !slCanEd(x) ? openPrev(pl.id) : nav('sl', { slId: x.id, edSec: plFull ? 0 : Math.max(0, (x.secs || []).findIndex(secOwn)) }), aria: (locked || !slCanEd(x) ? 'Náhľad: ' : 'Upraviť: ') + x.title, mine: !plFull && slOwn(x), num: String(i + 1), showTh: !inOrd, showNum: inOrd, sx: SX(x), dev: rdev(pl, x), w: thW(pl, x), kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg,
+      meta: (plTotem ? partName(pl, x) + ' · ' : '') + kindT(x) + (x.kind === 'clock' ? '' : ' · ' + x.dur + ' s') + (x.kind !== 'tpl' ? '' : ACC.partner ? (slOwn(x) ? ((x.secs || []).filter(secOwn).length > 1 ? ' · vaše sekcie: ' : ' · vaša sekcia: ') + (x.secs || []).filter(secOwn).map((c) => c.name).join(', ') : '') : (x.secs || []).some((c) => c.owner) ? ' · tretia strana: ' + (x.secs || []).filter((c) => c.owner).map((c) => c.owner).filter((v, k, a) => a.indexOf(v) === k).join(', ') : ''), showMove: inOrd && s.confirm !== 'd' + x.id, showCf: inOrd && s.confirm === 'd' + x.id, cfDo: () => { clearTimeout(self._tc); set({ confirm: '' }); delSlide(x.id); }, cfA: 'Potvrdiť odstránenie z playlistu: ' + x.title, delOff: !canDel(x), up: () => moveSlide(i, -1), upOff: i === 0 || (pl.slides[i - 1].d || '') !== (x.d || ''), down: () => moveSlide(i, 1), downOff: i === pl.slides.length - 1 || (pl.slides[i + 1].d || '') !== (x.d || ''),
+      delLbl: canDel(x) ? 'Odstrániť z playlistu: ' + x.title : 'Jediná snímka sa nedá odstrániť', del: () => { if (canDel(x)) armConfirm('d' + x.id); },
+      showChev: !inOrd
     }));
     const BLANK = { id: 0, kind: 'info', title: '', text: '', dur: 10, bg: '#0E8080', img: '', imgName: '', ledSize: 'M', ledAlign: 'left', ledCol: '', ledBg: '', d: '' };
     const curSl = pl.slides[0] || BLANK;
     const upload = (p, toastT) => { set({ pls: s.pls.map((x) => x.id === p.id ? Object.assign({}, x, { st: 'nahraty' }) : x), places: deliver(s.places, p) }); say(toastT); if (p.where.length) notify(deliveredT(p, p.where)); };
     const publishNow = () => {
       const n = pl.where.length;
-      set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, n ? { flow: 'none', st: 'nahraty', log: [] } : { flow: 'none', log: [] }) : p), places: n ? deliver(s.places, pl) : s.places, reorder: false });
-      say(n ? 'Zverejnené. Playlist sa nahráva na ' + nPlaces(n) + '.' : 'Zverejnené. Ťuknite na „Nahrať na zariadenia“ a vyberte miesta.');
+      set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, n ? { flow: 'none', st: 'nahraty', log: [] } : { flow: 'none', log: [] }) : p), places: n ? deliver(s.places, pl) : s.places, reorder: false, snap: snapDrop(pl.id) });
+      say(n ? 'Zverejnené. Playlist sa nahráva na ' + nPlaces(n) + '.' : 'Zverejnené. Ťuknite na „Prehrať na mieste“ a vyberte miesta.');
       if (n) notify(deliveredT(pl, pl.where));
     };
+    // zahodenie všetkých neodoslaných zmien naraz (druhým ťuknutím)
+    const plSnap = (s.snap || {})[pl.id];
+    const canDiscard = pl.flow === 'draft' && !!plSnap;
+    const discard = () => { if (!canDiscard) return; if (s.confirm !== 'dz') { armConfirm('dz'); return; } clearTimeout(self._tc); set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { slides: plSnap.slides, flow: 'none', log: [] }) : p), snap: snapDrop(pl.id), reorder: false, confirm: '' }); say('Zmeny sú zahodené. Playlist je taký ako pred úpravami.'); };
     let mainAct;
     if (pl.flow === 'pending') mainAct = mineApv ? { k: '', label: 'Vziať späť', fn: withdraw } : ACC.apv ? { k: 'p', label: 'Otvoriť schválenie', fn: () => otherApv && nav('ad', { adId: otherApv.id, apvNote: '' }) } : { k: '', label: 'Čaká na schválenie správcom', fn: () => say('Playlist schvaľuje správca DP Riečany.') };
     else if (pl.flow === 'draft') mainAct = ACC.pub ? { k: 'p', label: 'Zverejniť', fn: publishNow } : { k: 'p', label: 'Odoslať na schválenie', fn: sendApv };
-    else if (!ACC.pub) mainAct = { k: '', label: 'Náhľad', fn: () => openPrev(pl.id) };
-    else if (pl.st === 'nenahraty') mainAct = { k: 'p', label: 'Nahrať na zariadenia', fn: () => pl.where.length ? upload(pl, 'Playlist sa nahráva na ' + nPlaces(pl.where.length) + '.') : swForPl(pl.id) };
+    else if (!ACC.pub) mainAct = null;
+    else if (pl.st === 'nenahraty') mainAct = pl.where.length ? { k: 'p', label: 'Nahrať na zariadenia', fn: () => upload(pl, 'Playlist sa nahráva na ' + nPlaces(pl.where.length) + '.') } : { k: 'p', label: 'Prehrať na mieste', fn: () => swForPl(pl.id) };
     else if (pl.st === 'expirovany') mainAct = { k: 'p', label: 'Predĺžiť platnosť', fn: () => { set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { st: 'nahraty', plan: 'Po–Pi 6:00–22:00 · do 31. 12.' }) : p) }); say('Platnosť je predĺžená do 31. 12.'); } };
-    else mainAct = { k: 'p', label: 'Prehrať na mieste…', fn: () => swForPl(pl.id) };
+    else mainAct = { k: 'p', label: 'Prehrať na mieste', fn: () => swForPl(pl.id) };
     const lockT = mineApv ? 'Playlist ste odoslali na schválenie, preto sa nedá upravovať. Ak chcete niečo zmeniť, vezmite ho späť.' : 'Playlist čaká na schválenie, preto sa nedá upravovať.';
-    const whereT = pl.where.length ? names(pl.where).join(' · ') : 'Zatiaľ sa neprehráva na žiadnom mieste.';
+    // miesta, kde sa playlist prehráva len dočasne (prepnutie z mobilu)
+    const plTemp = s.places.filter((p) => p.temp && p.temp.pl === pl.id).map((p) => ({ name: p.name, until: p.temp.until }));
+    const whereT = pl.where.length ? names(pl.where).join(' · ') : '';
+    const whereNoneT = pl.where.length || plTemp.length ? '' : 'Zatiaľ sa neprehráva na žiadnom mieste.';
     const openAdd = () => set({ sheet: 'add', addMode: 'slide' });
     // zoznam vytvorených snímok pre zariadenie playlistu: snímky zo všetkých playlistov + samostatné
     const libAll = []; const libSeen = {};
@@ -200,8 +231,8 @@
     s.libX.forEach((x) => { const k = x.dev + '|' + (x.d || '') + '|' + x.title; if (!libSeen[k]) { libSeen[k] = 1; libAll.push(Object.assign({}, x, { from: 'samostatná snímka', own: false })); } });
     const lql = s.libQ.trim().toLowerCase();
     const libRows = libAll.filter((x) => x.dev === pl.dev && !x.own && (!lql || x.title.toLowerCase().indexOf(lql) >= 0)).map((x) => ({
-      dev: rdev(pl, x), w: thW(pl, x), kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg, meta: (plTotem ? partName(pl, x) + ' · ' : '') + KIND[x.kind] + ' · ' + x.dur + ' s', from: x.from, aria: 'Pridať snímku ' + x.title,
-      sx: SX(x), pick: () => { const sl = newSl(x.kind, x.title, x.text, x.dur, x.bg, { img: x.img, imgName: x.imgName, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg, d: x.d || '', vz: x.vz, secs: x.secs }); pushSlide(pl.id, sl, 'Pridaná snímka „' + x.title + '“ (zo zoznamu snímok)', { libQ: '' }); say('Snímka „' + x.title + '“ je pridaná na koniec playlistu.'); }
+      dev: rdev(pl, x), w: thW(pl, x), kind: x.kind, title: x.title, text: x.text, bg: x.bg, img: x.img, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg, meta: (plTotem ? partName(pl, x) + ' · ' : '') + kindT(x) + ' · ' + x.dur + ' s', from: x.from, aria: 'Pridať snímku ' + x.title,
+      sx: SX(x), pick: () => { const sl = newSl(x.kind, x.title, x.text, x.dur, x.bg, { img: x.img, imgName: x.imgName, ledSize: x.ledSize, ledAlign: x.ledAlign, ledCol: x.ledCol, ledBg: x.ledBg, d: x.d || '', vz: x.vz, secs: x.secs, isVid: x.isVid }); pushSlide(pl.id, sl, 'Pridaná snímka „' + x.title + '“ (zo zoznamu snímok)', { libQ: '' }); say('Snímka „' + x.title + '“ je pridaná na koniec playlistu.'); }
     }));
     const openLib = () => set({ sheet: 'lib', libQ: '' });
     const addLed = () => { const sl = newSl('led', Tx('Nový text'), '', 10, '#050505', { ledSize: pl.dev === 'vehicle' ? 'L' : 'M' }); pushSlide(pl.id, sl, 'Pridaná snímka „Nový text“', toEditor); };
