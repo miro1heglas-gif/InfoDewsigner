@@ -814,3 +814,123 @@ Kam bola poslaná ({0}) ||| Kam byla poslána ({0}) ||| Dokąd wysłano ({0}) ||
 Rýchle správy, ktoré už skončili alebo boli zrušené. Ťuknutím na správu zobrazíte detail – komu išla, kto a kedy ju odoslal. Správu môžete poslať znova – pred odoslaním ju ešte upravíte. ||| Rychlé zprávy, které už skončily nebo byly zrušeny. Klepnutím na zprávu zobrazíte detail – komu šla, kdo a kdy ji odeslal. Zprávu můžete poslat znovu – před odesláním ji ještě upravíte. ||| Szybkie wiadomości, które już się zakończyły lub zostały anulowane. Stuknij wiadomość, aby zobaczyć szczegóły – dokąd trafiła, kto i kiedy ją wysłał. Wiadomość możesz wysłać ponownie – przed wysłaniem jeszcze ją poprawisz. ||| Quick messages that have ended or were cancelled. Tap a message to see its details – where it went, who sent it and when. You can send a message again – you can still edit it before sending. ||| Schnellmeldungen, die bereits beendet oder abgebrochen wurden. Tippen Sie auf eine Meldung für Details – wohin sie ging, wer sie wann gesendet hat. Sie können eine Meldung erneut senden – vor dem Senden lässt sie sich noch bearbeiten.
 Správa je zrušená na vašich miestach ({0}). Na ostatných miestach ostáva. ||| Zpráva je zrušena na vašich místech ({0}). Na ostatních místech zůstává. ||| Wiadomość anulowano w Twoich miejscach ({0}). W pozostałych miejscach pozostaje. ||| The message is cancelled at your places ({0}). It stays at the other places. ||| Die Meldung wurde an Ihren Standorten ({0}) abgebrochen. An den übrigen Standorten bleibt sie.
 
+# ===== v48: detail miesta, skupiny miest, vyžaduje pozornosť, stav doručenia, úprava správy, šablóny s výberom, bez pripojenia, záznam aktivít =====
+miesto je offline|miesta sú offline|miest je offline ||| místo je offline|místa jsou offline|míst je offline ||| miejsce jest offline|miejsca są offline|miejsc jest offline ||| place is offline|places are offline|places are offline ||| Standort ist offline|Standorte sind offline|Standorte sind offline
+miesto má expirovaný playlist|miesta majú expirovaný playlist|miest má expirovaný playlist ||| místo má expirovaný playlist|místa mají expirovaný playlist|míst má expirovaný playlist ||| miejsce ma wygasłą playlistę|miejsca mają wygasłą playlistę|miejsc ma wygasłą playlistę ||| place has an expired playlist|places have an expired playlist|places have an expired playlist ||| Standort hat eine abgelaufene Playlist|Standorte haben eine abgelaufene Playlist|Standorte haben eine abgelaufene Playlist
+playlist čoskoro expiruje|playlisty čoskoro expirujú|playlistov čoskoro expiruje ||| playlist brzy expiruje|playlisty brzy expirují|playlistů brzy expiruje ||| playlista wkrótce wygaśnie|playlisty wkrótce wygasną|playlist wkrótce wygaśnie ||| playlist expires soon|playlists expire soon|playlists expire soon ||| Playlist läuft bald ab|Playlists laufen bald ab|Playlists laufen bald ab
+playlist čaká na nahratie|playlisty čakajú na nahratie|playlistov čaká na nahratie ||| playlist čeká na nahrání|playlisty čekají na nahrání|playlistů čeká na nahrání ||| playlista czeka na wgranie|playlisty czekają na wgranie|playlist czeka na wgranie ||| playlist is waiting to be uploaded|playlists are waiting to be uploaded|playlists are waiting to be uploaded ||| Playlist wartet auf das Hochladen|Playlists warten auf das Hochladen|Playlists warten auf das Hochladen
+playlist je vrátený na úpravu|playlisty sú vrátené na úpravu|playlistov je vrátených na úpravu ||| playlist je vrácen k úpravě|playlisty jsou vráceny k úpravě|playlistů je vráceno k úpravě ||| playlista została zwrócona do poprawy|playlisty zostały zwrócone do poprawy|playlist zostało zwróconych do poprawy ||| playlist was returned for changes|playlists were returned for changes|playlists were returned for changes ||| Playlist wurde zur Überarbeitung zurückgegeben|Playlists wurden zur Überarbeitung zurückgegeben|Playlists wurden zur Überarbeitung zurückgegeben
+hlásenie|hlásenia|hlásení ||| hlášení|hlášení|hlášení ||| zgłoszenie|zgłoszenia|zgłoszeń ||| alert|alerts|alerts ||| Meldung|Meldungen|Meldungen
+zariadenie|zariadenia|zariadení ||| zařízení|zařízení|zařízení ||| urządzenie|urządzenia|urządzeń ||| device|devices|devices ||| Gerät|Geräte|Geräte
+Vyžaduje pozornosť ||| Vyžaduje pozornost ||| Wymaga uwagi ||| Needs attention ||| Erfordert Aufmerksamkeit
+Všetko je v poriadku ||| Vše je v pořádku ||| Wszystko w porządku ||| Everything is fine ||| Alles in Ordnung
+Žiadne miesto ani playlist teraz nevyžaduje zásah. ||| Žádné místo ani playlist teď nevyžaduje zásah. ||| Żadne miejsce ani playlista nie wymaga teraz interwencji. ||| No place or playlist needs action right now. ||| Kein Standort und keine Playlist erfordert derzeit ein Eingreifen.
+Stav doručenia ||| Stav doručení ||| Stan dostarczenia ||| Delivery status ||| Zustellstatus
+Stav doručenia: {0} ||| Stav doručení: {0} ||| Stan dostarczenia: {0} ||| Delivery status: {0} ||| Zustellstatus: {0}
+Rýchla správa ||| Rychlá zpráva ||| Szybka wiadomość ||| Quick message ||| Schnellmeldung
+Prepnutie playlistu ||| Přepnutí playlistu ||| Przełączenie playlisty ||| Playlist switch ||| Playlist-Umschaltung
+Zobrazené ||| Zobrazeno ||| Wyświetlono ||| Displayed ||| Angezeigt
+Odosiela sa… ||| Odesílá se… ||| Wysyłanie… ||| Sending… ||| Wird gesendet…
+Odosiela sa ||| Odesílá se ||| Wysyłanie ||| Sending ||| Wird gesendet
+Čaká – offline ||| Čeká – offline ||| Czeka – offline ||| Waiting – offline ||| Wartet – offline
+Naplánované ||| Naplánováno ||| Zaplanowano ||| Scheduled ||| Geplant
+Doručené ||| Doručeno ||| Dostarczono ||| Delivered ||| Zugestellt
+Miesta (#) ||| Místa (#) ||| Miejsca (#) ||| Places (#) ||| Standorte (#)
+Zobrazené na # z # miest ||| Zobrazeno na # z # míst ||| Wyświetlono w # z # miejsc ||| Displayed at # of # places ||| Angezeigt an # von # Standorten
+Zobrazené na # zo # miest ||| Zobrazeno na # z # míst ||| Wyświetlono w # z # miejsc ||| Displayed at # of # places ||| Angezeigt an # von # Standorten
+Zobrazené na # z # miesta ||| Zobrazeno na # z # místa ||| Wyświetlono w # z # miejsca ||| Displayed at # of # place ||| Angezeigt an # von # Standort
+Nahraté na # z # miest ||| Nahráno na # z # míst ||| Wgrano w # z # miejsc ||| Uploaded to # of # places ||| Hochgeladen auf # von # Standorten
+Nahraté na # zo # miest ||| Nahráno na # z # míst ||| Wgrano w # z # miejsc ||| Uploaded to # of # places ||| Hochgeladen auf # von # Standorten
+Nahraté na # z # miesta ||| Nahráno na # z # místa ||| Wgrano w # z # miejsca ||| Uploaded to # of # place ||| Hochgeladen auf # von # Standort
+Odosiela sa… # z # ||| Odesílá se… # z # ||| Wysyłanie… # z # ||| Sending… # of # ||| Wird gesendet… # von #
+Odosiela sa… # zo # ||| Odesílá se… # z # ||| Wysyłanie… # z # ||| Sending… # of # ||| Wird gesendet… # von #
+Naplánované na {0} ||| Naplánováno na {0} ||| Zaplanowano dla {0} ||| Scheduled for {0} ||| Geplant für {0}
+# offline – čaká na pripojenie ||| # offline – čeká na připojení ||| # offline – czeka na połączenie ||| # offline – waiting for connection ||| # offline – wartet auf Verbindung
+Na offline miesta sa obsah doručí hneď po pripojení zariadenia. ||| Na offline místa se obsah doručí hned po připojení zařízení. ||| Do miejsc offline treść zostanie dostarczona zaraz po połączeniu urządzenia. ||| Offline places receive the content as soon as the device reconnects. ||| Offline-Standorte erhalten den Inhalt, sobald das Gerät wieder verbunden ist.
+Obsah sa na zariadenia pošle v naplánovanom čase. ||| Obsah se na zařízení pošle v naplánovaném čase. ||| Treść zostanie wysłana na urządzenia w zaplanowanym czasie. ||| The content is sent to the devices at the scheduled time. ||| Der Inhalt wird zur geplanten Zeit an die Geräte gesendet.
+Bez pripojenia ||| Bez připojení ||| Brak połączenia ||| No connection ||| Keine Verbindung
+Nič sa neodošle. Rozpísané úpravy ostávajú v telefóne. ||| Nic se neodešle. Rozpracované úpravy zůstávají v telefonu. ||| Nic nie zostanie wysłane. Rozpoczęte zmiany pozostają w telefonie. ||| Nothing will be sent. Unsent changes stay on the phone. ||| Es wird nichts gesendet. Begonnene Änderungen bleiben auf dem Telefon.
+Údaje sú z #. ||| Údaje jsou z #. ||| Dane z godz. #. ||| Data as of #. ||| Daten von # Uhr.
+Ukončiť simuláciu ||| Ukončit simulaci ||| Zakończ symulację ||| End simulation ||| Simulation beenden
+Bez pripojenia. Nič sa neodoslalo – skúste to znova po obnovení signálu. ||| Bez připojení. Nic se neodeslalo – zkuste to znovu po obnovení signálu. ||| Brak połączenia. Nic nie zostało wysłane – spróbuj ponownie po odzyskaniu sygnału. ||| No connection. Nothing was sent – try again when the signal is back. ||| Keine Verbindung. Es wurde nichts gesendet – versuchen Sie es erneut, sobald wieder Empfang besteht.
+Pripojenie je späť. Môžete pokračovať. ||| Připojení je zpět. Můžete pokračovat. ||| Połączenie wróciło. Możesz kontynuować. ||| Connection is back. You can continue. ||| Die Verbindung ist wieder da. Sie können fortfahren.
+Bez pripojenia – nedá sa odoslať ||| Bez připojení – nelze odeslat ||| Brak połączenia – nie można wysłać ||| No connection – cannot send ||| Keine Verbindung – Senden nicht möglich
+Čoskoro expirujú ||| Brzy expirují ||| Wkrótce wygasną ||| Expiring soon ||| Laufen bald ab
+Expiruje o # deň ||| Expiruje za # den ||| Wygasa za # dzień ||| Expires in # day ||| Läuft in # Tag ab
+Expiruje o # dni ||| Expiruje za # dny ||| Wygasa za # dni ||| Expires in # days ||| Läuft in # Tagen ab
+Expiruje o # dní ||| Expiruje za # dní ||| Wygasa za # dni ||| Expires in # days ||| Läuft in # Tagen ab
+Platnosť playlistu skončí o # deň. Potom sa na miestach prestane prehrávať. ||| Platnost playlistu skončí za # den. Potom se na místech přestane přehrávat. ||| Ważność playlisty skończy się za # dzień. Potem przestanie być odtwarzana w miejscach. ||| The playlist expires in # day. After that it stops playing at the places. ||| Die Playlist läuft in # Tag ab. Danach wird sie an den Standorten nicht mehr abgespielt.
+Platnosť playlistu skončí o # dni. Potom sa na miestach prestane prehrávať. ||| Platnost playlistu skončí za # dny. Potom se na místech přestane přehrávat. ||| Ważność playlisty skończy się za # dni. Potem przestanie być odtwarzana w miejscach. ||| The playlist expires in # days. After that it stops playing at the places. ||| Die Playlist läuft in # Tagen ab. Danach wird sie an den Standorten nicht mehr abgespielt.
+Platnosť playlistu skončí o # dní. Potom sa na miestach prestane prehrávať. ||| Platnost playlistu skončí za # dní. Potom se na místech přestane přehrávat. ||| Ważność playlisty skończy się za # dni. Potem przestanie być odtwarzana w miejscach. ||| The playlist expires in # days. After that it stops playing at the places. ||| Die Playlist läuft in # Tagen ab. Danach wird sie an den Standorten nicht mehr abgespielt.
+Po–Ne #–# ||| Po–Ne #–# ||| Pn–Nd #–# ||| Mon–Sun #–# ||| Mo–So #–#
+platnosť do #. #. ||| platnost do #. #. ||| ważna do #.#. ||| valid until #/# ||| gültig bis #.#.
+od #. #. # do #. #. # ||| od #. #. # do #. #. # ||| od #.#. # do #.#. # ||| from #/# # to #/# # ||| von #.#. # bis #.#. #
+do #. #. # ||| do #. #. # ||| do #.#. # ||| until #/# # ||| bis #.#. #
+Vrátiť pôvodný playlist ||| Vrátit původní playlist ||| Przywróć pierwotną playlistę ||| Restore original playlist ||| Ursprüngliche Playlist wiederherstellen
+Miesto zatiaľ nemá zariadenie. Zariadenie sa priraďuje v desktopovej aplikácii. ||| Místo zatím nemá zařízení. Zařízení se přiřazuje v desktopové aplikaci. ||| Miejsce nie ma jeszcze urządzenia. Urządzenie przypisuje się w aplikacji desktopowej. ||| This place has no device yet. Devices are assigned in the desktop app. ||| Der Standort hat noch kein Gerät. Geräte werden in der Desktop-Anwendung zugewiesen.
+Stav zariadenia ||| Stav zařízení ||| Stan urządzenia ||| Device status ||| Gerätestatus
+Skupina ||| Skupina ||| Grupa ||| Group ||| Gruppe
+Zariadenie ||| Zařízení ||| Urządzenie ||| Device ||| Gerät
+Online ||| Online ||| Online ||| Online ||| Online
+Bez skupiny ||| Bez skupiny ||| Bez grupy ||| No group ||| Ohne Gruppe
+Posledný kontakt {0} ||| Poslední kontakt {0} ||| Ostatni kontakt {0} ||| Last contact {0} ||| Letzter Kontakt {0}
+Bez spojenia {0} ||| Bez spojení {0} ||| Bez połączenia {0} ||| No contact {0} ||| Kein Kontakt {0}
+Zariadenie je offline. Zobrazuje naposledy nahratý obsah, zmeny sa doručia po pripojení. ||| Zařízení je offline. Zobrazuje naposledy nahraný obsah, změny se doručí po připojení. ||| Urządzenie jest offline. Wyświetla ostatnio wgraną treść, zmiany zostaną dostarczone po połączeniu. ||| The device is offline. It shows the last uploaded content; changes will be delivered once it reconnects. ||| Das Gerät ist offline. Es zeigt den zuletzt hochgeladenen Inhalt, Änderungen werden nach dem Verbinden zugestellt.
+Na mieste sa teraz nič neprehráva. ||| Na místě se teď nic nepřehrává. ||| W tym miejscu nic nie jest teraz odtwarzane. ||| Nothing is playing at this place right now. ||| An diesem Standort wird derzeit nichts abgespielt.
+Čo príde potom ||| Co přijde potom ||| Co będzie potem ||| What comes next ||| Was danach kommt
+Po skončení dočasného prepnutia sa vráti playlist: ||| Po skončení dočasného přepnutí se vrátí playlist: ||| Po zakończeniu tymczasowego przełączenia wróci playlista: ||| When the temporary switch ends, this playlist returns: ||| Nach Ende der vorübergehenden Umschaltung läuft wieder die Playlist:
+Bez zmeny. Playlist pokračuje podľa plánu. ||| Beze změny. Playlist pokračuje podle plánu. ||| Bez zmian. Playlista jest odtwarzana zgodnie z planem. ||| No change. The playlist continues as scheduled. ||| Keine Änderung. Die Playlist läuft nach Plan weiter.
+Rýchle správy na tomto mieste ||| Rychlé zprávy na tomto místě ||| Szybkie wiadomości w tym miejscu ||| Quick messages at this place ||| Schnellmeldungen an diesem Standort
+Na tomto mieste teraz nie je žiadna rýchla správa. ||| Na tomto místě teď není žádná rychlá zpráva. ||| W tym miejscu nie ma teraz żadnej szybkiej wiadomości. ||| There is no quick message at this place right now. ||| An diesem Standort gibt es derzeit keine Schnellmeldung.
+Poslať správu na toto miesto ||| Poslat zprávu na toto místo ||| Wyślij wiadomość do tego miejsca ||| Send a message to this place ||| Meldung an diesen Standort senden
+Posledné doručenia ||| Poslední doručení ||| Ostatnie dostarczenia ||| Recent deliveries ||| Letzte Zustellungen
+Záznam aktivít ||| Záznam aktivit ||| Dziennik aktywności ||| Activity log ||| Aktivitätsprotokoll
+Kto čo zverejnil, prepol, odoslal alebo schválil ||| Kdo co zveřejnil, přepnul, odeslal nebo schválil ||| Kto co opublikował, przełączył, wysłał lub zatwierdził ||| Who published, switched, sent or approved what ||| Wer was veröffentlicht, umgeschaltet, gesendet oder freigegeben hat
+Kto čo zverejnil, prepol, odoslal alebo schválil. Záznam vidí len Admin a Director. ||| Kdo co zveřejnil, přepnul, odeslal nebo schválil. Záznam vidí jen Admin a Director. ||| Kto co opublikował, przełączył, wysłał lub zatwierdził. Dziennik widzą tylko Admin i Director. ||| Who published, switched, sent or approved what. Only Admin and Director can see the log. ||| Wer was veröffentlicht, umgeschaltet, gesendet oder freigegeben hat. Das Protokoll sehen nur Admin und Director.
+V tomto filtri nie je žiadny záznam. ||| V tomto filtru není žádný záznam. ||| W tym filtrze nie ma żadnego wpisu. ||| No entries in this filter. ||| In diesem Filter gibt es keinen Eintrag.
+Správy ||| Zprávy ||| Wiadomości ||| Messages ||| Meldungen
+Odoslaná rýchla správa ||| Odeslána rychlá zpráva ||| Wysłano szybką wiadomość ||| Quick message sent ||| Schnellmeldung gesendet
+Naplánovaná rýchla správa ||| Naplánována rychlá zpráva ||| Zaplanowano szybką wiadomość ||| Quick message scheduled ||| Schnellmeldung geplant
+Upravená rýchla správa ||| Upravena rychlá zpráva ||| Zmieniono szybką wiadomość ||| Quick message edited ||| Schnellmeldung geändert
+Zrušená rýchla správa ||| Zrušena rychlá zpráva ||| Anulowano szybką wiadomość ||| Quick message cancelled ||| Schnellmeldung abgebrochen
+Zrušená naplánovaná správa ||| Zrušena naplánovaná zpráva ||| Anulowano zaplanowaną wiadomość ||| Scheduled message cancelled ||| Geplante Meldung abgebrochen
+Zverejnený playlist ||| Zveřejněn playlist ||| Opublikowano playlistę ||| Playlist published ||| Playlist veröffentlicht
+Nahratý playlist na zariadenia ||| Playlist nahrán na zařízení ||| Wgrano playlistę na urządzenia ||| Playlist uploaded to devices ||| Playlist auf Geräte hochgeladen
+Predĺžená platnosť playlistu ||| Prodloužena platnost playlistu ||| Przedłużono ważność playlisty ||| Playlist validity extended ||| Gültigkeit der Playlist verlängert
+Prepnutý playlist ||| Přepnut playlist ||| Przełączono playlistę ||| Playlist switched ||| Playlist umgeschaltet
+Vrátený pôvodný playlist ||| Vrácen původní playlist ||| Przywrócono pierwotną playlistę ||| Original playlist restored ||| Ursprüngliche Playlist wiederhergestellt
+Vzaté späť zo schvaľovania ||| Vzato zpět ze schvalování ||| Wycofano z zatwierdzania ||| Withdrawn from approval ||| Aus der Freigabe zurückgezogen
+Schválené zmeny ||| Schváleny změny ||| Zatwierdzono zmiany ||| Changes approved ||| Änderungen freigegeben
+Vrátené na úpravu ||| Vráceno k úpravě ||| Zwrócono do poprawy ||| Returned for changes ||| Zur Überarbeitung zurückgegeben
+Zamietnuté zmeny ||| Zamítnuty změny ||| Odrzucono zmiany ||| Changes rejected ||| Änderungen abgelehnt
+Prototyp ||| Prototyp ||| Prototyp ||| Prototype ||| Prototyp
+Simulovať výpadok pripojenia ||| Simulovat výpadek připojení ||| Symuluj brak połączenia ||| Simulate connection loss ||| Verbindungsausfall simulieren
+Aplikácia sa správa, ako keby telefón stratil signál. ||| Aplikace se chová, jako by telefon ztratil signál. ||| Aplikacja zachowuje się tak, jakby telefon stracił sygnał. ||| The app behaves as if the phone had lost signal. ||| Die App verhält sich, als hätte das Telefon keinen Empfang.
+Upraviť správu ||| Upravit zprávu ||| Edytuj wiadomość ||| Edit message ||| Meldung bearbeiten
+Upraviť správu: {0} ||| Upravit zprávu: {0} ||| Edytuj wiadomość: {0} ||| Edit message: {0} ||| Meldung bearbeiten: {0}
+Správa je práve zobrazená. Po uložení sa na displejoch zmení do pár sekúnd. ||| Zpráva je právě zobrazená. Po uložení se na displejích změní během pár sekund. ||| Wiadomość jest właśnie wyświetlana. Po zapisaniu zmieni się na ekranach w ciągu kilku sekund. ||| The message is on display now. After saving, it changes on the displays within seconds. ||| Die Meldung wird gerade angezeigt. Nach dem Speichern ändert sie sich auf den Displays in wenigen Sekunden.
+Správa je naplánovaná. Zmeny sa použijú pri zobrazení. ||| Zpráva je naplánovaná. Změny se použijí při zobrazení. ||| Wiadomość jest zaplanowana. Zmiany zostaną zastosowane przy wyświetleniu. ||| The message is scheduled. Changes apply when it is displayed. ||| Die Meldung ist geplant. Änderungen gelten bei der Anzeige.
+Skrátiť o 5 minút ||| Zkrátit o 5 minut ||| Skróć o 5 minut ||| Shorten by 5 minutes ||| Um 5 Minuten kürzen
+Predĺžiť o 5 minút ||| Prodloužit o 5 minut ||| Wydłuż o 5 minut ||| Extend by 5 minutes ||| Um 5 Minuten verlängern
+Hodnoty meníte ťuknutím, text správy sa doplní sám. ||| Hodnoty měníte ťuknutím, text zprávy se doplní sám. ||| Wartości zmieniasz dotknięciem, tekst wiadomości uzupełni się sam. ||| Tap to change the values; the message text updates itself. ||| Werte ändern Sie durch Tippen, der Meldungstext passt sich an.
+Uložiť ako šablónu ||| Uložit jako šablonu ||| Zapisz jako szablon ||| Save as template ||| Als Vorlage speichern
+Odstrániť šablónu ||| Odstranit šablonu ||| Usuń szablon ||| Remove template ||| Vorlage entfernen
+Potvrdiť odstránenie šablóny ||| Potvrdit odstranění šablony ||| Potwierdź usunięcie szablonu ||| Confirm removing template ||| Entfernen der Vorlage bestätigen
+Šablóna „{0}“ je uložená. ||| Šablona „{0}“ je uložena. ||| Szablon „{0}” został zapisany. ||| Template “{0}” has been saved. ||| Vorlage „{0}“ wurde gespeichert.
+Šablóna je odstránená. ||| Šablona je odstraněna. ||| Szablon został usunięty. ||| The template has been removed. ||| Die Vorlage wurde entfernt.
+Náhľad na zariadení ||| Náhled na zařízení ||| Podgląd na urządzeniu ||| Preview on device ||| Vorschau auf dem Gerät
+Displej na šírku ||| Displej na šířku ||| Wyświetlacz poziomy ||| Landscape display ||| Display im Querformat
+Displej na výšku ||| Displej na výšku ||| Wyświetlacz pionowy ||| Portrait display ||| Display im Hochformat
+LED tabuľa ||| LED tabule ||| Tablica LED ||| LED display ||| LED-Anzeige
+Na LED tabuli sa poloha nepoužije, správa sa zobrazí cez celú tabuľu. ||| Na LED tabuli se poloha nepoužije, zpráva se zobrazí přes celou tabuli. ||| Na tablicy LED położenie nie ma zastosowania, wiadomość pojawi się na całej tablicy. ||| On LED displays the position is not used; the message fills the whole display. ||| Auf LED-Anzeigen wird die Position nicht verwendet, die Meldung füllt die ganze Anzeige.
+Bez zmeny ||| Beze změny ||| Bez zmian ||| No change ||| Keine Änderung
+Správa ostane zobrazená {0}. ||| Zpráva zůstane zobrazená {0}. ||| Wiadomość pozostanie wyświetlana {0}. ||| The message stays on display {0}. ||| Die Meldung bleibt {0} angezeigt.
+Uložiť zmeny ||| Uložit změny ||| Zapisz zmiany ||| Save changes ||| Änderungen speichern
+Správa je upravená. Na displejoch sa zmení do pár sekúnd. ||| Zpráva je upravena. Na displejích se změní během pár sekund. ||| Wiadomość została zmieniona. Na ekranach zmieni się w ciągu kilku sekund. ||| The message has been edited. It changes on the displays within seconds. ||| Die Meldung wurde geändert. Auf den Displays ändert sie sich in wenigen Sekunden.
+Naplánovaná správa je upravená. ||| Naplánovaná zpráva je upravena. ||| Zaplanowana wiadomość została zmieniona. ||| The scheduled message has been edited. ||| Die geplante Meldung wurde geändert.
+Linka {L} mešká približne {M} minút. Ďakujeme za trpezlivosť. ||| Linka {L} má zpoždění asi {M} minut. Děkujeme za trpělivost. ||| Linia {L} jest opóźniona o około {M} minut. Dziękujemy za cierpliwość. ||| Line {L} is running about {M} minutes late. Thank you for your patience. ||| Linie {L} hat etwa {M} Minuten Verspätung. Vielen Dank für Ihre Geduld.
+Linka {L} je dnes odklonená. Zastávka je dočasne presunutá. ||| Linka {L} je dnes odkloněna. Zastávka je dočasně přesunuta. ||| Linia {L} kursuje dziś objazdem. Przystanek jest tymczasowo przeniesiony. ||| Line {L} is diverted today. The stop has been temporarily moved. ||| Linie {L} wird heute umgeleitet. Die Haltestelle ist vorübergehend verlegt.
+# ===== v49: verzia a automatické načítanie novej verzie =====
+Verzia prototypu ||| Verze prototypu ||| Wersja prototypu ||| Prototype version ||| Prototyp-Version
+Je dostupná nová verzia aplikácie. ||| Je dostupná nová verze aplikace. ||| Dostępna jest nowa wersja aplikacji. ||| A new version of the app is available. ||| Eine neue Version der App ist verfügbar.
+Načítať ||| Načíst ||| Wczytaj ||| Load ||| Laden

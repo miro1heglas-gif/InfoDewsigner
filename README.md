@@ -1,6 +1,6 @@
 # Info Designer 2 – mobilná aplikácia (klikateľný prototyp)
 
-Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy Wertyz (EMLines). Dispečer alebo pracovník dopravného podniku z telefónu:
+Klikateľný prototyp mobilnej aplikácie modulu **Info Designer 2** platformy Wertyz (EMLines). Je to webová aplikácia určená pre telefón: otvára sa v prehliadači, neinštaluje sa z obchodu. Dispečer alebo pracovník dopravného podniku z telefónu:
 
 - pošle rýchlu správu na zariadenia,
 - upraví a zverejní playlist alebo na mieste na zvolený čas prepne iný playlist,
@@ -16,9 +16,19 @@ Ochrana pred chybou: poslednú snímku playlistu ani čas a dátum označníka n
 
 Vlastný čas (začiatok a koniec) sa pri prepnutí playlistu aj pri rýchlej správe nastavuje kolieskami dňa, hodiny a minút priamo v aplikácii. Rýchla správa so začiatkom v budúcnosti sa naplánuje a na Domove je v časti Naplánované správy. Nepoužíva sa výber dátumu a času prehliadača, preto ovládanie vyzerá rovnako na Androide aj iPhone. Posun začiatku posunie aj koniec, takže dĺžka prehrávania ostane rovnaká.
 
+Domov má pod tlačidlom rýchlej správy blok Vyžaduje pozornosť: offline miesta, miesta s expirovaným playlistom, playlisty pred koncom platnosti, nenahraté playlisty a čakajúce schválenia (partner tu vidí playlist vrátený na úpravu). Ťuknutie otvorí príslušný zoznam s filtrom. Miesta sú zoskupené podľa skupín, miesta s hlásením sú v skupine navrchu a skupina sa dá zbaliť. Ťuknutím na miesto sa otvorí Detail miesta: stav zariadenia a posledný kontakt, čo sa prehráva a čo príde potom, rýchle správy na mieste a posledné doručenia.
+
+Stav doručenia: po zverejnení alebo nahratí playlistu, po prepnutí a po odoslaní správy ukazuje hlásenie priebeh naživo (napríklad „Zobrazené na 27 z 29 miest, 2 offline – čaká na pripojenie“) a neblokuje ťuknutia. Panel Stav doručenia s priebehom po miestach (zobrazené alebo nahraté, odosiela sa, čaká – offline) sa otvára zo správy na Domove, z bloku Stav doručenia na Domove a z detailu miesta; detail playlistu má stav po miestach v časti Kde sa prehráva. V prototype sa doručenie simuluje: online miesta sú hotové do pár sekúnd, offline miesta čakajú.
+
+Rýchla správa: bežiaca aj naplánovaná správa sa dá upraviť (text, miesta, priorita, poloha, koniec) bez zrušenia a nového odoslania; uložiť sa dá až po zmene. Upraviť ju môže Admin, Director, autor správy alebo účet, ktorému patria všetky jej miesta. Pred odoslaním je náhľad na displeji na šírku, na výšku a na LED tabuli podľa vybraných miest. Šablóny Meškanie a Odklon majú výber linky ťuknutím a meškanie po 5 minútach; vlastný text sa dá uložiť ako šablóna (v prototype len do pamäte).
+
+Bez pripojenia: aplikácia počúva udalosti prehliadača online a offline. Pri výpadku je pod hlavičkou červený pruh, odoslanie (správa, zverejnenie, prepnutie, schválenie, nahratie fotky) je zablokované s jasným oznamom a rozpísané úpravy playlistu ostávajú ako nezverejnené zmeny. Výpadok sa dá vyskúšať vo Viac › Nastavenia › Prototyp. Prototyp nemá service worker, takže bez signálu sa stránka nedá prvýkrát načítať; v produkcii to treba doplniť.
+
+Záznam aktivít (Viac › Záznam aktivít) vidí len Admin a Director: kto čo zverejnil, prepol, odoslal, zrušil alebo schválil, s filtrom podľa typu.
+
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia 47 návrhu v claude.ai (artefakt typu Design), stav k 23. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia 49 návrhu v claude.ai (artefakt typu Design), stav k 23. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -48,18 +58,21 @@ index.html                 úvodná stránka: telefón + zoznam obrazoviek
 project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
-  Obr_*.dc.html            34 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
-  i18n.js                  preklady (generované zo zdroje/preklady)
+  Obr_*.dc.html            40 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
+  i18n.js                  preklady (generované zo zdroje/preklady) a kontrola novej verzie
+  ver.js, version.json     číslo verzie a čas zostavenia – podľa nich si telefón načíta novú verziu (generuje build.py)
   canvas.json              rozmiestnenie obrazoviek na plátne v claude.ai (na beh netreba)
   manifest.json            údaje pre pridanie na plochu telefónu (názov, ikony, farby)
   ikony/                   ikona Info Designera: favicon, ikona pre iPhone a Android
   support.js               runtime typu Design z claude.ai (pozri nižšie)
 zdroje/
+  verzia.txt               číslo verzie prototypu (zobrazuje sa vo Viac a na úvodnej stránke)
   aplikacia/               časti, z ktorých sa skladá project/Main.dc.html
     css.html               štýly
     tplA.html, tplB.html   šablóna obrazoviek
     js1.js, jsR1.js, jsR2.js  logika (údaje, stav, akcie)
-    build.py               poskladá Main.dc.html
+    build.py               poskladá Main.dc.html, zapíše ver.js, version.json a verziu do index.html
+    ver.js                 predloha kontroly novej verzie
   preklady/
     m_dict.txt             slovník: jeden riadok = sk ||| cs ||| pl ||| en ||| de
     build_i18n.py          vygeneruje project/i18n.js
@@ -93,11 +106,17 @@ zdroje/
 | `Obr_Miesta` | miesta – stav, filter Hlásenia, zariadenie, úprava a prepnutie playlistu |
 | `Obr_PrepnutiePlaylistu` | prepnutie playlistu na mieste – čo prehrať a ako dlho, aj vlastný čas od – do |
 | `Obr_Galeria` | galéria (Viac › Galéria) – súbory, filtre, nahratie, použité v playlistoch |
-| `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenie AI asistenta, nastavenia, jazyk |
+| `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, záznam aktivít, nastavenia, jazyk |
 | `Obr_Schvalovanie` | schvaľovanie – čaká a vybavené |
 | `Obr_DetailSchvalenia` | detail schválenia – zmeny, schváliť, vrátiť, zamietnuť |
 | `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova (len Admin a Director) |
 | `Obr_DetailSpravy` | detail správy z histórie – komu išla, kto a kedy ju odoslal, ako skončila |
+| `Obr_DetailMiesta` | detail miesta – stav zariadenia, čo sa prehráva a čo príde potom, rýchle správy, posledné doručenia |
+| `Obr_StavDorucenia` | stav doručenia – priebeh po miestach: zobrazené, odosiela sa, čaká (offline) |
+| `Obr_UpravaSpravy` | úprava bežiacej správy bez zrušenia a nového odoslania |
+| `Obr_SablonaSpravy` | šablóna správy s výberom linky a minút, náhľad na displeji a LED tabuli |
+| `Obr_ZaznamAktivit` | záznam aktivít – kto čo zverejnil, prepol, odoslal alebo schválil (len Admin a Director) |
+| `Obr_BezPripojenia` | bez pripojenia – pruh s upozornením, odoslanie je zablokované |
 | `Obr_AI` | AI asistent (záložka dole) – chat: návrh textu správy, miesta s hlásením, čo sa kde hrá, schvaľovanie |
 | `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia, AI asistent a úložisko |
 | `Obr_PrepnutieUctu` | prepnutie účtu – Admin, Director, Worker, Partner |
@@ -123,6 +142,16 @@ python3 zdroje/preklady/build_i18n.py project/i18n.js zdroje/preklady/m_dict.txt
 Zdroje vytvoria presne súbory `project/Main.dc.html` a `project/i18n.js`, ktoré sú v repozitári.
 
 **Návrat do claude.ai:** súbory z `project/` (okrem `support.js`) sa dajú znova publikovať do artefaktu typu Design.
+
+## Nová verzia v telefóne
+
+Prehliadač v telefóne má stránku uloženú v pamäti (GitHub Pages to povoľuje na 10 minút) a pri návrate do karty alebo pri obnovení zatvorenej karty ju zo servera znova nesťahuje. Stará verzia tak môže ostať zobrazená aj dlho po nahratí novej.
+
+Aplikácia si preto novú verziu stráži sama. Pri otvorení a pri každom návrate do karty stiahne malý súbor `project/version.json` (vždy zo servera) a porovná ho s časom zostavenia, ktorý nesú načítané súbory. Ak je na serveri novšia verzia, súbory aplikácie stiahne nanovo a stránku načíta ešte raz. Ak sa to ani na druhý pokus nepodarí, ukáže oznam s tlačidlom Načítať. Rozpracovaný stav prototypu sa pri tom stratí, rovnako ako pri ručnom obnovení stránky. V claude.ai sa kontrola nespúšťa.
+
+Ktorá verzia je v telefóne, vidno vo Viac úplne dole (Verzia prototypu) a na úvodnej stránke.
+
+Pri vydaní novej verzie: zvýšte číslo v `zdroje/verzia.txt`, spustite `build.py` (čas zostavenia doplní sám) a nahrajte všetky súbory vrátane `project/version.json`, `project/ver.js` a `project/i18n.js`. Telefón so staršou verziou ako 49 kontrolu ešte nemá, tam treba stránku raz obnoviť ručne.
 
 ## Telefón a vzhľad
 

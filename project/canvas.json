@@ -81,7 +81,7 @@
    "y": 964,
    "w": 390,
    "h": 844,
-   "title": "Rýchla správa – text, kam, priorita, trvanie",
+   "title": "Rýchla správa – text, šablóny, kam, priorita, náhľad na zariadení, trvanie",
    "page": "app",
    "is_interactive": true
   },
@@ -99,7 +99,7 @@
    "y": 964,
    "w": 390,
    "h": 844,
-   "title": "Miesta – stav, filter Hlásenia, zariadenie, úprava a prepnutie playlistu",
+   "title": "Miesta – skupiny, miesta s hlásením navrchu, filter; ťuknutím detail miesta, úprava a prepnutie playlistu",
    "page": "app",
    "is_interactive": true
   },
@@ -126,7 +126,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Viac – prepnutie účtu, schvaľovanie, galéria, história správ, nastavenia, jazyk",
+   "title": "Viac – prepnutie účtu, schvaľovanie, galéria, história správ, záznam aktivít, nastavenia, jazyk",
    "page": "app",
    "is_interactive": true
   },
@@ -153,7 +153,7 @@
    "y": 1928,
    "w": 390,
    "h": 844,
-   "title": "Nastavenia – vzhľad, upozornenia v telefóne, AI asistent, úložisko",
+   "title": "Nastavenia – vzhľad, upozornenia v telefóne, AI asistent, zdroje dát, simulácia výpadku, úložisko",
    "page": "app",
    "is_interactive": true
   },
@@ -335,6 +335,60 @@
    "title": "Detail správy z histórie – komu išla, kto a kedy ju odoslal, ako skončila (len Admin a Director)",
    "page": "app",
    "is_interactive": true
+  },
+  "Obr_DetailMiesta.dc.html": {
+   "x": 0,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Detail miesta – stav zariadenia, čo sa prehráva a čo príde potom, rýchle správy, posledné doručenia",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_StavDorucenia.dc.html": {
+   "x": 470,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Stav doručenia – priebeh po miestach: zobrazené, odosiela sa, čaká (offline)",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_UpravaSpravy.dc.html": {
+   "x": 940,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Úprava bežiacej správy – text, miesta, priorita, koniec; bez zrušenia a nového odoslania",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_SablonaSpravy.dc.html": {
+   "x": 1410,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Šablóna správy – linka a minúty sa volia ťuknutím, náhľad na displeji a LED tabuli",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_ZaznamAktivit.dc.html": {
+   "x": 1880,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Záznam aktivít – kto čo zverejnil, prepol, odoslal alebo schválil (len Admin a Director)",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_BezPripojenia.dc.html": {
+   "x": 2350,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Bez pripojenia – pruh s upozornením, odoslanie je zablokované, rozpísaná práca ostáva",
+   "page": "app",
+   "is_interactive": true
   }
  },
  "order": [
@@ -373,7 +427,13 @@
   "Obr_PrepnutieUctu.dc.html",
   "Obr_Partner.dc.html",
   "Obr_TmavyRezim.dc.html",
-  "Slide.dc.html"
+  "Slide.dc.html",
+  "Obr_DetailMiesta.dc.html",
+  "Obr_StavDorucenia.dc.html",
+  "Obr_UpravaSpravy.dc.html",
+  "Obr_SablonaSpravy.dc.html",
+  "Obr_ZaznamAktivit.dc.html",
+  "Obr_BezPripojenia.dc.html"
  ],
  "launch": {
   "view": "focused",
