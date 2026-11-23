@@ -787,4 +787,30 @@ Video z galérie ||| Video z galerie ||| Wideo z galerii ||| Video from the gall
 prehráva sa bez zvuku ||| přehrává se bez zvuku ||| odtwarzane bez dźwięku ||| plays without sound ||| läuft ohne Ton
 Snímka: ||| Snímek: ||| Slajd: ||| Slide: ||| Folie:
 Čo sa hrá na Parkovisku Centrum? ||| Co se hraje na Parkovisku Centrum? ||| Co jest odtwarzane na Parkovisko Centrum? ||| What is playing at Parkovisko Centrum? ||| Was läuft am Parkovisko Centrum?
+# v45 – vlastný čas: kolieska dátumu a času
+Dnes ||| Dnes ||| Dziś ||| Today ||| Heute
+Zajtra ||| Zítra ||| Jutro ||| Tomorrow ||| Morgen
+Deň ||| Den ||| Dzień ||| Day ||| Tag
+Hodina ||| Hodina ||| Godzina ||| Hour ||| Stunde
+Minúta ||| Minuta ||| Minuta ||| Minute ||| Minute
+Ťuknite na Začiatok alebo Koniec a hodnotu nastavte posunutím. ||| Klepněte na Začátek nebo Konec a hodnotu nastavte posunutím. ||| Stuknij Początek lub Koniec i ustaw wartość przesunięciem. ||| Tap Start or End and scroll to set the value. ||| Tippen Sie auf Beginn oder Ende und stellen Sie den Wert durch Scrollen ein.
+# v46 – rýchla správa: vlastný čas od – do
+Naplánované správy ||| Naplánované zprávy ||| Zaplanowane wiadomości ||| Scheduled messages ||| Geplante Meldungen
+Naplánovaná ||| Naplánovaná ||| Zaplanowana ||| Scheduled ||| Geplant
+Naplánovaná správa je zrušená. ||| Naplánovaná zpráva je zrušena. ||| Zaplanowana wiadomość została anulowana. ||| The scheduled message has been cancelled. ||| Die geplante Meldung wurde abgebrochen.
+Správa je naplánovaná na {0} od {1} do {2}. ||| Zpráva je naplánována na {0} od {1} do {2}. ||| Wiadomość zaplanowano dla {0} od {1} do {2}. ||| The message is scheduled for {0} from {1} to {2}. ||| Die Meldung ist für {0} von {1} bis {2} geplant.
+Naplánovať na {0} ||| Naplánovat na {0} ||| Zaplanuj dla {0} ||| Schedule for {0} ||| Für {0} planen
+Opravte začiatok a koniec ||| Opravte začátek a konec ||| Popraw początek i koniec ||| Fix the start and end ||| Beginn und Ende korrigieren
+# v47 – detail správy v histórii (Admin a Director), zrušenie na miestach účtu
+Detail správy ||| Detail zprávy ||| Szczegóły wiadomości ||| Message details ||| Meldungsdetails
+Detail správy: {0} ||| Detail zprávy: {0} ||| Szczegóły wiadomości: {0} ||| Message details: {0} ||| Meldungsdetails: {0}
+Odosielateľ ||| Odesílatel ||| Nadawca ||| Sender ||| Absender
+Odoslané ||| Odesláno ||| Wysłano ||| Sent ||| Gesendet
+Skončila ||| Skončila ||| Zakończona ||| Ended ||| Beendet
+Zrušená ||| Zrušena ||| Anulowana ||| Cancelled ||| Abgebrochen
+Trvanie ||| Trvání ||| Czas trwania ||| Duration ||| Dauer
+Kam bola poslaná ||| Kam byla poslána ||| Dokąd wysłano ||| Where it was sent ||| Wohin sie gesendet wurde
+Kam bola poslaná ({0}) ||| Kam byla poslána ({0}) ||| Dokąd wysłano ({0}) ||| Where it was sent ({0}) ||| Wohin sie gesendet wurde ({0})
+Rýchle správy, ktoré už skončili alebo boli zrušené. Ťuknutím na správu zobrazíte detail – komu išla, kto a kedy ju odoslal. Správu môžete poslať znova – pred odoslaním ju ešte upravíte. ||| Rychlé zprávy, které už skončily nebo byly zrušeny. Klepnutím na zprávu zobrazíte detail – komu šla, kdo a kdy ji odeslal. Zprávu můžete poslat znovu – před odesláním ji ještě upravíte. ||| Szybkie wiadomości, które już się zakończyły lub zostały anulowane. Stuknij wiadomość, aby zobaczyć szczegóły – dokąd trafiła, kto i kiedy ją wysłał. Wiadomość możesz wysłać ponownie – przed wysłaniem jeszcze ją poprawisz. ||| Quick messages that have ended or were cancelled. Tap a message to see its details – where it went, who sent it and when. You can send a message again – you can still edit it before sending. ||| Schnellmeldungen, die bereits beendet oder abgebrochen wurden. Tippen Sie auf eine Meldung für Details – wohin sie ging, wer sie wann gesendet hat. Sie können eine Meldung erneut senden – vor dem Senden lässt sie sich noch bearbeiten.
+Správa je zrušená na vašich miestach ({0}). Na ostatných miestach ostáva. ||| Zpráva je zrušena na vašich místech ({0}). Na ostatních místech zůstává. ||| Wiadomość anulowano w Twoich miejscach ({0}). W pozostałych miejscach pozostaje. ||| The message is cancelled at your places ({0}). It stays at the other places. ||| Die Meldung wurde an Ihren Standorten ({0}) abgebrochen. An den übrigen Standorten bleibt sie.
 
