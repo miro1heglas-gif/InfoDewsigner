@@ -934,3 +934,29 @@ Linka {L} je dnes odklonená. Zastávka je dočasne presunutá. ||| Linka {L} je
 Verzia prototypu ||| Verze prototypu ||| Wersja prototypu ||| Prototype version ||| Prototyp-Version
 Je dostupná nová verzia aplikácie. ||| Je dostupná nová verze aplikace. ||| Dostępna jest nowa wersja aplikacji. ||| A new version of the app is available. ||| Eine neue Version der App ist verfügbar.
 Načítať ||| Načíst ||| Wczytaj ||| Load ||| Laden
+# ===== v50: detail aktivity =====
+Detail aktivity ||| Detail aktivity ||| Szczegóły aktywności ||| Activity details ||| Aktivitätsdetails
+Kto ||| Kdo ||| Kto ||| Who ||| Wer
+Kedy ||| Kdy ||| Kiedy ||| When ||| Wann
+Čo sa zmenilo ||| Co se změnilo ||| Co się zmieniło ||| What changed ||| Was geändert wurde
+Zmeny (#) ||| Změny (#) ||| Zmiany (#) ||| Changes (#) ||| Änderungen (#)
+Komentár ||| Komentář ||| Komentarz ||| Comment ||| Kommentar
+Pôvodný text ||| Původní text ||| Pierwotny tekst ||| Original text ||| Ursprünglicher Text
+Autor zmien ||| Autor změn ||| Autor zmian ||| Author of the changes ||| Autor der Änderungen
+Vrátený playlist ||| Vrácený playlist ||| Przywrócona playlista ||| Restored playlist ||| Wiederhergestellte Playlist
+Dočasný playlist ||| Dočasný playlist ||| Tymczasowa playlista ||| Temporary playlist ||| Vorübergehende Playlist
+Platnosť ||| Platnost ||| Ważność ||| Validity ||| Gültigkeit
+do #. #. ||| do #. #. ||| do #.#. ||| until #/# ||| bis #.#.
+Otvoriť playlist ||| Otevřít playlist ||| Otwórz playlistę ||| Open playlist ||| Playlist öffnen
+Otvoriť miesto ||| Otevřít místo ||| Otwórz miejsce ||| Open place ||| Standort öffnen
+Kto čo zverejnil, prepol, odoslal alebo schválil. Ťuknutím na záznam zobrazíte detail. Záznam vidí len Admin a Director. ||| Kdo co zveřejnil, přepnul, odeslal nebo schválil. Ťuknutím na záznam zobrazíte detail. Záznam vidí jen Admin a Director. ||| Kto co opublikował, przełączył, wysłał lub zatwierdził. Dotknij wpisu, aby zobaczyć szczegóły. Dziennik widzą tylko Admin i Director. ||| Who published, switched, sent or approved what. Tap an entry to see details. Only Admin and Director can see the log. ||| Wer was veröffentlicht, umgeschaltet, gesendet oder freigegeben hat. Tippen Sie auf einen Eintrag, um Details zu sehen. Das Protokoll sehen nur Admin und Director.
+# ===== v51: stav playlistu na mieste – vysvetlenie a nahratie znova =====
+Platnosť playlistu skončila. ||| Platnost playlistu skončila. ||| Ważność playlisty wygasła. ||| The playlist has expired. ||| Die Playlist ist abgelaufen.
+Predĺžte ju v playliste alebo prepnite iný playlist. ||| Prodlužte ji v playlistu nebo přepněte jiný playlist. ||| Przedłuż ją w playliście lub przełącz inną playlistę. ||| Extend it in the playlist or switch to another playlist. ||| Verlängern Sie sie in der Playlist oder schalten Sie auf eine andere Playlist um.
+Na tomto mieste sa playlistu skončila platnosť. ||| Na tomto místě playlistu skončila platnost. ||| W tym miejscu ważność playlisty wygasła. ||| The playlist has expired at this place. ||| An diesem Standort ist die Playlist abgelaufen.
+Nahrajte ho znova alebo prepnite iný playlist. ||| Nahrajte ho znovu nebo přepněte jiný playlist. ||| Wgraj ją ponownie lub przełącz inną playlistę. ||| Upload it again or switch to another playlist. ||| Laden Sie sie erneut hoch oder schalten Sie auf eine andere Playlist um.
+Playlist ešte nie je nahratý na zariadenia. ||| Playlist ještě není nahrán na zařízení. ||| Playlista nie została jeszcze wgrana na urządzenia. ||| The playlist has not been uploaded to the devices yet. ||| Die Playlist wurde noch nicht auf die Geräte hochgeladen.
+Nahrajte ho v playliste. ||| Nahrajte ho v playlistu. ||| Wgraj ją w playliście. ||| Upload it from the playlist. ||| Laden Sie sie in der Playlist hoch.
+Playlist na tomto mieste ešte nie je nahratý. ||| Playlist na tomto místě ještě není nahrán. ||| Playlista nie została jeszcze wgrana w tym miejscu. ||| The playlist has not been uploaded to this place yet. ||| Die Playlist wurde an diesem Standort noch nicht hochgeladen.
+Nahrajte ho znova. ||| Nahrajte ho znovu. ||| Wgraj ją ponownie. ||| Upload it again. ||| Laden Sie sie erneut hoch.
+Nahrať na toto miesto ||| Nahrát na toto místo ||| Wgraj w tym miejscu ||| Upload to this place ||| An diesen Standort hochladen
