@@ -377,7 +377,7 @@
    "y": 4820,
    "w": 390,
    "h": 844,
-   "title": "Záznam aktivít – kto čo zverejnil, prepol, odoslal alebo schválil (len Admin a Director)",
+   "title": "Záznam aktivít – kto čo zverejnil, prepol, odoslal alebo schválil; ťuknutím detail (len Admin a Director)",
    "page": "app",
    "is_interactive": true
   },
@@ -387,6 +387,15 @@
    "w": 390,
    "h": 844,
    "title": "Bez pripojenia – pruh s upozornením, odoslanie je zablokované, rozpísaná práca ostáva",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_DetailAktivity.dc.html": {
+   "x": 2820,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Detail aktivity – kto a kedy, zmeny, komentár, miesta a odkaz na playlist alebo schválenie",
    "page": "app",
    "is_interactive": true
   }
@@ -433,6 +442,7 @@
   "Obr_UpravaSpravy.dc.html",
   "Obr_SablonaSpravy.dc.html",
   "Obr_ZaznamAktivit.dc.html",
+  "Obr_DetailAktivity.dc.html",
   "Obr_BezPripojenia.dc.html"
  ],
  "launch": {

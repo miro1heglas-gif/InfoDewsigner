@@ -3,7 +3,7 @@
    Preto sa pri otvorení a pri každom návrate do karty porovná načítaná verzia so súborom version.json na serveri.
    Ak je na serveri novšia, súbory aplikácie sa stiahnu nanovo a stránka sa načíta ešte raz. V claude.ai sa kontrola nespúšťa. */
 (function () {
-  var BUILD = '20261123-2228', VER = '49';
+  var BUILD = '20261124-0002', VER = '51';
   try { if (!window.WZ_BUILD || window.WZ_BUILD > BUILD) { window.WZ_BUILD = BUILD; window.WZ_VER = VER; } } catch (e) {}
   if (window.__wzVerOn) return; window.__wzVerOn = 1;
   var loc = window.location, KEY = 'wz_m_upd';
