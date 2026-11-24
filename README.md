@@ -18,6 +18,8 @@ Vlastný čas (začiatok a koniec) sa pri prepnutí playlistu aj pri rýchlej sp
 
 Domov má pod tlačidlom rýchlej správy blok Vyžaduje pozornosť: offline miesta, miesta s expirovaným playlistom, playlisty pred koncom platnosti, nenahraté playlisty a čakajúce schválenia (partner tu vidí playlist vrátený na úpravu). Ťuknutie otvorí príslušný zoznam s filtrom. Miesta sú zoskupené podľa skupín, miesta s hlásením sú v skupine navrchu a skupina sa dá zbaliť. Ťuknutím na miesto sa otvorí Detail miesta: stav zariadenia a posledný kontakt, čo sa prehráva a čo príde potom, rýchle správy na mieste a posledné doručenia. Stav playlistu sa vedie aj po miestach: ak na mieste skončila platnosť alebo playlist ešte nie je nahratý, detail miesta to vysvetlí a ponúkne Nahrať na toto miesto; ak expiroval celý playlist, predĺženie platnosti v playliste obnoví aj jeho miesta. Detail playlistu ukazuje v časti Kde sa prehráva stav každého miesta.
 
+Mapa miest: zoznam miest sa prepínačom Zoznam / Mapa nad zoznamom prepne na mapu, kde sú zariadenia umiestnené. Značka ukazuje stav farbou aj tvarom (online, hlásenie, offline, bez zariadenia; vozidlá majú hranatú značku s poslednou polohou), blízke miesta sa spoja do skupiny s počtom a ťuknutím sa mapa priblíži. Mapa sa posúva prstom, približuje dvoma prstami, kolieskom alebo tlačidlami; hľadanie a filtre platia aj pre mapu. Ťuknutie na značku ukáže kartu miesta s odkazom na Detail miesta. Detail miesta má časť Poloha s výrezom mapy, adresou a tlačidlom Zobraziť na mape. Mapa je v prototype ukážkový plán vymysleného mesta nakreslený priamo v stránke (bez mapových podkladov z internetu); v produkcii ju nahradí mapový podklad a skutočné súradnice zariadení.
+
 Stav doručenia: po zverejnení alebo nahratí playlistu, po prepnutí a po odoslaní správy ukazuje hlásenie priebeh naživo (napríklad „Zobrazené na 27 z 29 miest, 2 offline – čaká na pripojenie“) a neblokuje ťuknutia. Panel Stav doručenia s priebehom po miestach (zobrazené alebo nahraté, odosiela sa, čaká – offline) sa otvára zo správy na Domove, z bloku Stav doručenia na Domove a z detailu miesta; detail playlistu má stav po miestach v časti Kde sa prehráva. V prototype sa doručenie simuluje: online miesta sú hotové do pár sekúnd, offline miesta čakajú.
 
 Rýchla správa: bežiaca aj naplánovaná správa sa dá upraviť (text, miesta, priorita, poloha, koniec) bez zrušenia a nového odoslania; uložiť sa dá až po zmene. Upraviť ju môže Admin, Director, autor správy alebo účet, ktorému patria všetky jej miesta. Pred odoslaním je náhľad na displeji na šírku, na výšku a na LED tabuli podľa vybraných miest. Šablóny Meškanie a Odklon majú výber linky ťuknutím a meškanie po 5 minútach; vlastný text sa dá uložiť ako šablóna (v prototype len do pamäte).
@@ -28,7 +30,7 @@ Záznam aktivít (Viac › Záznam aktivít) vidí len Admin a Director: kto čo
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia prototypu 51 (číslo je vo Viac úplne dole; artefakt typu Design v claude.ai čísluje zverejnenia samostatne), stav k 24. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia prototypu 52 (číslo je vo Viac úplne dole; artefakt typu Design v claude.ai čísluje zverejnenia samostatne), stav k 24. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -58,7 +60,7 @@ index.html                 úvodná stránka: telefón + zoznam obrazoviek
 project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
-  Obr_*.dc.html            41 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
+  Obr_*.dc.html            43 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
   i18n.js                  preklady (generované zo zdroje/preklady) a kontrola novej verzie
   ver.js, version.json     číslo verzie a čas zostavenia – podľa nich si telefón načíta novú verziu (generuje build.py)
   canvas.json              rozmiestnenie obrazoviek na plátne v claude.ai (na beh netreba)
@@ -103,7 +105,7 @@ zdroje/
 | `Obr_Nahlad` | náhľad playlistu na jeho zariadení |
 | `Obr_RychlaSprava` | rýchla správa – text, kam, priorita, trvanie |
 | `Obr_VyberMiest` | rýchla správa – výber miest (všetky, skupina, jednotlivo) |
-| `Obr_Miesta` | miesta – stav, filter Hlásenia, zariadenie, úprava a prepnutie playlistu |
+| `Obr_Miesta` | miesta – zoznam po skupinách, prepínač Zoznam / Mapa, filter Hlásenia, zariadenie, úprava a prepnutie playlistu |
 | `Obr_PrepnutiePlaylistu` | prepnutie playlistu na mieste – čo prehrať a ako dlho, aj vlastný čas od – do |
 | `Obr_Galeria` | galéria (Viac › Galéria) – súbory, filtre, nahratie, použité v playlistoch |
 | `Obr_Viac` | viac – prepnutie účtu, schvaľovanie, galéria, história správ, záznam aktivít, nastavenia, jazyk |
@@ -111,12 +113,14 @@ zdroje/
 | `Obr_DetailSchvalenia` | detail schválenia – zmeny, schváliť, vrátiť, zamietnuť |
 | `Obr_HistoriaSprav` | história správ – skončené a zrušené, poslať znova (len Admin a Director) |
 | `Obr_DetailSpravy` | detail správy z histórie – komu išla, kto a kedy ju odoslal, ako skončila |
-| `Obr_DetailMiesta` | detail miesta – stav zariadenia, čo sa prehráva a čo príde potom, rýchle správy, posledné doručenia |
+| `Obr_DetailMiesta` | detail miesta – stav zariadenia, poloha na mape, čo sa prehráva a čo príde potom, rýchle správy, posledné doručenia |
 | `Obr_StavDorucenia` | stav doručenia – priebeh po miestach: zobrazené, odosiela sa, čaká (offline) |
 | `Obr_UpravaSpravy` | úprava bežiacej správy bez zrušenia a nového odoslania |
 | `Obr_SablonaSpravy` | šablóna správy s výberom linky a minút, náhľad na displeji a LED tabuli |
 | `Obr_ZaznamAktivit` | záznam aktivít – kto čo zverejnil, prepol, odoslal alebo schválil (len Admin a Director) |
 | `Obr_DetailAktivity` | detail aktivity – kto a kedy, zmeny, komentár, miesta, odkaz na playlist alebo schválenie |
+| `Obr_MiestaMapa` | miesta na mape – kde sú zariadenia umiestnené, stav značkou, skupiny blízkych miest |
+| `Obr_MiestoNaMape` | miesto na mape – vybrané miesto s kartou a odkazom na detail |
 | `Obr_BezPripojenia` | bez pripojenia – pruh s upozornením, odoslanie je zablokované |
 | `Obr_AI` | AI asistent (záložka dole) – chat: návrh textu správy, miesta s hlásením, čo sa kde hrá, schvaľovanie |
 | `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia, AI asistent a úložisko |
