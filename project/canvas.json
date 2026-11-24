@@ -341,7 +341,7 @@
    "y": 4820,
    "w": 390,
    "h": 844,
-   "title": "Detail miesta – stav zariadenia, čo sa prehráva a čo príde potom, rýchle správy, posledné doručenia",
+   "title": "Detail miesta – stav zariadenia, poloha na mape, čo sa prehráva a čo príde potom, rýchle správy, posledné doručenia",
    "page": "app",
    "is_interactive": true
   },
@@ -398,6 +398,24 @@
    "title": "Detail aktivity – kto a kedy, zmeny, komentár, miesta a odkaz na playlist alebo schválenie",
    "page": "app",
    "is_interactive": true
+  },
+  "Obr_MiestaMapa.dc.html": {
+   "x": 3290,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Miesta na mape – kde sú zariadenia umiestnené, stav farbou aj značkou, blízke miesta sa spájajú do skupiny",
+   "page": "app",
+   "is_interactive": true
+  },
+  "Obr_MiestoNaMape.dc.html": {
+   "x": 3760,
+   "y": 4820,
+   "w": 390,
+   "h": 844,
+   "title": "Miesto na mape – vybrané miesto s kartou, odtiaľ Detail miesta",
+   "page": "app",
+   "is_interactive": true
   }
  },
  "order": [
@@ -443,7 +461,9 @@
   "Obr_SablonaSpravy.dc.html",
   "Obr_ZaznamAktivit.dc.html",
   "Obr_DetailAktivity.dc.html",
-  "Obr_BezPripojenia.dc.html"
+  "Obr_BezPripojenia.dc.html",
+  "Obr_MiestaMapa.dc.html",
+  "Obr_MiestoNaMape.dc.html"
  ],
  "launch": {
   "view": "focused",
