@@ -44,7 +44,8 @@
           <div class="sec"><h2 class="h2">Teraz sa prehráva</h2>
             <sc-if value="{{ pd.hasPl }}" hint-placeholder-val="{{ true }}">
               <div class="card form">
-                <div style="display: flex; gap: 12px; align-items: flex-start"><span style="{{ pd.thS }}"></span><span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ pd.plName }}</span><span class="mut sm" style="display: block">{{ pd.planT }}</span><span style="display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; align-items: center"><sc-if value="{{ pd.hasSt }}" hint-placeholder-val="{{ true }}"><span class="pill" data-k="{{ pd.stK }}">{{ pd.plStT }}</span></sc-if><sc-if value="{{ pd.temp }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="blue">Dočasne · {{ pd.until }}</span></sc-if></span></span></div>
+                <div style="display: flex; gap: 12px; align-items: flex-start"><span style="{{ pd.thS }}"></span><span style="flex: 1; min-width: 0"><span class="nm" translate="no">{{ pd.plName }}</span><span class="mut sm" style="display: block">{{ pd.planT }}</span><span style="display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; align-items: center"><sc-if value="{{ pd.hasSt }}" hint-placeholder-val="{{ true }}"><span class="pill" data-k="{{ pd.stK }}">{{ pd.plStT }}</span></sc-if><sc-if value="{{ pd.soon }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="warn">{{ pd.soonT }}</span></sc-if><sc-if value="{{ pd.temp }}" hint-placeholder-val="{{ false }}"><span class="pill" data-k="blue">Dočasne · {{ pd.until }}</span></sc-if></span></span></div>
+                <sc-if value="{{ pd.hasWarn }}" hint-placeholder-val="{{ false }}"><div class="note" style="flex-direction: column; gap: 8px"><span><span>{{ pd.warnT }}</span> <span>{{ pd.warnHint }}</span></span><sc-if value="{{ pd.canUp }}" hint-placeholder-val="{{ true }}"><button class="btn sm" style="align-self: flex-start" onClick="{{ pd.upload }}">Nahrať na toto miesto</button></sc-if></div></sc-if>
                 <div class="acts" style="flex: none">
                   <sc-if value="{{ pd.canEdit }}" hint-placeholder-val="{{ true }}"><button class="btn sm" data-k="{{ pd.editK }}" aria-label="{{ pd.editA }}" onClick="{{ pd.edit }}">{{ pd.editT }}</button></sc-if>
                   <sc-if value="{{ pd.canSw }}" hint-placeholder-val="{{ true }}"><button class="btn sm" aria-label="{{ pd.changeA }}" onClick="{{ pd.change }}">Prepnúť playlist</button></sc-if>
@@ -54,7 +55,7 @@
             </sc-if>
             <sc-if value="{{ pd.noPl }}" hint-placeholder-val="{{ false }}"><div class="card form"><div><div class="nm">Bez playlistu</div><div class="mut sm">Na mieste sa teraz nič neprehráva.</div></div><sc-if value="{{ pd.canSw }}" hint-placeholder-val="{{ true }}"><button class="btn sm" data-k="p2" aria-label="{{ pd.changeA }}" onClick="{{ pd.change }}">Prepnúť playlist</button></sc-if></div></sc-if>
           </div>
-          <sc-if value="{{ pd.hasPl }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ pd.hasNext }}" hint-placeholder-val="{{ true }}">
             <div class="sec"><h2 class="h2">Čo príde potom</h2>
               <div class="card form"><div><div>{{ pd.nextT }}</div><sc-if value="{{ pd.hasNextName }}" hint-placeholder-val="{{ false }}"><div class="nm" style="margin-top: 4px" translate="no">{{ pd.nextName }}</div></sc-if></div><sc-if value="{{ pd.temp }}" hint-placeholder-val="{{ false }}"><button class="btn sm" style="align-self: flex-start" onClick="{{ pd.revert }}">Vrátiť pôvodný playlist</button></sc-if></div>
             </div>
@@ -183,10 +184,10 @@
       <div class="filters">
         <div class="chips"><sc-for list="{{ actChips }}" as="c" hint-placeholder-count="4"><button class="chip" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.label }}<span class="cn">{{ c.n }}</span></button></sc-for></div>
       </div>
-      <div class="sc" style="padding-top: 12px" tabindex="0" role="region" aria-label="Záznam aktivít">
-        <div class="mut sm">Kto čo zverejnil, prepol, odoslal alebo schválil. Záznam vidí len Admin a Director.</div>
+      <div class="sc" style="padding-top: 12px">
+        <div class="mut sm">Kto čo zverejnil, prepol, odoslal alebo schválil. Ťuknutím na záznam zobrazíte detail. Záznam vidí len Admin a Director.</div>
         <div class="list"><sc-for list="{{ actRows }}" as="a" hint-placeholder-count="5">
-          <div class="row" style="align-items: flex-start"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg></span><span style="flex: 1; min-width: 0"><span class="nm">{{ a.t }}</span><span class="sm" style="display: block" translate="no">{{ a.name }}</span><span class="mut sm" style="display: block"><span translate="no">{{ a.by }} · {{ a.role }}</span> · <span>{{ a.meta }}</span></span></span></div>
+          <button class="row" style="align-items: flex-start" onClick="{{ a.open }}"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg></span><span style="flex: 1; min-width: 0"><span class="nm">{{ a.t }}</span><span class="sm" style="display: block" translate="no">{{ a.name }}</span><span class="mut sm" style="display: block"><span translate="no">{{ a.by }} · {{ a.role }}</span> · <span>{{ a.meta }}</span></span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7777" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 10px"><path d="{{ ic.next }}"></path></svg></button>
         </sc-for></div>
         <sc-if value="{{ actEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty">V tomto filtri nie je žiadny záznam.</div></sc-if>
       </div>
@@ -449,6 +450,30 @@
           <div class="list"><sc-for list="{{ dl.rows }}" as="x" hint-placeholder-count="4"><div class="row" style="min-height: 52px"><span style="flex: 1; min-width: 0"><span class="nm" style="font-size: 15px" translate="no">{{ x.name }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span><span class="pill" data-k="{{ x.k }}">{{ x.t }}</span></div></sc-for></div>
         </div>
       </div>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== DETAIL AKTIVITY (Záznam aktivít › ťuknutie na záznam; len Admin a Director) ===== -->
+  <sc-if value="{{ sh_ac }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" style="max-height: 92%" role="dialog" aria-label="Detail aktivity">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">Detail aktivity</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b" tabindex="0" role="region" aria-label="Detail aktivity">
+        <div class="card" style="display: flex; align-items: flex-start; gap: 12px"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ac.d }}"></path></svg></span><span style="flex: 1; min-width: 0"><span class="nm" style="font-size: 17px">{{ ac.t }}</span><span style="display: block; margin-top: 2px; line-height: 1.35; overflow-wrap: anywhere" translate="no">{{ ac.name }}</span></span></div>
+        <div class="kv">
+          <div class="card" style="padding: 10px 12px"><div class="mut sm">Kto</div><div class="nm" translate="no">{{ ac.by }}</div><div class="mut sm" translate="no">{{ ac.role }}</div></div>
+          <div class="card" style="padding: 10px 12px"><div class="mut sm">Kedy</div><div class="nm">{{ ac.when }}</div></div>
+          <sc-for list="{{ ac.rows }}" as="r" hint-placeholder-count="2"><div class="card" style="{{ r.s }}"><div class="mut sm">{{ r.l }}</div><div class="nm" translate="{{ r.tr }}">{{ r.v }}</div><sc-if value="{{ r.hasSub }}" hint-placeholder-val="{{ false }}"><div class="mut sm">{{ r.sub }}</div></sc-if></div></sc-for>
+        </div>
+        <sc-if value="{{ ac.hasChanged }}" hint-placeholder-val="{{ false }}"><div><div class="h2" style="margin-bottom: 6px">Čo sa zmenilo</div><div style="display: flex; gap: 6px; flex-wrap: wrap"><sc-for list="{{ ac.changed }}" as="c" hint-placeholder-count="2"><span class="pill" data-k="blue">{{ c.t }}</span></sc-for></div></div></sc-if>
+        <sc-if value="{{ ac.hasChanges }}" hint-placeholder-val="{{ false }}"><div><div class="h2" style="margin-bottom: 6px">{{ ac.changesH }}</div><div class="card" style="padding: 8px 14px"><sc-for list="{{ ac.changes }}" as="c" hint-placeholder-count="2"><div class="chg"><span class="chgi" data-k="{{ c.k }}" aria-hidden="true">{{ c.sym }}</span><span style="flex: 1; min-width: 0; line-height: 1.3">{{ c.text }}</span></div></sc-for></div></div></sc-if>
+        <sc-if value="{{ ac.hasNote }}" hint-placeholder-val="{{ false }}"><div><div class="h2" style="margin-bottom: 6px">Komentár</div><div class="card" style="line-height: 1.35" translate="no">{{ ac.note }}</div></div></sc-if>
+        <sc-if value="{{ ac.hasWhere }}" hint-placeholder-val="{{ true }}"><div><div class="h2" style="margin-bottom: 6px">{{ ac.whereH }}</div>
+          <sc-if value="{{ ac.isAll }}" hint-placeholder-val="{{ false }}"><div class="card"><div class="nm">{{ ac.allT }}</div><div class="mut sm">Každé miesto, ktoré má zariadenie</div></div></sc-if>
+          <sc-if value="{{ ac.notAll }}" hint-placeholder-val="{{ true }}"><div class="list"><sc-for list="{{ ac.places }}" as="x" hint-placeholder-count="3"><div class="row" style="min-height: 52px"><span style="flex: 1; min-width: 0"><span class="nm" style="font-size: 15px" translate="no">{{ x.name }}</span><span class="mut sm" style="display: block">{{ x.sub }}</span></span></div></sc-for></div></sc-if>
+        </div></sc-if>
+      </div>
+      <sc-if value="{{ ac.hasAct }}" hint-placeholder-val="{{ true }}"><div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" onClick="{{ ac.actFn }}">{{ ac.actT }}</button></div></sc-if>
     </div></div>
   </sc-if>
 

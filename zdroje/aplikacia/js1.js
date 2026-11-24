@@ -154,20 +154,22 @@ class Component extends DCLogic {
     // stav doručenia: komu (miesta) a kedy; stav po miestach sa počíta z toho, či je zariadenie online
     const dlv = [{ id: 'd1', kind: 'msg', ref: 'q1', name: qa[0].text, at: Date.now() - 4 * 3600000, tT: 'Dnes 6:40', by: 'Jana Kováčová', pcs: places.filter((p) => p.n > 0).map((p) => p.id) }, { id: 'd0', kind: 'pl', ref: 'p13', name: 'Zastávky – odchody a oznamy', at: Date.now() - 12 * 3600000, tT: 'Včera 22:30', by: 'Miroslav Heglas', pcs: ['nem', 'ss', 'bul'] }];
     // záznam aktivít (len Admin a Director): typ, čo sa stalo, čoho sa to týka, kto, rola, kedy, rozsah
-    const A = (k, t, name, by, role, when, extra) => ({ id: 'l' + this.nid(), k, t, name, by, role, when, extra: extra || '' });
+    // det = podrobnosti pre Detail aktivity (miesta, zmeny, komentár, údaje správy, odkaz na playlist / schválenie / správu)
+    let an = 0; const A = (k, t, name, by, role, when, extra, det) => ({ id: 'ls' + (++an), k, t, name, by, role, when, extra: extra || '', det: det || {} });
+    const devAll = places.filter((p) => p.n > 0).map((p) => p.id); const AP = (id) => apvs.find((x) => x.id === id);
     const acts = [
-      A('msg', 'Odoslaná rýchla správa', qa[0].text, 'Jana Kováčová', 'Director', 'Dnes 6:40', 'Všetky miesta'),
-      A('pl', 'Zverejnený playlist', 'Hlavná stanica – odchody', 'Peter Novák', 'Worker', 'Dnes 6:12', '3 miesta'),
-      A('apv', 'Odoslané na schválenie', 'Zastávky MHD – zima', 'Mesto Riečany', 'Partner', 'Včera 16:10', ''),
-      A('sw', 'Prepnutý playlist', 'Cestovný poriadok – zima', 'Peter Novák', 'Worker', 'Včera 15:02', '1 miesto'),
-      A('msg', 'Odoslaná rýchla správa', qh[0].text, 'Miroslav Heglas', 'Admin', 'Včera 14:20', '3 miesta'),
-      A('msg', 'Zrušená rýchla správa', qh[1].text, 'Miroslav Heglas', 'Admin', DOWAGO(3) + ' 16:40', ''),
-      A('msg', 'Odoslaná rýchla správa', qh[1].text, 'Jana Kováčová', 'Director', DOWAGO(3) + ' 7:05', '3 miesta'),
-      A('apv', 'Schválené zmeny', 'Halloween v meste', 'Miroslav Heglas', 'Admin', '29. 10.', ''),
-      A('apv', 'Vrátené na úpravu', 'Dočasná zastávka Mostná', 'Miroslav Heglas', 'Admin', '27. 10.', '')
+      A('msg', 'Odoslaná rýchla správa', qa[0].text, 'Jana Kováčová', 'Director', 'Dnes 6:40', 'Všetky miesta', { msgId: 'q1', prio: 'warn', pos: 'top', until: 'do 23:59', all: true, places: devAll }),
+      A('pl', 'Zverejnený playlist', 'Hlavná stanica – odchody', 'Peter Novák', 'Worker', 'Dnes 6:12', '3 miesta', { plId: 'p1', places: ['hs1', 'hs2', 'hs3'], changes: [['mod', 'Upravená snímka „Od pondelka platí nový cestovný poriadok“'], ['ord', 'Zmenené poradie snímok']] }),
+      A('apv', 'Odoslané na schválenie', 'Zastávky MHD – zima', 'Mesto Riečany', 'Partner', 'Včera 16:10', '', { plId: 'p15', apvId: 'a3', changes: AP('a3').changes }),
+      A('sw', 'Prepnutý playlist', 'Cestovný poriadok – zima', 'Peter Novák', 'Worker', 'Včera 15:02', '1 miesto', { plId: 'p3', places: ['hsv'], until: 'do 23:59' }),
+      A('msg', 'Odoslaná rýchla správa', qh[0].text, 'Miroslav Heglas', 'Admin', 'Včera 14:20', '3 miesta', { msgId: 'h1', prio: 'info', pos: 'bottom', until: 'do 15:20', places: ['nem', 'nema', 'uni'] }),
+      A('msg', 'Zrušená rýchla správa', qh[1].text, 'Miroslav Heglas', 'Admin', DOWAGO(3) + ' 16:40', '', { msgId: 'h2', cancel: true, prio: 'warn', pos: 'top', until: 'do 23:59', places: ['t1', 't2', 't3'], sentBy: 'Jana Kováčová', sentT: DOWAGO(3) + ' 7:05' }),
+      A('msg', 'Odoslaná rýchla správa', qh[1].text, 'Jana Kováčová', 'Director', DOWAGO(3) + ' 7:05', '3 miesta', { msgId: 'h2', prio: 'warn', pos: 'top', until: 'do 23:59', places: ['t1', 't2', 't3'] }),
+      A('apv', 'Schválené zmeny', 'Halloween v meste', 'Miroslav Heglas', 'Admin', '29. 10.', '', { plId: 'p9', apvId: 'a4', author: 'Mesto Riečany', changes: AP('a4').changes, note: AP('a4').note }),
+      A('apv', 'Vrátené na úpravu', 'Dočasná zastávka Mostná', 'Miroslav Heglas', 'Admin', '27. 10.', '', { plId: 'p11', apvId: 'a5', author: 'Mesto Riečany', changes: AP('a5').changes, note: AP('a5').note })
     ];
     this.state = {
-      screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, dlv, dlId: 'd1', acts, actF: 'all', pdId: 'hsv', pcCol: {}, qEditId: null, qUser: [], toastDl: null,
+      screen: 'home', stack: [], pls, libX, libQ: '', gal, places, apvs, qa, qh, dlv, dlId: 'd1', acts, actF: 'all', acId: 'ls9', pdId: 'hsv', pcCol: {}, qEditId: null, qUser: [], toastDl: null,
       netSim: false, netReal: (() => { try { return navigator.onLine !== false; } catch (e) { return true; } })(), netAt: '', q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
       apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: QDEF(), qStep: 'main', qSearch: '', qTplAll: false,
@@ -185,7 +187,7 @@ class Component extends DCLogic {
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
       switch: { screen: 'plc', sheet: 'sw', sw: { step: 'dur', from: 'pl', dev: 'portrait', places: ['hsv'], pl: 'p10', cur: 'p3', dur: 'custom' } },
       approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, msgdetail: { screen: 'hist', stack: ['more'], sheet: 'qd', qdId: 'h2' }, place: { screen: 'pd', pdId: 'hsv', stack: ['plc'] }, placeoff: { screen: 'pd', pdId: 'nem', stack: ['plc'] }, delivery: { sheet: 'dl', dlId: 'd1' }, activity: { screen: 'act', stack: ['more'] }, offline: { netSim: true, netAt: HM() },
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, msgdetail: { screen: 'hist', stack: ['more'], sheet: 'qd', qdId: 'h2' }, place: { screen: 'pd', pdId: 'hsv', stack: ['plc'] }, placeoff: { screen: 'pd', pdId: 'nem', stack: ['plc'] }, delivery: { sheet: 'dl', dlId: 'd1' }, activity: { screen: 'act', stack: ['more'] }, activitydetail: { screen: 'act', stack: ['more'], sheet: 'ac', acId: 'ls9' }, offline: { netSim: true, netAt: HM() },
       msgedit: { sheet: 'quick', qEditId: 'q1', quick: Object.assign(QDEF(), { text: qa[0].text, prio: 'warn', pos: 'top', dur: 'keep', all: true, ids: [], cEd: 't' }) },
       quicktpl: { sheet: 'quick', quick: Object.assign(QDEF(), { text: 'Linka 14 mešká približne 15 minút. Ďakujeme za trpezlivosť.', prio: 'warn', pos: 'bottom', dur: 'h1', all: false, ids: ['snp', 'snpk', 'rad', 'bul', 'hs1'], tpl: 't0', tL: '14', tM: 15 }) },
       more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }

@@ -70,7 +70,7 @@
       const t = plan ? 'Naplánované na ' + nPlaces(n) : send ? 'Odosiela sa… ' + ok + ' ' + zN(n) + ' ' + n : DOK[d.kind] + ' na ' + ok + ' ' + zN(n) + ' ' + n + ' ' + (n === 1 ? 'miesta' : 'miest');
       return { ids, st, n, ok, wait, send, k, pillK: DST[k], pillT: k === 'ok' ? 'Doručené' : k === 'send' ? 'Odosiela sa' : k === 'wait' ? 'Čaká' : 'Naplánované', t, hasWait: wait > 0 && !plan, waitT: wait && !plan ? wait + ' offline – čaká na pripojenie' : '' };
     };
-    const logAct = (k, t, name, extra) => { const e = { id: 'l' + self.nid(), k, t, name: name || '', extra: extra || '', by: ACC.name, role: ACC.role, when: 'Dnes ' + HM() }; self.setState((st) => ({ acts: [e].concat(st.acts || []) })); };
+    const logAct = (k, t, name, extra, det) => { const e = { id: 'l' + self.nid(), k, t, name: name || '', extra: extra || '', det: det || {}, by: ACC.name, role: ACC.role, when: 'Dnes ' + HM() }; self.setState((st) => ({ acts: [e].concat(st.acts || []) })); };
     const pdP = (() => { const p = placeById(s.pdId); return p && inScope(p) ? p : (vPlaces[0] || s.places[0]); })();
     const vPls = s.pls.filter((p) => !SCOPE || p.mine === s.role || plOwnBy(p) || p.where.some((id) => SCOPE.indexOf(id) >= 0) || s.apvs.some((a) => a.plId === p.id && isOwn(a)));
     const names = (ids) => ids.map(placeName);
@@ -86,7 +86,7 @@
     const backState = () => s.stack.length ? { screen: s.stack[s.stack.length - 1], stack: s.stack.slice(0, -1) } : { screen: ROOT[tabOf], stack: [] };
     const goBack = () => { if (edBlock()) return; set(Object.assign({ sheet: null, reorder: false, confirm: '' }, backState())); };
     // zatvorenie úpravy správy zahodí rozpracované zmeny (nová správa si text pamätá)
-    const closeSheet = () => set(Object.assign({ sheet: null, confirm: '', qStep: 'main', qSearch: '' }, s.qEditId ? { qEditId: null, quick: QDEF() } : {}));
+    const closeSheet = () => set(Object.assign({ sheet: null, confirm: '', qStep: 'main', qSearch: '' }, s.qEditId || (s.sheet === 'quick' && s.quick.one) ? { qEditId: null, quick: QDEF() } : {}));
     const pendingOthers = ACC.apv ? s.apvs.filter((a) => a.state === 'pending' && !isOwn(a)) : [];
     const ST = { nahraty: ['ok', 'Nahratý'], expirovany: ['bad', 'Expirovaný'], nenahraty: ['grey', 'Nenahratý'] };
     const FLOW = { draft: ['blue', ACC.pub ? 'Nezverejnené zmeny' : 'Neodoslané zmeny'], pending: ['warn', 'Čaká na schválenie'] };
@@ -146,11 +146,11 @@
       const lg = pl.log.length ? pl.log : [['mod', 'Úpravy v playliste', 'x']];
       const a = { id: 'a' + self.nid(), plId: pl.id, name: pl.name, author: ACC.name, acc: s.role, when: 'teraz', own: false, state: 'pending', note: '', changes: lg.map((x) => [x[0], x[1]]), valid: 'Platnosť: ihneď po schválení' };
       set({ apvs: [a].concat(s.apvs), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'pending', log: [] }) : p), reorder: false });
-      logAct('apv', 'Odoslané na schválenie', pl.name);
+      logAct('apv', 'Odoslané na schválenie', pl.name, '', { plId: pl.id, apvId: a.id, changes: a.changes });
       say('Odoslané na schválenie. Dáme vám vedieť, keď ho správca DP Riečany schváli.');
     };
     const backLog = (a) => a ? a.changes.map((c, i) => [c[0], c[1], 'w' + i]) : [];
-    const withdraw = () => { if (needNet()) return; const a0 = s.apvs.find((a) => a.plId === pl.id && isOwn(a) && a.state === 'pending'); set({ apvs: s.apvs.filter((a) => a !== a0), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft', log: backLog(a0) }) : p) }); logAct('apv', 'Vzaté späť zo schvaľovania', pl.name); say('Vzaté späť. Playlist môžete znova upravovať.'); };
+    const withdraw = () => { if (needNet()) return; const a0 = s.apvs.find((a) => a.plId === pl.id && isOwn(a) && a.state === 'pending'); set({ apvs: s.apvs.filter((a) => a !== a0), pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { flow: 'draft', log: backLog(a0) }) : p) }); logAct('apv', 'Vzaté späť zo schvaľovania', pl.name, '', { plId: pl.id }); say('Vzaté späť. Playlist môžete znova upravovať.'); };
 
     // ---------- hlavička ----------
     const act = (label, d, fn, badge) => ({ label, d, fn, isIcon: true, isText: false, hasBadge: !!badge, badge: badge || '' });
@@ -191,13 +191,15 @@
     const mIds = (m) => m.all ? allDev : m.ids;
     const mMine = (m) => mIds(m).filter((id) => !SCOPE || SCOPE.indexOf(id) >= 0);
     const endNow = () => ({ when: 'Dnes ' + HM() + ' · zrušená', endKind: 'cancel', endT: 'Dnes ' + HM(), endBy: ACC.name });
+    // podrobnosti správy pre záznam aktivít
+    const msgDet = (m, ids, ex) => Object.assign({ msgId: m.id, prio: m.prio, pos: m.pos, until: m.until || (DURS[m.dur] || ['', ''])[1], places: ids.slice(), all: !!m.all && ids.length >= allDev.length, sentBy: m.by || '', sentT: m.sentT || '' }, ex || {});
     const cancelMsg = (m) => {
       if (needNet()) return;
       const plan = !!m.from && m.from > Date.now(); const mine = mMine(m); const whole = !SCOPE || m.acc === s.role || mine.length === mIds(m).length;
-      if (whole) { set({ qa: s.qa.filter((x) => x.id !== m.id), qh: [Object.assign({}, m, endNow())].concat(s.qh), dlv: (s.dlv || []).filter((d) => d.ref !== m.id) }); logAct('msg', plan ? 'Zrušená naplánovaná správa' : 'Zrušená rýchla správa', m.text); say(plan ? 'Naplánovaná správa je zrušená.' : 'Správa je zrušená a z displejov zmizne do pár sekúnd.'); return; }
+      if (whole) { set({ qa: s.qa.filter((x) => x.id !== m.id), qh: [Object.assign({}, m, endNow())].concat(s.qh), dlv: (s.dlv || []).filter((d) => d.ref !== m.id) }); logAct('msg', plan ? 'Zrušená naplánovaná správa' : 'Zrušená rýchla správa', m.text, '', msgDet(m, mIds(m), { cancel: true })); say(plan ? 'Naplánovaná správa je zrušená.' : 'Správa je zrušená a z displejov zmizne do pár sekúnd.'); return; }
       // správa ide aj na cudzie miesta: zruší sa len na miestach účtu, inde ostáva
       set({ qa: s.qa.map((x) => x.id === m.id ? Object.assign({}, x, { all: false, ids: mIds(m).filter((id) => mine.indexOf(id) < 0) }) : x), qh: [Object.assign({}, m, endNow(), { id: 'q' + self.nid(), all: false, ids: mine })].concat(s.qh) });
-      logAct('msg', 'Zrušená rýchla správa', m.text, nPlaces(mine.length));
+      logAct('msg', 'Zrušená rýchla správa', m.text, nPlaces(mine.length), msgDet(m, mine, { cancel: true, all: false }));
       say('Správa je zrušená na vašich miestach (' + mine.length + '). Na ostatných miestach ostáva.');
     };
     // upraviť (text, čas, miesta) môže ten, kto by správu mohol zrušiť celú: Admin, Director, autor alebo účet, ktorému patria všetky jej miesta
@@ -208,7 +210,7 @@
       hasDl: !!ds, dlT: ds ? ds.t : '', dlHasWait: !!ds && ds.hasWait, dlWaitT: ds ? ds.waitT : '', dlA: 'Stav doručenia: ' + m.text, dlOpen: () => { if (d) openDl(d.id); }
     }; };
     const qaRows = s.qa.filter((m) => !SCOPE || mMine(m).length > 0).map(qaRow);
-    const openQuick = () => { if (canQuick) set(Object.assign({ sheet: 'quick', qStep: 'main', qSearch: '', qTplAll: false, confirm: '' }, s.qEditId ? { qEditId: null, quick: QDEF() } : {})); };
+    const openQuick = () => { if (canQuick) set(Object.assign({ sheet: 'quick', qStep: 'main', qSearch: '', qTplAll: false, confirm: '' }, s.qEditId || s.quick.one ? { qEditId: null, quick: QDEF() } : {})); };
     const effPl = (pc) => plById(pc.temp ? pc.temp.pl : pc.pl);
     // úprava playlistu, ktorý sa práve prehráva na mieste
     const editAtPlace = (pid) => { const pc = placeById(pid); const ep = effPl(pc); if (!ep) return; nav('pl', { plId: ep.id }); if (ep.where.length > 1 && canEditPl(ep)) say('Zmeny sa prejavia na všetkých ' + ep.where.length + ' miestach, kde sa playlist prehráva.'); };
@@ -255,13 +257,13 @@
     }));
     const BLANK = { id: 0, kind: 'info', title: '', text: '', dur: 10, bg: '#0E8080', img: '', imgName: '', ledSize: 'M', ledAlign: 'left', ledCol: '', ledBg: '', d: '' };
     const curSl = pl.slides[0] || BLANK;
-    const upload = (p, toastT) => { if (needNet()) return; set({ pls: s.pls.map((x) => x.id === p.id ? Object.assign({}, x, { st: 'nahraty' }) : x), places: deliver(s.places, p) }); const did = addDlv('pl', p.name, p.where, { ref: p.id }); logAct('pl', 'Nahratý playlist na zariadenia', p.name, nPlaces(p.where.length)); say(toastT, dlvAct(did)); if (onIds(p.where).length) notify(deliveredT(p, onIds(p.where))); };
+    const upload = (p, toastT) => { if (needNet()) return; set({ pls: s.pls.map((x) => x.id === p.id ? Object.assign({}, x, { st: 'nahraty' }) : x), places: deliver(s.places, p) }); const did = addDlv('pl', p.name, p.where, { ref: p.id }); logAct('pl', 'Nahratý playlist na zariadenia', p.name, nPlaces(p.where.length), { plId: p.id, places: p.where.slice() }); say(toastT, dlvAct(did)); if (onIds(p.where).length) notify(deliveredT(p, onIds(p.where))); };
     const publishNow = () => {
       if (needNet()) return;
       const n = pl.where.length;
       set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, n ? { flow: 'none', st: 'nahraty', log: [] } : { flow: 'none', log: [] }) : p), places: n ? deliver(s.places, pl) : s.places, reorder: false, snap: snapDrop(pl.id) });
       const did = n ? addDlv('pl', pl.name, pl.where, { ref: pl.id }) : '';
-      logAct('pl', 'Zverejnený playlist', pl.name, n ? nPlaces(n) : '');
+      logAct('pl', 'Zverejnený playlist', pl.name, n ? nPlaces(n) : '', { plId: pl.id, places: pl.where.slice(), changes: pl.log.map((x) => [x[0], x[1]]) });
       say(n ? 'Zverejnené. Playlist sa nahráva na ' + nPlaces(n) + '.' : 'Zverejnené. Ťuknite na „Prehrať na mieste“ a vyberte miesta.', n ? dlvAct(did) : null);
       if (n && onIds(pl.where).length) notify(deliveredT(pl, onIds(pl.where)));
     };
@@ -269,7 +271,8 @@
     const plSnap = (s.snap || {})[pl.id];
     const canDiscard = pl.flow === 'draft' && !!plSnap;
     const discard = () => { if (!canDiscard) return; if (s.confirm !== 'dz') { armConfirm('dz'); return; } clearTimeout(self._tc); set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { slides: plSnap.slides, flow: 'none', log: [] }) : p), snap: snapDrop(pl.id), reorder: false, confirm: '' }); say('Zmeny sú zahodené. Playlist je taký ako pred úpravami.'); };
-    const extend = () => { if (needNet()) return; set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { st: 'nahraty', soon: 0, plan: 'Po–Pi 6:00–22:00 · do 31. 12.' }) : p) }); logAct('pl', 'Predĺžená platnosť playlistu', pl.name); say('Platnosť je predĺžená do 31. 12.'); };
+    const extend = () => { if (needNet()) return; const was = pl.st === 'expirovany'; set({ pls: s.pls.map((p) => p.id === pl.id ? Object.assign({}, p, { st: 'nahraty', soon: 0, plan: 'Po–Pi 6:00–22:00 · do 31. 12.' }) : p), places: s.places.map((x) => pl.where.indexOf(x.id) >= 0 && x.pl === pl.id ? Object.assign({}, x, { st: 'up' }) : x) });
+      const did = was && pl.where.length ? addDlv('pl', pl.name, pl.where, { ref: pl.id }) : ''; logAct('pl', 'Predĺžená platnosť playlistu', pl.name, '', { plId: pl.id, valid: 'do 31. 12.', places: pl.where.slice() }); say('Platnosť je predĺžená do 31. 12.', did || null); };
     let mainAct;
     if (pl.flow === 'pending') mainAct = mineApv ? { k: '', label: 'Vziať späť', fn: withdraw } : ACC.apv ? { k: 'p', label: 'Otvoriť schválenie', fn: () => otherApv && nav('ad', { adId: otherApv.id, apvNote: '' }) } : { k: '', label: 'Čaká na schválenie správcom', fn: () => say('Playlist schvaľuje správca DP Riečany.') };
     else if (pl.flow === 'draft') mainAct = ACC.pub ? { k: 'p', label: 'Zverejniť', fn: publishNow } : { k: 'p', label: 'Odoslať na schválenie', fn: sendApv };
@@ -284,7 +287,10 @@
     // stav po miestach: z posledného nahratia playlistu, inak zo stavu zariadenia
     const plDl = (s.dlv || []).find((d) => d.ref === pl.id);
     let wOi = 0;
-    const whereRows = pl.where.map(placeById).filter(Boolean).map((p) => { const k = !p.on ? (plDl ? 'wait' : 'off') : plDl ? dSt(plDl, p.id, wOi++) : pl.st === 'nahraty' ? 'ok' : 'st'; return { name: p.name, k: k === 'off' ? 'bad' : k === 'st' ? ST[pl.st][0] : DST[k], t: k === 'off' ? 'Offline' : k === 'st' ? ST[pl.st][1] : dStT({ kind: 'pl' }, k) }; });
+    const WST = { up: ['ok', 'Nahraté'], exp: ['bad', 'Expirovaný'], no: ['grey', 'Nenahratý'] };
+    const whereRows = pl.where.map(placeById).filter(Boolean).map((p) => { const mine = p.pl === pl.id || (p.temp && p.temp.pl === pl.id); const live = plDl && Date.now() - plDl.at < 8000;
+      const k = !p.on ? (plDl ? 'wait' : 'off') : live ? dSt(plDl, p.id, wOi++) : !mine || pl.st !== 'nahraty' ? 'st' : (WST[p.st] ? p.st : 'up');
+      return { name: p.name, k: k === 'off' ? 'bad' : k === 'st' ? ST[pl.st][0] : WST[k] ? WST[k][0] : DST[k], t: k === 'off' ? 'Offline' : k === 'st' ? ST[pl.st][1] : WST[k] ? WST[k][1] : dStT({ kind: 'pl' }, k) }; });
     const whereNoneT = pl.where.length || plTemp.length ? '' : 'Zatiaľ sa neprehráva na žiadnom mieste.';
     const openAdd = () => set({ sheet: 'add', addMode: 'slide' });
     // zoznam vytvorených snímok pre zariadenie playlistu: snímky zo všetkých playlistov + samostatné
