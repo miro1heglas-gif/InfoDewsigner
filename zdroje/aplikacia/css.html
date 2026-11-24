@@ -216,6 +216,39 @@ textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
 .push{position:absolute;left:10px;right:10px;top:8px;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--ln);border-radius:16px;background:var(--sf);color:var(--tx);box-shadow:0 10px 30px rgba(0,0,0,.3);min-height:60px}
 .pickrow{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;border:1px solid var(--ctl);border-radius:12px;background:var(--sf);padding:8px 8px 8px 12px}
 .cta span{color:#fff}
+/* v52: mapa miest (ukážkový plán mesta), značky, vybrané miesto, poloha v detaile miesta */
+.app{--mpl:#E6ECE7;--mpw:#B5D4EA;--mpp:#CBE1C3;--mpi:#D9DCE2;--mpr:#fff;--mprc:#C2CACA;--mprl:#55605F;--mpt:#0E8080;--mplb:#4A5554}
+.app[data-theme="dark"]{--mpl:#172020;--mpw:#15303F;--mpp:#1B3024;--mpi:#222B31;--mpr:#34403F;--mprc:#0E1313;--mprl:#8C9999;--mpt:#2BD0D0;--mplb:#A5B1B1}
+@media (prefers-color-scheme: dark){.app[data-theme="auto"]{--mpl:#172020;--mpw:#15303F;--mpp:#1B3024;--mpi:#222B31;--mpr:#34403F;--mprc:#0E1313;--mprl:#8C9999;--mpt:#2BD0D0;--mplb:#A5B1B1}}
+.seg.fit{flex:none}.seg.fit button{flex:none;padding:0 12px}
+.mapv{flex:1;min-height:0;position:relative;overflow:hidden;overflow:clip;background:var(--mpl);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.mapl{position:absolute;left:0;top:0;width:1000px;height:1200px;transform-origin:0 0}
+.mapsvg{position:absolute;left:0;top:0;display:block;pointer-events:none}
+.m-land{fill:var(--mpl)}.m-park{fill:var(--mpp)}.m-ind{fill:var(--mpi)}.m-water{fill:none;stroke:var(--mpw);stroke-width:46;stroke-linecap:round}
+.m-rc{fill:none;stroke:var(--mprc);stroke-width:17;stroke-linecap:round;stroke-linejoin:round}.m-r{fill:none;stroke:var(--mpr);stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.m-rail{fill:none;stroke:var(--mprl);stroke-width:5;stroke-dasharray:16 9}.m-tram{fill:none;stroke:var(--mpt);stroke-width:4;opacity:.65}
+.m-lbl{text-anchor:middle;fill:var(--mplb);font-family:'Source Sans 3',system-ui,sans-serif;font-weight:600;font-size:calc(12px / var(--k,1));paint-order:stroke;stroke:var(--mpl);stroke-width:calc(3px / var(--k,1))}.m-lblw{font-style:italic;fill:var(--blt);stroke:var(--mpw)}
+.m-lbl.up{transform:translateY(calc(var(--lu,-22px) / var(--k,1)))}.m-lbl.dn{transform:translateY(calc(var(--ld,31px) / var(--k,1)))}.m-lbl.min{opacity:clamp(0,calc((var(--k,1) - .5) * 10),1)}
+.mini{--lu:-46px}
+.mk{position:absolute;width:45px;height:45px;margin:-22.5px 0 0 -22.5px;border:0;border-radius:50%;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;transform:scale(calc(1 / var(--k,1)));cursor:pointer;color:#fff}
+.mk:focus-visible{outline:none}.mk:focus-visible .mkd{outline:3px solid #2BD0D0;outline-offset:2px}
+.mkd{position:relative;width:28px;height:28px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;background:#7B8787;font-weight:700;font-size:14px;line-height:1}
+.mk[data-k="ok"] .mkd{background:#23803F}.mk[data-k="warn"] .mkd{background:#B85410}.mk[data-k="bad"] .mkd{background:#C8322B}.mk[data-k="none"] .mkd{background:var(--sf);border-color:var(--mplb)}
+.mk[data-veh="true"] .mkd{border-radius:8px}
+.mk[data-many="true"] .mkd{width:34px;height:34px;background:#1F2323}
+.mk[data-sel="true"] .mkd{width:34px;height:34px;box-shadow:0 0 0 3px var(--ac),0 2px 8px rgba(0,0,0,.45)}
+.mkw{position:absolute;right:-4px;top:-4px;width:13px;height:13px;border-radius:50%;border:2px solid #fff;background:#C8322B}.mkw[data-k="warn"]{background:#B85410}
+.mapctl{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:var(--sf);box-shadow:0 2px 8px rgba(0,0,0,.28)}
+.mapctl .ib{width:44px;height:44px;border-radius:0;border-bottom:1px solid var(--ln);color:var(--tx)}.mapctl .ib:last-child{border-bottom:none}
+.mapleg{position:absolute;left:10px;right:10px;bottom:10px;display:flex;flex-wrap:wrap;align-items:center;gap:3px 12px;padding:7px 10px;border-radius:10px;background:var(--sf);box-shadow:0 1px 5px rgba(0,0,0,.22);font-size:12px;font-weight:600;color:var(--tx2);pointer-events:none}
+.mapleg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;background:#7B8787}.mapleg i[data-k="ok"]{background:#23803F}.mapleg i[data-k="warn"]{background:#B85410}.mapleg i[data-k="bad"]{background:#C8322B}.mapleg i[data-k="none"]{background:var(--sf);box-shadow:inset 0 0 0 2px #7B8787}
+.mapdemo{margin-left:auto;font-weight:500;color:var(--mut)}
+.mapnone{position:absolute;left:16px;right:16px;top:40%;padding:14px;border-radius:12px;background:var(--sf);box-shadow:0 2px 8px rgba(0,0,0,.25);text-align:center;color:var(--mut)}
+.mapcard{position:absolute;left:10px;right:10px;bottom:10px;background:var(--sf);border:1px solid var(--ln);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.3);padding:12px;display:flex;flex-direction:column;gap:10px;cursor:default}
+.mini{position:relative;height:132px;border-radius:14px;overflow:hidden;background:var(--mpl);border:1px solid var(--ln)}
+.minipin{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-31px 0 0 -13px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#23803F;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.minipin::after{content:"";position:absolute;left:6px;top:6px;width:9px;height:9px;border-radius:50%;background:#fff}
+.minipin[data-k="warn"]{background:#B85410}.minipin[data-k="bad"]{background:#C8322B}.minipin[data-k="none"]{background:#7B8787}
 /* v48: detail miesta, skupiny miest, stav doručenia, náhľad správy, bez pripojenia */
 .acts{flex-wrap:wrap}
 .ico[data-k="bad"]{background:var(--bdb);color:var(--bdt)}.ico[data-k="warn"]{background:var(--wnb);color:var(--wnt)}.ico[data-k="blue"]{background:var(--blb);color:var(--blt)}.ico[data-k="ok"]{background:var(--okb);color:var(--okt)}

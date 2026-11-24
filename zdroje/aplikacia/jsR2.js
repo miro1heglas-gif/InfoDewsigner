@@ -106,6 +106,27 @@
       revert: () => revertAt(p), change: () => swForPlace(p.id), canSw: ACC.pub, changeA: 'Prepnúť playlist na mieste: ' + p.name, edit: () => editAtPlace(p.id), canEdit: plBtn(ep).canEdit, editT: plBtn(ep).editT, editA: plBtn(ep).editA, editK: plBtn(ep).editK
     }; };
     const pcRows = pcList.map(pcRowOf);
+    // ---------- MAPA MIEST ----------
+    const mBox = s.mapBox || { w: VW, h: 480 };
+    const MG = MGEO(s.map, mBox.w, mBox.h, s.mapSel ? 126 : 0);
+    const mkSt = (p) => p.n === 0 ? 'none' : !p.on ? 'bad' : p.st === 'exp' ? 'warn' : 'ok';
+    const MKT = { ok: 'Online', warn: 'Hlásenie', bad: 'Offline', none: 'Bez zariadenia' };
+    const MKD = { ok: IC.tick, warn: 'M12 6v7M12 17.5h.01', bad: IC.close, none: '' };
+    const MKR = { bad: 3, warn: 2, ok: 1, none: 0 };
+    // značky bližšie ako 46 px sa spoja do jednej s počtom, aby sa neprekrývali (ťuknutím sa mapa priblíži)
+    let mCl = pcList.map((p) => ({ ps: [p], x: p.x, y: p.y }));
+    for (let again = true; again;) { again = false; scan: for (let i = 0; i < mCl.length; i++) for (let j = i + 1; j < mCl.length; j++) { if (Math.hypot((mCl[i].x - mCl[j].x) * MG.k, (mCl[i].y - mCl[j].y) * MG.k) < 46) { const ps = mCl[i].ps.concat(mCl[j].ps); mCl[i] = { ps, x: ps.reduce((q, p) => q + p.x, 0) / ps.length, y: ps.reduce((q, p) => q + p.y, 0) / ps.length }; mCl.splice(j, 1); again = true; break scan; } } }
+    const mapSelP = s.mapSel ? pcList.find((p) => p.id === s.mapSel) || null : null;
+    // vybrané miesto musí byť vidno: ak je značka mimo výrezu, pod kartou alebo pod tlačidlami priblíženia, mapa sa naň posunie
+    const mapPick = (p) => { const sx = MG.tx + p.x * MG.k, sy = MG.ty + p.y * MG.k; const okX = sx > 28 && sx < MG.w - 28 && !(sx > MG.w - 64 && sy < 152), okY = sy > 28 && sy < MG.h - 215; set({ mapSel: p.id, map: okX && okY ? s.map : { cx: okX ? MG.cx : p.x, cy: okY ? MG.cy : p.y + (MG.h * 0.1) / MG.k, z: MG.z } }); };
+    const mapMarks = mCl.map((c) => { const one = c.ps.length === 1; const p = c.ps[0]; const vx = MG.tx + c.x * MG.k, vy = MG.ty + c.y * MG.k; const k = c.ps.map(mkSt).sort((q, r) => MKR[r] - MKR[q])[0]; return {
+      s: 'left:' + c.x.toFixed(1) + 'px;top:' + c.y.toFixed(1) + 'px', tab: vx > 0 && vx < MG.w && vy > 0 && vy < MG.h ? '0' : '-1', k, many: !one, manyA: one ? 'false' : 'true', vehA: one && p.veh ? 'true' : 'false', n: String(c.ps.length), d: MKD[k], hasD: one && !!MKD[k], sel: one && s.mapSel === p.id ? 'true' : 'false', warnDot: !one && (k === 'bad' || k === 'warn'),
+      aria: one ? p.name + ' · ' + MKT[k] : nPlaces(c.ps.length) + ' · priblížiť',
+      pick: () => { if (Date.now() - (self._mdragT || 0) < 300) return; if (one) mapPick(p); else set({ mapSel: null, map: { cx: c.x, cy: c.y, z: Math.min(6, MG.z * 2) } }); } }; });
+    const mapZoom = (f) => () => set({ map: { cx: MG.cx, cy: MG.cy, z: Math.max(1, Math.min(6, MG.z * f)) } });
+    // priblíženie, pri ktorom je miesto na mape samostatnou značkou (nie v skupine so susedmi)
+    const zFor = (p) => { const near = s.places.filter((q) => q.id !== p.id).reduce((m, q) => Math.min(m, Math.hypot(q.x - p.x, q.y - p.y)), 1e9); let z = 3; while (z < 6 && near * MG.fit * z < 50) z += 0.5; return z; };
+    const showOnMap = (p) => set({ screen: 'plc', stack: [], sheet: null, reorder: false, confirm: '', pcView: 'map', pq: '', pcF: 'all', mapSel: p.id, map: { cx: p.x, cy: p.y + 30, z: zFor(p) } });
     // miesta po skupinách (ako v desktope), v skupine sú miesta s hlásením navrchu; skupina sa dá zbaliť
     const pcGs = GRP.map((g, i) => i).concat([-1]).map((gi) => ({ gi, ps: pcList.filter((p) => p.g === gi) })).filter((G) => G.ps.length > 0);
     const pcFlat = pcGs.length < 2;
@@ -417,6 +438,7 @@
     const pdCanUp = pdBad && ACC.pub && !pdPlExp && !pdPlNo && pdEp.flow !== 'pending';
     const pdUpload = () => { if (!pdCanUp || needNet()) return; set({ places: s.places.map((x) => x.id === pdP.id ? Object.assign({}, x, { st: 'up' }) : x) }); const did = addDlv('pl', pdEp.name, [pdP.id]); logAct('pl', 'Nahratý playlist na zariadenia', pdEp.name, nPlaces(1), { plId: pdEp.id, places: [pdP.id] }); say('Playlist sa nahráva na ' + nPlaces(1) + '.', did); };
     const pd = {
+      miniS: 'transform:translate(' + ((VW - 34) / 2 - pdP.x * 0.9).toFixed(1) + 'px,' + (66 - pdP.y * 0.9).toFixed(1) + 'px) scale(0.9);--k:0.9', pinK: pdP.n === 0 ? 'none' : !pdP.on ? 'bad' : pdP.st === 'exp' ? 'warn' : 'ok', hasAddr: !!pdP.addr, addr: pdP.addr, isVeh: !!pdP.veh, vehT: 'Posledná poloha vozidla' + (pdP.seen ? ' · ' + pdP.seen : ''), showMap: () => showOnMap(pdP), showMapA: 'Zobraziť na mape: ' + pdP.name,
       hasWarn: pdBad, warnT: pdWarn[0], warnHint: ACC.pub ? pdWarn[1] : '', canUp: pdCanUp, upload: pdUpload, hasNext: !!pdEp && (!!pdP.temp || pdP.st === 'up'), soon: !!pdEp && isSoon(pdEp), soonT: pdEp && isSoon(pdEp) ? soonT(pdEp) : '',
       hasDev: pdP.n > 0, noDev: pdP.n === 0, isOff: pdP.n > 0 && !pdP.on, dotK: pdP.on ? 'ok' : 'bad', stT: pdP.on ? 'Online' : 'Offline', seenT: pdP.on ? 'Posledný kontakt ' + pdP.seen : 'Bez spojenia ' + pdP.off,
       devT: DEV[pdP.dev][0], devN: pdP.n + ' ' + plural(pdP.n, ['zariadenie', 'zariadenia', 'zariadení']), grpT: pdP.g >= 0 ? GRP[pdP.g] : 'Bez skupiny', grpTr: pdP.g >= 0 ? 'no' : 'yes',
@@ -550,7 +572,12 @@
       gd, gdUsed: galFile.used > 0, gdUseRows: galFile.usedIn.map((n) => { const p = s.pls.find((x) => x.name === n); return { name: n, sub: p ? DEV[p.dev][1] + ' · ' + slMeta(p) : '', canOpen: !!p && vPls.indexOf(p) >= 0, noOpen: !(p && vPls.indexOf(p) >= 0), open: () => { if (p) nav('pl', { plId: p.id, sheet: null }); }, aria: 'Upraviť playlist: ' + n }; }), gdUseH: (galFile.type === 'aud' ? 'Použité v hláseniach (' : 'Použité v playlistoch (') + galFile.usedIn.length + ')', gdCanUse: galFile.type !== 'aud', gdAddToPl: () => set({ sheet: 'gpl', gplFile: galFile.id }),
       lsTitle: isAcc ? 'Prepnúť účet' : isLang ? 'Jazyk aplikácie' : 'Pridať do playlistu', lsSub: isAcc ? 'Prototyp: aplikácia sa zobrazí tak, ako ju vidí vybraný účet.' : isLang ? 'Zmení sa jazyk tlačidiel, nadpisov a hlásení. Obsah playlistov a názvy miest ostávajú tak, ako ste ich napísali.' : 'Súbor „' + galFile.name + '“ sa pridá ako nová snímka na koniec playlistu. Ponúkajú sa len playlisty pre displeje.', lsRows,
       // viac / miesta / nastavenia / AI
-      moreRows, verT: WZ_V[0] + ' · ' + parseInt(WZ_V[1].slice(6, 8), 10) + '. ' + parseInt(WZ_V[1].slice(4, 6), 10) + '. ' + WZ_V[1].slice(0, 4) + ' ' + WZ_V[1].slice(9, 11) + ':' + WZ_V[1].slice(11, 13), logout: () => say('Prototyp: odhlásenie nie je zapojené.'), pq: s.pq, setPq: (e) => set({ pq: e.target.value }), pcChips, pcRows, pcGroups, pcEmpty: pcRows.length === 0, pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + vPlaces.length + ' miest',
+      moreRows, verT: WZ_V[0] + ' · ' + parseInt(WZ_V[1].slice(6, 8), 10) + '. ' + parseInt(WZ_V[1].slice(4, 6), 10) + '. ' + WZ_V[1].slice(0, 4) + ' ' + WZ_V[1].slice(9, 11) + ':' + WZ_V[1].slice(11, 13), logout: () => say('Prototyp: odhlásenie nie je zapojené.'), pq: s.pq, setPq: (e) => set({ pq: e.target.value }), pcChips, pcRows, pcGroups, pcEmpty: pcRows.length === 0,
+      pcIsList: s.pcView !== 'map', pcIsMap: s.pcView === 'map', pcViews: [['list', 'Zoznam'], ['map', 'Mapa']].map((v) => ({ label: v[1], on: (s.pcView === 'map') === (v[0] === 'map'), pick: () => set({ pcView: v[0], mapSel: null }) })),
+      mapLayerS: 'transform:translate(' + MG.tx.toFixed(2) + 'px,' + MG.ty.toFixed(2) + 'px) scale(' + MG.k.toFixed(4) + ');--k:' + MG.k.toFixed(4), mapMarks, mapEmpty: pcList.length === 0,
+      mapDown: (e) => self.mapDown(e), mapMove: (e) => self.mapMove(e), mapUp: (e) => self.mapUp(e), mapWheel: (e) => self.mapWheel(e), stopP: (e) => { try { e.stopPropagation(); } catch (x) {} },
+      mapZin: mapZoom(1.6), mapZout: mapZoom(1 / 1.6), mapFit: () => set({ map: { cx: 500, cy: 600, z: 1 }, mapSel: null }), mapZinOff: MG.z >= 5.99, mapZoutOff: MG.z <= 1.01,
+      mapHasSel: !!mapSelP, mapNoSel: !mapSelP, mapCard: mapSelP ? pcRowOf(mapSelP) : pcRowOf(s.places[0]), mapUnsel: () => set({ mapSel: null }), pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + vPlaces.length + ' miest',
       notifRows, aiRows,
       aiHi: ACC.first ? 'Dobrý deň, ' + ACC.first + '. S čím vám pomôžem?' : 'Dobrý deň. S čím vám pomôžem?', aiIntro: canQuick ? 'Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie.' : 'Nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo ste odoslali na schválenie.', canQuick, aiMsgs, aiChips, aiTyping: s.aiTyping, aiQ: s.aiQ, aiNoQ: !s.aiQ.trim() || s.aiTyping, setAiQ: (e) => set({ aiQ: e.target.value }), aiSend: () => aiAsk(s.aiQ, false), aiKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(s.aiQ, false); } },
       // náhľad
