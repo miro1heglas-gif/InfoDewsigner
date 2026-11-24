@@ -960,3 +960,19 @@ Nahrajte ho v playliste. ||| Nahrajte ho v playlistu. ||| Wgraj ją w playliści
 Playlist na tomto mieste ešte nie je nahratý. ||| Playlist na tomto místě ještě není nahrán. ||| Playlista nie została jeszcze wgrana w tym miejscu. ||| The playlist has not been uploaded to this place yet. ||| Die Playlist wurde an diesem Standort noch nicht hochgeladen.
 Nahrajte ho znova. ||| Nahrajte ho znovu. ||| Wgraj ją ponownie. ||| Upload it again. ||| Laden Sie sie erneut hoch.
 Nahrať na toto miesto ||| Nahrát na toto místo ||| Wgraj w tym miejscu ||| Upload to this place ||| An diesen Standort hochladen
+# ===== v52: mapa miest, poloha miesta =====
+Zoznam ||| Seznam ||| Lista ||| List ||| Liste
+Zobrazenie miest ||| Zobrazení míst ||| Widok miejsc ||| Places view ||| Standortansicht
+Mapa miest ||| Mapa míst ||| Mapa miejsc ||| Map of places ||| Standortkarte
+Priblížiť ||| Přiblížit ||| Przybliż ||| Zoom in ||| Vergrößern
+priblížiť ||| přiblížit ||| przybliż ||| zoom in ||| vergrößern
+Oddialiť ||| Oddálit ||| Oddal ||| Zoom out ||| Verkleinern
+Celé mesto ||| Celé město ||| Całe miasto ||| Whole city ||| Ganze Stadt
+Hlásenie ||| Hlášení ||| Zgłoszenie ||| Alert ||| Meldung
+Ukážková mapa ||| Ukázková mapa ||| Mapa przykładowa ||| Sample map ||| Beispielkarte
+Žiadne miesto nezodpovedá filtru. ||| Žádné místo neodpovídá filtru. ||| Żadne miejsce nie pasuje do filtra. ||| No place matches the filter. ||| Kein Standort entspricht dem Filter.
+Detail miesta ||| Detail místa ||| Szczegóły miejsca ||| Place details ||| Standortdetails
+Poloha ||| Poloha ||| Położenie ||| Location ||| Lage
+Zobraziť na mape ||| Zobrazit na mapě ||| Pokaż na mapie ||| Show on map ||| Auf Karte anzeigen
+Zobraziť na mape: {0} ||| Zobrazit na mapě: {0} ||| Pokaż na mapie: {0} ||| Show on map: {0} ||| Auf Karte anzeigen: {0}
+Posledná poloha vozidla ||| Poslední poloha vozidla ||| Ostatnie położenie pojazdu ||| Last vehicle position ||| Letzte Fahrzeugposition
