@@ -156,7 +156,9 @@
     const act = (label, d, fn, badge) => ({ label, d, fn, isIcon: true, isText: false, hasBadge: !!badge, badge: badge || '' });
     const openPrev = (pid) => set({ screen: 'pv', stack: s.stack.concat(sc), pvPl: pid, pvI: 0, pvT: 0, pvE: 0, pvPlay: true, sheet: null, reorder: false });
     let hdTitle = 'Info Designer', hdSub = 'DP Riečany', hdActs = [], hdLogo = false;
-    if (sc === 'home') { hdLogo = true; hdActs = ACC.apv ? [act('Schvaľovanie – čaká ' + pendingOthers.length, IC.bell, () => nav('apv', { apvTab: 'pending' }), pendingOthers.length ? String(pendingOthers.length) : '')] : ACC.partner ? [act('Odoslané na schválenie', IC.bell, () => nav('apv', { apvTab: 'pending' }), '')] : []; }
+    // zvonček (schvaľovanie) je v hlavičke každej karty dolnej lišty, vždy úplne vpravo
+    const bellAct = ACC.apv ? act('Schvaľovanie – čaká ' + pendingOthers.length, IC.bell, () => nav('apv', { apvTab: 'pending' }), pendingOthers.length ? String(pendingOthers.length) : '') : ACC.partner ? act('Odoslané na schválenie', IC.bell, () => nav('apv', { apvTab: 'pending' }), '') : null;
+    if (sc === 'home') { hdLogo = true; }
     else if (sc === 'pls') { hdTitle = 'Playlisty'; hdSub = ''; }
     else if (sc === 'pl') { hdTitle = pl.name; hdSub = DEV[pl.dev][1]; hdActs = [act('Náhľad playlistu', IC.eye, () => openPrev(pl.id))]; }
     else if (sc === 'sl') { hdTitle = plLed ? 'Upraviť text' : 'Upraviť snímku'; hdSub = pl.name; hdActs = [{ label: 'Hotovo', d: '', fn: goBack, isIcon: false, isText: true, hasBadge: false, badge: '' }]; }
@@ -171,6 +173,7 @@
     else if (sc === 'pd') { hdTitle = pdP.name; hdSub = pdP.n ? DEV[pdP.dev][1] + (pdP.g >= 0 ? ' · ' + GRP[pdP.g] : '') : 'Bez zariadenia'; }
     else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length || s.aiAtt.length ? [{ label: 'Nový chat', d: '', fn: () => aiNew(), isIcon: false, isText: true, hasBadge: false, badge: '', k: 'nc' }] : []; }
     else if (sc === 'pv') { hdTitle = 'Náhľad'; hdSub = (plById(s.pvPl) || pl).name; }
+    if (tabRoot && bellAct) hdActs = hdActs.concat([bellAct]);
 
     // ---------- rýchle správy: kam ----------
     const devIds = withDev.map((p) => p.id);

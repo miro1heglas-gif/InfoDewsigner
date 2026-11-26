@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="wz-build" content="20261126-2237">
+<meta name="wz-build" content="20261126-2306">
 <link rel="icon" href="./ikony/ikona.svg" type="image/svg+xml">
 <link rel="icon" href="./ikony/ikona-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="./ikony/apple-touch-icon.png">
@@ -45,6 +45,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[role=button]:fo
 .ib[data-text="true"]{padding:0 12px;font-size:16px;font-weight:700;color:var(--aclnk)}
 .ib[data-k="d"],.ib[data-k="d2"]{color:var(--dg)}
 .ib[data-k="nc"]{padding:0 4px;color:#fff}.ib[data-k="nc"]>span{display:block;padding:6px 12px;border:1.5px solid rgba(255,255,255,.5);border-radius:10px;font-size:15px;line-height:1.2;white-space:nowrap}
+/* svetlý vzhľad: Nový chat je biely text na zelenom tlačidle */
+.app[data-theme="light"] .ib[data-k="nc"]>span{background:var(--ac);border-color:var(--ac)}
+@media (prefers-color-scheme: light){.app[data-theme="auto"] .ib[data-k="nc"]>span{background:var(--ac);border-color:var(--ac)}}
 .ib[disabled]{opacity:.3}
 .ibadge{position:absolute;top:4px;right:3px;min-width:18px;height:18px;border-radius:9px;background:#C8322B;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
 .body{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
@@ -1210,7 +1213,7 @@ const IC = {
   spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z', edit: 'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z', ctext: 'M4 7V5h16v2M12 5v14M9 19h6', bus: 'M6 17V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v11zM6 11h12M8 20v-3M16 20v-3', table: 'M3 5h18v14H3zM3 10h18M9 10v9M15 10v9', link: 'M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1', map: 'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14', route: 'M6 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM6 17V11a4 4 0 0 1 4-4h6M18 7v6a4 4 0 0 1-4 4H8', grid: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z', cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4', drop: 'M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z', clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2', vbus: 'M5 16V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v9zM5 12h14M8 19v-3M16 19v-3M9 8h6', remove: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12h8', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', file: 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5', newchat: 'M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6M17.5 3.5a2.1 2.1 0 0 1 3 3L13 14l-4 1 1-4z', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6', minus: 'M5 12h14', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', wifi: 'M1 1l22 22M16.7 11.1A10.9 10.9 0 0 1 19 12.6M5 12.6a10.9 10.9 0 0 1 5.2-2.4M10.7 5.1A16 16 0 0 1 22.6 9M1.4 9a15.9 15.9 0 0 1 4.7-2.9M8.5 16.1a6 6 0 0 1 7 0M12 20h.01'
 };
 // číslo verzie a čas zostavenia doplní build.py; podľa času sa spozná, že na serveri je novšia verzia
-const WZ_V = ['54', '20261126-2237'];
+const WZ_V = ['55', '20261126-2306'];
 try { window.WZ_MAIN_BUILD = WZ_V[1]; } catch (e) {}
 // mapa miest: ukážkový plán mesta 1000 × 1200 (v prevádzke mapové podklady zo zdroja dát); poloha miest [x, y] a adresa
 const SAMPLE_PH = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8EC5E8"/><stop offset="1" stop-color="#F6E3B4"/></linearGradient></defs><rect width="400" height="300" fill="url(#s)"/><circle cx="310" cy="80" r="34" fill="#FFD46B"/><path d="M0 230 L90 150 L170 215 L250 130 L400 240 V300 H0z" fill="#5E8C61"/><rect x="40" y="235" width="320" height="22" rx="4" fill="#3F4848"/><rect x="120" y="190" width="150" height="44" rx="8" fill="#0E8080"/><rect x="135" y="200" width="40" height="16" rx="3" fill="#BFE6E6"/><rect x="185" y="200" width="40" height="16" rx="3" fill="#BFE6E6"/><circle cx="150" cy="240" r="9" fill="#1A1F1F"/><circle cx="245" cy="240" r="9" fill="#1A1F1F"/></svg>');
@@ -1604,7 +1607,9 @@ class Component extends DCLogic {
     const act = (label, d, fn, badge) => ({ label, d, fn, isIcon: true, isText: false, hasBadge: !!badge, badge: badge || '' });
     const openPrev = (pid) => set({ screen: 'pv', stack: s.stack.concat(sc), pvPl: pid, pvI: 0, pvT: 0, pvE: 0, pvPlay: true, sheet: null, reorder: false });
     let hdTitle = 'Info Designer', hdSub = 'DP Riečany', hdActs = [], hdLogo = false;
-    if (sc === 'home') { hdLogo = true; hdActs = ACC.apv ? [act('Schvaľovanie – čaká ' + pendingOthers.length, IC.bell, () => nav('apv', { apvTab: 'pending' }), pendingOthers.length ? String(pendingOthers.length) : '')] : ACC.partner ? [act('Odoslané na schválenie', IC.bell, () => nav('apv', { apvTab: 'pending' }), '')] : []; }
+    // zvonček (schvaľovanie) je v hlavičke každej karty dolnej lišty, vždy úplne vpravo
+    const bellAct = ACC.apv ? act('Schvaľovanie – čaká ' + pendingOthers.length, IC.bell, () => nav('apv', { apvTab: 'pending' }), pendingOthers.length ? String(pendingOthers.length) : '') : ACC.partner ? act('Odoslané na schválenie', IC.bell, () => nav('apv', { apvTab: 'pending' }), '') : null;
+    if (sc === 'home') { hdLogo = true; }
     else if (sc === 'pls') { hdTitle = 'Playlisty'; hdSub = ''; }
     else if (sc === 'pl') { hdTitle = pl.name; hdSub = DEV[pl.dev][1]; hdActs = [act('Náhľad playlistu', IC.eye, () => openPrev(pl.id))]; }
     else if (sc === 'sl') { hdTitle = plLed ? 'Upraviť text' : 'Upraviť snímku'; hdSub = pl.name; hdActs = [{ label: 'Hotovo', d: '', fn: goBack, isIcon: false, isText: true, hasBadge: false, badge: '' }]; }
@@ -1619,6 +1624,7 @@ class Component extends DCLogic {
     else if (sc === 'pd') { hdTitle = pdP.name; hdSub = pdP.n ? DEV[pdP.dev][1] + (pdP.g >= 0 ? ' · ' + GRP[pdP.g] : '') : 'Bez zariadenia'; }
     else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length || s.aiAtt.length ? [{ label: 'Nový chat', d: '', fn: () => aiNew(), isIcon: false, isText: true, hasBadge: false, badge: '', k: 'nc' }] : []; }
     else if (sc === 'pv') { hdTitle = 'Náhľad'; hdSub = (plById(s.pvPl) || pl).name; }
+    if (tabRoot && bellAct) hdActs = hdActs.concat([bellAct]);
 
     // ---------- rýchle správy: kam ----------
     const devIds = withDev.map((p) => p.id);
