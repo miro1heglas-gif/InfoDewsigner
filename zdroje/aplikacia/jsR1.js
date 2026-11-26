@@ -169,7 +169,7 @@
     else if (sc === 'hist') { hdTitle = 'História správ'; hdSub = ''; }
     else if (sc === 'act') { hdTitle = 'Záznam aktivít'; hdSub = ''; }
     else if (sc === 'pd') { hdTitle = pdP.name; hdSub = pdP.n ? DEV[pdP.dev][1] + (pdP.g >= 0 ? ' · ' + GRP[pdP.g] : '') : 'Bez zariadenia'; }
-    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length || s.aiAtt.length ? [act('Nový chat', IC.newchat, () => aiNew())] : []; }
+    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length || s.aiAtt.length ? [{ label: 'Nový chat', d: '', fn: () => aiNew(), isIcon: false, isText: true, hasBadge: false, badge: '', k: 'nc' }] : []; }
     else if (sc === 'pv') { hdTitle = 'Náhľad'; hdSub = (plById(s.pvPl) || pl).name; }
 
     // ---------- rýchle správy: kam ----------

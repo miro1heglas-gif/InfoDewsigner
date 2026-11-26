@@ -9,7 +9,7 @@
     <sc-if value="{{ hdLogo }}" hint-placeholder-val="{{ true }}"><span class="logo" aria-hidden="true">W</span></sc-if>
     <div style="flex: 1; min-width: 0; padding-left: 6px"><div class="t1" translate="{{ hdT1Tr }}">{{ hdTitle }}</div><sc-if value="{{ hasSub }}" hint-placeholder-val="{{ true }}"><div class="t2" style="{{ subS }}" translate="{{ hdT2Tr }}">{{ hdSub }}</div></sc-if></div>
     <sc-for list="{{ hdActs }}" as="a" hint-placeholder-count="1">
-      <button class="ib" data-text="{{ a.isText }}" onClick="{{ a.fn }}" aria-label="{{ a.label }}"><sc-if value="{{ a.isIcon }}" hint-placeholder-val="{{ true }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg></sc-if><sc-if value="{{ a.isText }}" hint-placeholder-val="{{ false }}"><span>{{ a.label }}</span></sc-if><sc-if value="{{ a.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="ibadge">{{ a.badge }}</span></sc-if></button>
+      <button class="ib" data-text="{{ a.isText }}" data-k="{{ a.k }}" onClick="{{ a.fn }}" aria-label="{{ a.label }}"><sc-if value="{{ a.isIcon }}" hint-placeholder-val="{{ true }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg></sc-if><sc-if value="{{ a.isText }}" hint-placeholder-val="{{ false }}"><span>{{ a.label }}</span></sc-if><sc-if value="{{ a.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="ibadge">{{ a.badge }}</span></sc-if></button>
     </sc-for>
   </div>
 
