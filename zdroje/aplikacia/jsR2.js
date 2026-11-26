@@ -389,19 +389,60 @@
       if (words.some((w) => ['ahoj', 'cau', 'hello', 'hallo', 'hi', 'zdravim', 'czesc'].indexOf(w) >= 0) || aiAny(q, ['dobry den', 'dzien dobry', 'guten tag'])) return { kind: 'hi' };
       return { kind: 'fallback' };
     };
-    const aiScroll = () => setTimeout(() => { try { const el = document.getElementById('ai-chat'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40);
-    const aiAsk = (text, chip) => {
-      const t = String(text || '').trim(); if (!t || s.aiTyping) return;
+    // ---------- AI: prílohy z telefónu (fotka, video, zvuk, dokument) – ostávajú len v prehliadači ----------
+    const AIMAX = 10;
+    const fSize = (b) => b >= 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' kB';
+    const AKT = { img: ['Fotka', IC.image], vid: ['Video', IC.film], aud: ['Zvuk', IC.music], doc: ['Dokument', IC.file] };
+    const aiFiles = (e) => {
+      const fl = [].slice.call((e && e.target && e.target.files) || []); try { e.target.value = ''; } catch (x) {}
+      if (!fl.length) return;
+      const ok = fl.filter((f) => (f.size || 0) <= 100 * 1048576); const big = fl.filter((f) => (f.size || 0) > 100 * 1048576);
+      const take = ok.slice(0, Math.max(0, AIMAX - s.aiAtt.length));
+      const add = take.map((f) => { const ty = String(f.type || ''); const kind = /^image\//.test(ty) ? 'img' : /^video\//.test(ty) ? 'vid' : /^audio\//.test(ty) ? 'aud' : 'doc'; let url = ''; if (kind === 'img') { try { url = URL.createObjectURL(f); } catch (x) {} } const m = /\.([a-z0-9]{1,5})$/i.exec(f.name || ''); return { id: 'f' + self.nid(), name: f.name || 'subor', size: fSize(f.size || 0), kind, url, ext: m ? m[1].toUpperCase() : '' }; });
+      if (add.length) set({ aiAtt: s.aiAtt.concat(add), sheet: null });
+      if (big.length) say('Súbor „' + big[0].name + '“ je väčší ako 100 MB.', null, true);
+      else if (ok.length > take.length) say('Naraz sa dá priložiť najviac 10 súborov.', null, true);
+    };
+    const aiRevoke = (list) => list.forEach((a) => { if (a && a.url && /^blob:/.test(a.url) && !s.aiUp[a.id]) { try { URL.revokeObjectURL(a.url); } catch (x) {} } });
+    const aiRm = (a) => () => { aiRevoke([a]); set({ aiAtt: s.aiAtt.filter((x) => x.id !== a.id) }); };
+    const aiNew = () => { clearTimeout(self._tai); aiRevoke(s.aiAtt.concat([].concat.apply([], s.aiChat.map((m) => (m.who === 'me' && m.att) || [])))); set({ aiChat: [], aiQ: '', aiTyping: false, aiAtt: [], sheet: null }); };
+    // výber súboru: ťuknutie otvorí výber telefónu (fotoaparát, fotky alebo súbory)
+    const aiPick = (id) => () => { const el = document.getElementById(id); if (el) { try { el.click(); } catch (x) {} } set({ sheet: null }); };
+    const aiMedia = (att) => att.filter((a) => a.kind === 'img' || a.kind === 'vid');
+    const aiGalable = (att) => att.filter((a) => a.kind !== 'doc');
+    const aiPlsFor = (att) => { const vid = att.some((a) => a.kind === 'vid'); return vPls.filter((p) => p.flow !== 'pending' && !isLedDev(p.dev) && !PARTS[p.dev] && (!vid || !!(DCAP[p.dev] || {}).video)); };
+    // nahratie do galérie (priečinok Z telefónu); súbor nahratý raz sa druhýkrát nenahrá
+    const aiGalPut = (st, att) => { let gal = st.gal.slice(); const up = Object.assign({}, st.aiUp); const added = [], had = [];
+      aiGalable(att).forEach((a) => { if (up[a.id] && gal.some((g) => g.id === up[a.id])) { had.push(a); return; } const n = gal.length + 1; const g = { id: 'g' + n + 'x' + self.nid(), name: a.name, title: a.name.replace(/\.[^.]+$/, ''), type: a.kind, size: a.size, used: 0, usedIn: [], folder: 'Z telefónu', col: a.kind === 'img' && a.url ? a.url : NEWC[n % 4] }; gal = gal.concat([g]); up[a.id] = g.id; added.push(a); });
+      return { gal, aiUp: up, added, had }; };
+    const aiToPl = (m, p) => {
       if (needNet()) return;
-      const ans = aiAnswer(t); const n = s.aiChat.length;
-      set({ aiChat: s.aiChat.concat([{ id: n + 1, who: 'me', text: t, chip: !!chip }]), aiQ: '', aiTyping: true }); aiScroll();
-      clearTimeout(self._tai); self._tai = setTimeout(() => { const c = self.state.aiChat; self.setState({ aiTyping: false, aiChat: c.concat([Object.assign({ id: c.length + 1, who: 'ai' }, ans)]) }); aiScroll(); }, 650);
+      const med = aiMedia(m.att || []); const r = aiGalPut(s, med); let gal = r.gal;
+      const files = med.map((a) => gal.find((g) => g.id === r.aiUp[a.id])).filter(Boolean);
+      const sls = files.map((f) => newSl('photo', f.title, '', 10, '#1A1F1F', { img: f.col, imgName: f.name, isVid: f.type === 'vid' }));
+      files.forEach((f) => { gal = bumpGal(gal, f.id, p.name); });
+      set({ gal, aiUp: r.aiUp, snap: snapFor(p.id), pls: s.pls.map((x) => x.id === p.id ? Object.assign({}, x, { slides: sls.reduce((acc, sl) => insertSl(Object.assign({}, x, { slides: acc }), sl), x.slides), flow: 'draft', log: x.log.concat(sls.map((sl) => ['add', 'Pridaná snímka „' + sl.title + '“ (' + sl.imgName + ')', 'a' + sl.id])) }) : x),
+        aiChat: s.aiChat.map((x) => x.id === m.id ? Object.assign({}, x, { donePl: p.id }) : x) });
+      say('Pridané do playlistu „' + p.name + '“. ' + (ACC.pub ? 'Nezabudnite ho zverejniť.' : 'Nezabudnite ho odoslať na schválenie.'));
+    };
+    const aiAttAnswer = (raw, att) => { const q = aiNorm(raw); return { kind: 'att', att, intent: aiAny(q, ['galer', 'gallery']) ? 'gal' : aiAny(q, ['playlist', 'snimk', 'snimek', 'slide', 'slajd', 'folie']) ? 'pl' : 'any' }; };
+    const aiAttV = (a) => ({ isImg: a.kind === 'img' && !!a.url, notImg: !(a.kind === 'img' && a.url), isImgA: a.kind === 'img' && a.url ? 'true' : 'false', src: a.url || '', d: AKT[a.kind][1], name: a.name, size: a.size + ' · ', typeT: AKT[a.kind][0], rmA: 'Odstrániť prílohu: ' + a.name, rm: aiRm(a) });
+    const aiAttItem = (a) => ({ name: a.name, subD: a.size + ' · ', sub: AKT[a.kind][0], canTap: false, noTap: true, tap: () => {}, aria: '' });
+    const aiScroll = () => setTimeout(() => { try { const el = document.getElementById('ai-chat'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40);
+    // attIn = prílohy z predchádzajúcej správy (tlačidlo v odpovedi AI); inak sa pošlú priložené súbory z poľa na písanie
+    const aiAsk = (text, chip, attIn) => {
+      const att = attIn || (s.aiAtt.length ? s.aiAtt : null);
+      const t = String(text || '').trim(); if ((!t && !att) || s.aiTyping) return;
+      if (needNet()) return;
+      const ans = att ? aiAttAnswer(t, att) : aiAnswer(t); const n = s.aiChat.length;
+      set({ aiChat: s.aiChat.concat([{ id: n + 1, who: 'me', text: t, chip: !!chip, att: att || null, attHid: !!attIn }]), aiQ: '', aiTyping: true, aiAtt: attIn ? s.aiAtt : [] }); aiScroll();
+      clearTimeout(self._tai); self._tai = setTimeout(() => { const st = self.state; const c = st.aiChat; let a2 = ans, patch = {}; if (ans.kind === 'att' && ans.intent === 'gal') { const r = aiGalPut(st, att); a2 = Object.assign({}, ans, { added: r.added, had: r.had }); patch = { gal: r.gal, aiUp: r.aiUp }; } self.setState(Object.assign({ aiTyping: false, aiChat: c.concat([Object.assign({ id: c.length + 1, who: 'ai' }, a2)]) }, patch)); aiScroll(); }, 650);
     };
     const aiUse = (sit, t) => () => set({ sheet: 'quick', qStep: 'main', qSearch: '', qEditId: null, quick: Object.assign({}, s.qEditId || s.quick.one ? QDEF() : s.quick, { text: Tx(t), tpl: null, prio: AIS[sit][1], pos: AIS[sit][1] === 'warn' ? 'top' : 'bottom' }) });
     const aiItemP = (p) => { const ep = p.n ? effPl(p) : null; return { name: p.name, subD: p.n && ep ? ep.name : '', sub: (p.n === 0 ? 'Miesto zatiaľ nemá zariadenie' : ep ? '' : 'Bez playlistu') + (p.n > 0 && !p.on ? ' · offline ' + p.off : ''), canTap: !!ep, noTap: !ep, tap: () => { if (ep) editAtPlace(p.id); }, aria: ep ? 'Upraviť playlist: ' + ep.name : '' }; };
     const aiBuild = (m) => {
-      const base = { id: m.id, who: m.who, me: m.who === 'me', meChip: m.who === 'me' && !!m.chip, meTyped: m.who === 'me' && !m.chip, ai: m.who === 'ai', text: '', items: [], sugg: [], acts: [], note: '' };
-      if (m.who === 'me') return Object.assign(base, { text: m.text });
+      const base = { id: m.id, who: m.who, me: m.who === 'me', meChip: m.who === 'me' && !!m.chip && !!m.text, meTyped: m.who === 'me' && !m.chip && !!m.text, ai: m.who === 'ai', text: '', items: [], sugg: [], acts: [], note: '' };
+      if (m.who === 'me') { const av = !m.attHid && m.att ? m.att.map(aiAttV) : []; return Object.assign(base, { text: m.text, hasAtt: av.length > 0, attV: av, attN: String(av.length) }); }
       const r = base; const A = (label, fn) => r.acts.push({ label, fn });
       if (m.kind === 'draft') { r.text = AIH[m.sit]; r.sugg = AIS[m.sit][2].map((t) => ({ text: t, use: aiUse(m.sit, t), useA: 'Použiť návrh: ' + t })); r.note = 'Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.'; }
       else if (m.kind === 'sitask') { r.text = 'O čom má byť správa? Vyberte situáciu.'; Object.keys(AIS).forEach((k) => A(AIS[k][0], () => aiAsk(AIQ[k], true))); }
@@ -409,6 +450,27 @@
       else if (m.kind === 'prob') { const ps = vPlaces.filter(pcProb); if (!ps.length) r.text = 'Všetky miesta sú v poriadku.'; else { r.text = 'Tieto miesta majú hlásenie:'; r.items = ps.map((p) => Object.assign(aiItemP(p), { subD: '', sub: p.on ? 'Expirovaný playlist' : 'offline ' + p.off })); A('Zobraziť v Miestach', () => set({ screen: 'plc', stack: [], sheet: null, pcF: 'prob', pq: '' })); } }
       else if (m.kind === 'exp') { const ps = vPls.filter((p) => p.st === 'expirovany'); if (!ps.length) r.text = 'Žiadny playlist neexpiroval.'; else { r.text = 'Tieto playlisty expirovali:'; r.items = ps.map((p) => ({ name: p.name, subD: '', sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => nav('pl', { plId: p.id }), aria: 'Upraviť playlist: ' + p.name })); A('Zobraziť v Playlistoch', () => set({ screen: 'pls', stack: [], sheet: null, filt: 'expirovany', q: '' })); } }
       else if (m.kind === 'play') { r.text = 'Na týchto miestach sa teraz prehráva:'; r.items = m.ids.map(placeById).filter(Boolean).filter((p) => vPlaces.indexOf(p) >= 0).map(aiItemP); }
+      else if (m.kind === 'att') {
+        const att = m.att || []; const med = aiMedia(att); const gl = aiGalable(att); const docs = att.length - gl.length; const pls = aiPlsFor(med);
+        const askGal = () => aiAsk('Nahraj do galérie', true, att); const askPl = () => aiAsk('Pridaj do playlistu', true, att);
+        if (m.intent === 'gal') {
+          if (!gl.length) r.text = 'Galéria prijíma obrázky, videá a zvuky. Dokumenty do nej nenahrám.';
+          else if (!(m.added || []).length) r.text = 'Tieto súbory už sú v galérii.';
+          else { r.text = 'Nahral som do galérie, priečinok Z telefónu:'; r.items = m.added.map(aiAttItem); if (docs) r.note = 'Dokumenty galéria neprijíma, tie som vynechal.'; }
+          if (gl.length) A('Otvoriť galériu', () => nav('gal')); if (med.length && pls.length) A('Pridať do playlistu', askPl);
+        } else if (m.intent === 'pl') {
+          if (!med.length) r.text = 'Do playlistu sa dajú pridať len fotky a videá.';
+          else if (!pls.length) r.text = med.some((a) => a.kind === 'vid') ? 'Nemáte playlist pre zariadenie, ktoré prehráva video.' : 'Nemáte playlist pre displej, do ktorého by sa dala pridať fotka.';
+          else if (m.donePl) { const p = plById(m.donePl); r.text = 'Pridané do playlistu:'; r.items = p ? [{ name: p.name, subD: '', sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => nav('pl', { plId: p.id }), aria: 'Upraviť playlist: ' + p.name }] : []; r.note = ACC.pub ? 'Snímky sú na konci playlistu. Playlist ešte treba zverejniť.' : 'Snímky sú na konci playlistu. Playlist ešte treba odoslať na schválenie.'; }
+          else { r.text = 'Do ktorého playlistu? Snímky pridám na koniec.'; r.items = pls.map((p) => ({ name: p.name, subD: '', sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => aiToPl(m, p), aria: 'Pridať do playlistu: ' + p.name })); if (att.length > med.length) r.note = 'Do playlistu pridám len fotky a videá.'; }
+        } else if (!gl.length) {
+          r.text = att.length === 1 ? 'Súbor som dostal.' : 'Súbory som dostal.'; r.note = 'Obsah dokumentov prototyp nečíta. V aplikácii z nich AI navrhne text rýchlej správy.';
+          if (canQuick && s.aiOn.a1) A('Napísať správu', () => aiAsk('Napíš správu', true));
+        } else {
+          r.text = att.length === 1 ? 'Čo mám s prílohou urobiť?' : 'Čo mám s prílohami urobiť?'; A('Nahrať do galérie', askGal); if (med.length && pls.length) A('Pridať do playlistu', askPl);
+          if (docs) r.note = 'Galéria prijíma obrázky, videá a zvuky. Obsah dokumentov prototyp nečíta.';
+        }
+      }
       else if (m.kind === 'noplace') r.text = 'Ktoré miesto myslíte? Napíšte jeho názov, napríklad Hlavná stanica alebo Nemocnica.';
       else if (m.kind === 'apv') {
         if (ACC.apv) { if (!pendingOthers.length) r.text = 'Nič nečaká na schválenie.'; else { r.text = 'Na schválenie čaká:'; r.items = pendingOthers.map((a) => ({ name: a.name, subD: a.author, sub: ' · ' + a.when, canTap: true, noTap: false, tap: () => nav('ad', { adId: a.id, apvNote: '' }), aria: a.name })); A('Otvoriť schvaľovanie', () => nav('apv', { apvTab: 'pending' })); } }
@@ -425,7 +487,11 @@
     };
     const aiMsgs = s.aiChat.map(aiBuild);
     const aiChipQ = (canQuick ? ['Napíš správu o meškaní', 'Napíš správu o odklone'] : []).concat(['Ktoré miesta majú hlásenie?', ACC.partner ? 'Čo sa hrá na Parkovisku Centrum?' : 'Čo sa hrá na Hlavnej stanici?', 'Ktoré playlisty expirovali?']).concat(ACC.apv || ACC.partner ? ['Čo čaká na schválenie?'] : []).concat(['Ktoré správy sú zobrazené?']);
-    const aiChips = aiChipQ.map((t) => ({ label: t, ask: () => aiAsk(t, true) }));
+    const aiAttQ = s.aiAtt.length ? [].concat(aiGalable(s.aiAtt).length ? ['Nahraj do galérie'] : [], aiMedia(s.aiAtt).length && aiPlsFor(aiMedia(s.aiAtt)).length ? ['Pridaj do playlistu'] : []) : null;
+    const aiChips = (aiAttQ || aiChipQ).map((t) => ({ label: t, ask: () => aiAsk(t, true) }));
+    const aiFull = s.aiAtt.length >= AIMAX;
+    const aiAddOpts = [[IC.camera, 'Odfotiť', 'Otvorí fotoaparát telefónu', 'ai-f-cam'], [IC.image, 'Fotky a videá', 'Z fotiek v telefóne', 'ai-f-ph'], [IC.file, 'Súbory', 'Dokument, zvuk alebo iný súbor z telefónu', 'ai-f-doc']]
+      .map((o) => ({ d: o[0], title: o[1], sub: aiFull ? 'Priložených je už 10 súborov.' : o[2], pick: aiPick(o[3]), off: aiFull }));
 
     // ---------- DETAIL MIESTA ----------
     const pdEp = pdP.n ? effPl(pdP) : null; const pdBase = pdP.n ? plById(pdP.pl) : null; const pdBtn = plBtn(pdEp);
@@ -579,7 +645,8 @@
       mapZin: mapZoom(1.6), mapZout: mapZoom(1 / 1.6), mapFit: () => set({ map: { cx: 500, cy: 600, z: 1 }, mapSel: null }), mapZinOff: MG.z >= 5.99, mapZoutOff: MG.z <= 1.01,
       mapHasSel: !!mapSelP, mapNoSel: !mapSelP, mapCard: mapSelP ? pcRowOf(mapSelP) : pcRowOf(s.places[0]), mapUnsel: () => set({ mapSel: null }), pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + vPlaces.length + ' miest',
       notifRows, aiRows,
-      aiHi: ACC.first ? 'Dobrý deň, ' + ACC.first + '. S čím vám pomôžem?' : 'Dobrý deň. S čím vám pomôžem?', aiIntro: canQuick ? 'Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie.' : 'Nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo ste odoslali na schválenie.', canQuick, aiMsgs, aiChips, aiTyping: s.aiTyping, aiQ: s.aiQ, aiNoQ: !s.aiQ.trim() || s.aiTyping, setAiQ: (e) => set({ aiQ: e.target.value }), aiSend: () => aiAsk(s.aiQ, false), aiKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(s.aiQ, false); } },
+aiAttV: s.aiAtt.map(aiAttV), aiHasAtt: s.aiAtt.length > 0, aiHasChips: aiChips.length > 0, aiFiles, aiOpenAdd: () => set({ sheet: 'aiadd' }), sh_aiadd: s.sheet === 'aiadd', aiAddOpts,
+      aiHi: ACC.first ? 'Dobrý deň, ' + ACC.first + '. S čím vám pomôžem?' : 'Dobrý deň. S čím vám pomôžem?', aiIntro: canQuick ? 'Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie.' : 'Nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo ste odoslali na schválenie.', canQuick, aiMsgs, aiChips, aiTyping: s.aiTyping, aiQ: s.aiQ, aiNoQ: (!s.aiQ.trim() && !s.aiAtt.length) || s.aiTyping, setAiQ: (e) => set({ aiQ: e.target.value }), aiSend: () => aiAsk(s.aiQ, false), aiKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(s.aiQ, false); } },
       // náhľad
       pvHas: pvParts.length > 0, pvNone: pvParts.length === 0, pvParts, pvWrapS: stackS(pvPl), pvDevT: DEV[pvDev][0], pvSegs: pvTot ? [] : pvSegs,
       pvCap: pvTot ? 'Tri displeje sa prehrávajú súčasne' : pvPl.slides.length ? (Math.min(s.pvI, pvPl.slides.length - 1) + 1) + '/' + pvPl.slides.length + ' · ' : '', pvCapD: pvTot || !pvPl.slides.length ? '' : pvObj.title, pvTime: pvTot ? mmss(s.pvE || 0) : pvPl.slides.length ? s.pvT + ' / ' + pvObj.dur + ' s' : '',

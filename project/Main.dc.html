@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="wz-build" content="20261124-1736">
+<meta name="wz-build" content="20261126-2227">
 <link rel="icon" href="./ikony/ikona.svg" type="image/svg+xml">
 <link rel="icon" href="./ikony/ikona-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="./ikony/apple-touch-icon.png">
@@ -126,6 +126,29 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[role=button]:fo
 .aiq-r .inp{flex:1;min-width:0;height:48px}
 .aiq-send{width:48px;height:48px;border-radius:12px;border:none;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
 .aiq-send:disabled{opacity:.45}
+/* v53: AI – prílohy z telefónu, tlačidlo + */
+.aiq{position:relative}
+.aiq-add{width:48px;height:48px;border-radius:12px;border:1px solid var(--ctl);background:var(--sf);color:var(--tx);display:flex;align-items:center;justify-content:center;flex:none}
+.vh{position:absolute;left:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;border:0;padding:0}
+.aiatt{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:12px 12px 2px 0;margin-top:-8px;scrollbar-width:none}
+.aiatt::-webkit-scrollbar{height:0}
+.aiat{position:relative;flex:none;height:64px;border-radius:12px;border:1px solid var(--ln);background:var(--sf2);display:flex;align-items:center;gap:8px}
+.aiat[data-img="true"]{width:64px}
+.aiat[data-img="false"]{width:176px;padding:0 26px 0 8px}
+.aiat-im{width:62px;height:62px;object-fit:cover;border-radius:11px;display:block}
+.aiat-ic{width:36px;height:36px;border-radius:9px;background:var(--acs);color:var(--act);display:flex;align-items:center;justify-content:center;flex:none}
+.aiat-t{min-width:0;flex:1;display:flex;flex-direction:column;line-height:1.25}
+.aiat-n{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aiat-m{font-size:12.5px;color:var(--mut);white-space:nowrap}
+.aiat-x{position:absolute;top:-14px;right:-14px;width:44px;height:44px;border:0;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;color:#fff}
+.aiat-x>span{width:24px;height:24px;border-radius:50%;background:#1F2323;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--sf)}
+.msgat{display:flex;flex-wrap:wrap;gap:6px}
+.msgat img{width:96px;height:96px;object-fit:cover;border-radius:10px;display:block;background:rgba(255,255,255,.15)}
+.msgat[data-n="1"] img{width:200px;height:150px}
+.msgat .mf{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.24);min-width:0;max-width:100%;flex:1 1 180px}
+.msgat .aiat-m{color:#fff}
+.opt:disabled{opacity:.5}
+
 .plrow{padding-right:4px;gap:4px}
 .plrow .rowmain{align-items:flex-start;padding:2px 0}
 .plact{color:var(--act)}
@@ -842,6 +865,7 @@ textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
         <div class="msg" data-who="ai"><div style="font-weight: 700">{{ aiHi }}</div><div>{{ aiIntro }}</div><div class="mut sm">Prototyp: AI odpovedá z ukážkových údajov aplikácie.</div></div>
         <sc-for list="{{ aiMsgs }}" as="m" hint-placeholder-count="2">
           <div class="msg" data-who="{{ m.who }}">
+            <sc-if value="{{ m.hasAtt }}" hint-placeholder-val="{{ false }}"><div class="msgat" data-n="{{ m.attN }}"><sc-for list="{{ m.attV }}" as="a" hint-placeholder-count="1"><sc-if value="{{ a.isImg }}" hint-placeholder-val="{{ true }}"><img src="{{ a.src }}" alt="{{ a.name }}" translate="no"></sc-if><sc-if value="{{ a.notImg }}" hint-placeholder-val="{{ false }}"><span class="mf"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg><span class="aiat-t"><span class="aiat-n" translate="no">{{ a.name }}</span><span class="aiat-m"><span translate="no">{{ a.size }}</span><span>{{ a.typeT }}</span></span></span></span></sc-if></sc-for></div></sc-if>
             <sc-if value="{{ m.meChip }}" hint-placeholder-val="{{ false }}"><div>{{ m.text }}</div></sc-if>
             <sc-if value="{{ m.meTyped }}" hint-placeholder-val="{{ false }}"><div translate="no">{{ m.text }}</div></sc-if>
             <sc-if value="{{ m.ai }}" hint-placeholder-val="{{ true }}">
@@ -859,8 +883,12 @@ textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
         <sc-if value="{{ aiTyping }}" hint-placeholder-val="{{ false }}"><div class="msg" data-who="ai" role="status"><span class="mut">AI píše…</span></div></sc-if>
       </div>
       <div class="aiq">
-        <div class="chips"><sc-for list="{{ aiChips }}" as="c" hint-placeholder-count="4"><button class="chip" onClick="{{ c.ask }}">{{ c.label }}</button></sc-for></div>
-        <div class="aiq-r"><input class="inp" value="{{ aiQ }}" onInput="{{ setAiQ }}" onKeyDown="{{ aiKey }}" placeholder="Napíšte otázku alebo požiadavku" aria-label="Otázka pre AI asistenta" enterkeyhint="send"><button class="aiq-send" onClick="{{ aiSend }}" disabled="{{ aiNoQ }}" aria-label="Odoslať otázku"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.send }}"></path></svg></button></div>
+        <sc-if value="{{ aiHasChips }}" hint-placeholder-val="{{ true }}"><div class="chips"><sc-for list="{{ aiChips }}" as="c" hint-placeholder-count="4"><button class="chip" onClick="{{ c.ask }}">{{ c.label }}</button></sc-for></div></sc-if>
+        <sc-if value="{{ aiHasAtt }}" hint-placeholder-val="{{ false }}"><div class="aiatt" role="list" aria-label="Prílohy"><sc-for list="{{ aiAttV }}" as="a" hint-placeholder-count="2"><div class="aiat" role="listitem" data-img="{{ a.isImgA }}"><sc-if value="{{ a.isImg }}" hint-placeholder-val="{{ true }}"><img class="aiat-im" src="{{ a.src }}" alt="{{ a.name }}" translate="no"></sc-if><sc-if value="{{ a.notImg }}" hint-placeholder-val="{{ false }}"><span class="aiat-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg></span><span class="aiat-t"><span class="aiat-n" translate="no">{{ a.name }}</span><span class="aiat-m"><span translate="no">{{ a.size }}</span><span>{{ a.typeT }}</span></span></span></sc-if><button class="aiat-x" aria-label="{{ a.rmA }}" onClick="{{ a.rm }}"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></span></button></div></sc-for></div></sc-if>
+        <div class="aiq-r"><button class="aiq-add" aria-label="Pridať fotku alebo súbor" aria-haspopup="dialog" onClick="{{ aiOpenAdd }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.plus }}"></path></svg></button><input class="inp" value="{{ aiQ }}" onInput="{{ setAiQ }}" onKeyDown="{{ aiKey }}" placeholder="Napíšte otázku" aria-label="Otázka pre AI asistenta" enterkeyhint="send"><button class="aiq-send" onClick="{{ aiSend }}" disabled="{{ aiNoQ }}" aria-label="Odoslať otázku"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.send }}"></path></svg></button></div>
+        <input type="file" id="ai-f-cam" class="vh" accept="image/*" capture="environment" tabindex="-1" aria-label="Odfotiť" onChange="{{ aiFiles }}">
+        <input type="file" id="ai-f-ph" class="vh" accept="image/*,video/*" multiple="{{ true }}" tabindex="-1" aria-label="Fotky a videá" onChange="{{ aiFiles }}">
+        <input type="file" id="ai-f-doc" class="vh" multiple="{{ true }}" tabindex="-1" aria-label="Súbory" onChange="{{ aiFiles }}">
       </div>
     </sc-if>
 
@@ -1002,6 +1030,18 @@ textarea.inp{height:auto;padding:12px 14px;resize:none;line-height:1.35}
         </sc-if>
       </div>
       <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" disabled="{{ swOff }}" onClick="{{ swNext }}">{{ swBtn }}</button></div>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== AI ASISTENT: + (priložiť fotku alebo súbor, nový chat) ===== -->
+  <sc-if value="{{ sh_aiadd }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" role="dialog" aria-label="Pridať do chatu">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">Pridať do chatu</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b" style="gap: 10px">
+        <sc-for list="{{ aiAddOpts }}" as="o" hint-placeholder-count="3"><button class="opt" onClick="{{ o.pick }}" disabled="{{ o.off }}"><span class="ico" style="width: 44px; height: 44px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ o.d }}"></path></svg></span><span style="flex: 1; text-align: left"><span class="nm">{{ o.title }}</span><span class="mut sm" style="display: block">{{ o.sub }}</span></span></button></sc-for>
+        <div class="mut sm">Prototyp: súbory ostávajú len v tomto prehliadači, nikam sa neodosielajú.</div>
+      </div>
     </div></div>
   </sc-if>
 
@@ -1166,12 +1206,13 @@ const IC = {
   speaker: 'M11 5L6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14', gear: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
   film: 'M3 5h18v14H3zM10 9l5 3-5 3z', music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
   shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', db: 'M12 8c4.4 0 8-1.1 8-2.5S16.4 3 12 3 4 4.1 4 5.5 7.6 8 12 8zM4 5.5v13C4 19.9 7.6 21 12 21s8-1.1 8-2.5v-13M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5',
-  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z', edit: 'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z', ctext: 'M4 7V5h16v2M12 5v14M9 19h6', bus: 'M6 17V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v11zM6 11h12M8 20v-3M16 20v-3', table: 'M3 5h18v14H3zM3 10h18M9 10v9M15 10v9', link: 'M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1', map: 'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14', route: 'M6 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM6 17V11a4 4 0 0 1 4-4h6M18 7v6a4 4 0 0 1-4 4H8', grid: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z', cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4', drop: 'M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z', clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2', vbus: 'M5 16V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v9zM5 12h14M8 19v-3M16 19v-3M9 8h6', remove: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12h8', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6', minus: 'M5 12h14', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', wifi: 'M1 1l22 22M16.7 11.1A10.9 10.9 0 0 1 19 12.6M5 12.6a10.9 10.9 0 0 1 5.2-2.4M10.7 5.1A16 16 0 0 1 22.6 9M1.4 9a15.9 15.9 0 0 1 4.7-2.9M8.5 16.1a6 6 0 0 1 7 0M12 20h.01'
+  spark: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z', send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z', edit: 'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z', ctext: 'M4 7V5h16v2M12 5v14M9 19h6', bus: 'M6 17V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v11zM6 11h12M8 20v-3M16 20v-3', table: 'M3 5h18v14H3zM3 10h18M9 10v9M15 10v9', link: 'M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1', map: 'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14', route: 'M6 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM6 17V11a4 4 0 0 1 4-4h6M18 7v6a4 4 0 0 1-4 4H8', grid: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z', cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4', drop: 'M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z', clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2', vbus: 'M5 16V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v9zM5 12h14M8 19v-3M16 19v-3M9 8h6', remove: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12h8', globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', tick: 'M5 13l4 4L19 7', none: 'M0 0', file: 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5', newchat: 'M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6M17.5 3.5a2.1 2.1 0 0 1 3 3L13 14l-4 1 1-4z', chevD: 'M6 9l6 6 6-6', chevU: 'M6 15l6-6 6 6', minus: 'M5 12h14', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', wifi: 'M1 1l22 22M16.7 11.1A10.9 10.9 0 0 1 19 12.6M5 12.6a10.9 10.9 0 0 1 5.2-2.4M10.7 5.1A16 16 0 0 1 22.6 9M1.4 9a15.9 15.9 0 0 1 4.7-2.9M8.5 16.1a6 6 0 0 1 7 0M12 20h.01'
 };
 // číslo verzie a čas zostavenia doplní build.py; podľa času sa spozná, že na serveri je novšia verzia
-const WZ_V = ['52', '20261124-1736'];
+const WZ_V = ['53', '20261126-2227'];
 try { window.WZ_MAIN_BUILD = WZ_V[1]; } catch (e) {}
 // mapa miest: ukážkový plán mesta 1000 × 1200 (v prevádzke mapové podklady zo zdroja dát); poloha miest [x, y] a adresa
+const SAMPLE_PH = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8EC5E8"/><stop offset="1" stop-color="#F6E3B4"/></linearGradient></defs><rect width="400" height="300" fill="url(#s)"/><circle cx="310" cy="80" r="34" fill="#FFD46B"/><path d="M0 230 L90 150 L170 215 L250 130 L400 240 V300 H0z" fill="#5E8C61"/><rect x="40" y="235" width="320" height="22" rx="4" fill="#3F4848"/><rect x="120" y="190" width="150" height="44" rx="8" fill="#0E8080"/><rect x="135" y="200" width="40" height="16" rx="3" fill="#BFE6E6"/><rect x="185" y="200" width="40" height="16" rx="3" fill="#BFE6E6"/><circle cx="150" cy="240" r="9" fill="#1A1F1F"/><circle cx="245" cy="240" r="9" fill="#1A1F1F"/></svg>');
 const MAPW = 1000, MAPH = 1200;
 const MXY = { hs1: [455, 214], hs2: [500, 214], hs3: [545, 214], hsv: [500, 262], zu: [330, 250], zst: [640, 250], ss: [300, 120], cin: [125, 160], pp: [770, 125], hr: [140, 310],
   rad: [440, 455], snp: [500, 480], snpk: [540, 505], div: [575, 440], bul: [640, 400], mos: [500, 590], pc: [400, 520], asa: [720, 500], asb: [760, 520], ash: [735, 548],
@@ -1186,7 +1227,8 @@ const MGEO = (m, w, h, sl) => { const H = Math.max(120, h - 64); const fit = Mat
 const plural = (n, a) => n === 1 ? a[0] : (n >= 2 && n <= 4 ? a[1] : a[2]);
 const mmss = (t) => Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
 const BG = ['#0E8080', '#0B6E6E', '#1E2A5A', '#2F62B0', '#5B2A86', '#E07A2B', '#C8322B', '#1A1F1F'];
-const GRAD = (c) => 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
+const ISRC = (c) => /^(blob:|data:)/.test(String(c || ''));
+const GRAD = (c) => ISRC(c) ? '#1A1F1F url("' + c + '") center/cover no-repeat' : 'radial-gradient(circle at 70% 30%, rgba(255,255,255,.4), rgba(255,255,255,0) 40%), linear-gradient(135deg,' + c + ',#1A1F1F 170%)';
 const TAB_OF = { home: 'home', pls: 'pls', pl: 'pls', sl: 'pls', pv: 'pls', plc: 'plc', gal: 'more', more: 'more', apv: 'more', ad: 'more', set: 'more', ai: 'ai', hist: 'more', pd: 'plc', act: 'more' };
 const ROOT = { home: 'home', pls: 'pls', plc: 'plc', ai: 'ai', more: 'more' };
 const GRP = ['Hlavná stanica', 'Centrum', 'Električky', 'Parkoviská', 'Nemocnica a univerzita'];
@@ -1333,7 +1375,7 @@ class Component extends DCLogic {
       netSim: false, netReal: (() => { try { return navigator.onLine !== false; } catch (e) { return true; } })(), netAt: '', q: '', filt: 'all', plId: 'p2', slId: null, reorder: false, confirm: '',
       apvTab: 'pending', adId: 'a1', apvNote: '', galF: 'all', galId: null, pq: '', pcF: 'all', sheet: null, addMode: 'slide', pickMode: 'add', gplFile: null,
       sw: { step: 'pl', from: 'pl', places: [], pl: 'p2', dur: 'today' }, quick: QDEF(), qStep: 'main', qSearch: '', qTplAll: false,
-      snap: {}, qdId: 'h2', pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, edSec: 0, toast: '', push: null,
+      snap: {}, qdId: 'h2', pvPl: 'p2', pvI: 0, pvT: 0, pvE: 0, pvPlay: true, notif: { n1: true, n5: true, n2: true, n3: true, n4: false }, aiOn: { a1: true, a2: true }, aiChat: [], aiQ: '', aiTyping: false, aiAtt: [], aiUp: {}, edSec: 0, toast: '', push: null,
       role: (p && MACC[p.role]) ? p.role : 'admin',
       theme: (p && p.theme) || (() => { try { return localStorage.getItem('wz_m_theme') || 'light'; } catch (e) { return 'light'; } })(),
       fdark: false, samsung: (() => { try { return /SamsungBrowser/i.test(navigator.userAgent || ''); } catch (e) { return false; } })(), fdOk: (() => { try { return localStorage.getItem('wz_m_fdark_ok') === '1'; } catch (e) { return false; } })()
@@ -1347,7 +1389,7 @@ class Component extends DCLogic {
       addphoto: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'add' }, lib: { screen: 'pl', plId: 'p2', stack: ['pls'], sheet: 'lib' }, quick: { sheet: 'quick' }, quickplaces: { sheet: 'quick', qStep: 'places', quick: Object.assign({}, st.quick, { all: false, ids: ['snp', 'snpk', 'mos', 'rad', 'bul'] }) },
       switch: { screen: 'plc', sheet: 'sw', sw: { step: 'dur', from: 'pl', dev: 'portrait', places: ['hsv'], pl: 'p10', cur: 'p3', dur: 'custom' } },
       approvals: { screen: 'apv', stack: ['more'] }, approval: { screen: 'ad', adId: 'a1', stack: ['more', 'apv'] }, preview: { screen: 'pv', pvPl: 'p2', stack: ['pls', 'pl'] }, gallery: { screen: 'gal', stack: ['more'] },
-      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, msgdetail: { screen: 'hist', stack: ['more'], sheet: 'qd', qdId: 'h2' }, place: { screen: 'pd', pdId: 'hsv', stack: ['plc'] }, placesmap: { screen: 'plc', pcView: 'map' }, placesmapsel: { screen: 'plc', pcView: 'map', mapSel: 'snp', map: { cx: 500, cy: 520, z: 3 } }, placeoff: { screen: 'pd', pdId: 'nem', stack: ['plc'] }, delivery: { sheet: 'dl', dlId: 'd1' }, activity: { screen: 'act', stack: ['more'] }, activitydetail: { screen: 'act', stack: ['more'], sheet: 'ac', acId: 'ls9' }, offline: { netSim: true, netAt: HM() },
+      places: { screen: 'plc' }, settings: { screen: 'set', stack: ['more'] }, history: { screen: 'hist', stack: ['more'] }, msgdetail: { screen: 'hist', stack: ['more'], sheet: 'qd', qdId: 'h2' }, place: { screen: 'pd', pdId: 'hsv', stack: ['plc'] }, placesmap: { screen: 'plc', pcView: 'map' }, aiadd: { screen: 'ai', sheet: 'aiadd' }, aiatt: { screen: 'ai', aiAtt: [{ id: 'fs1', name: 'IMG_2481.jpg', size: '2,4 MB', kind: 'img', url: SAMPLE_PH, ext: 'JPG' }, { id: 'fs2', name: 'oznam-vyluka-linka-5.pdf', size: '184 kB', kind: 'doc', url: '', ext: 'PDF' }] }, placesmapsel: { screen: 'plc', pcView: 'map', mapSel: 'snp', map: { cx: 500, cy: 520, z: 3 } }, placeoff: { screen: 'pd', pdId: 'nem', stack: ['plc'] }, delivery: { sheet: 'dl', dlId: 'd1' }, activity: { screen: 'act', stack: ['more'] }, activitydetail: { screen: 'act', stack: ['more'], sheet: 'ac', acId: 'ls9' }, offline: { netSim: true, netAt: HM() },
       msgedit: { sheet: 'quick', qEditId: 'q1', quick: Object.assign(QDEF(), { text: qa[0].text, prio: 'warn', pos: 'top', dur: 'keep', all: true, ids: [], cEd: 't' }) },
       quicktpl: { sheet: 'quick', quick: Object.assign(QDEF(), { text: 'Linka 14 mešká približne 15 minút. Ďakujeme za trpezlivosť.', prio: 'warn', pos: 'bottom', dur: 'h1', all: false, ids: ['snp', 'snpk', 'rad', 'bul', 'hs1'], tpl: 't0', tL: '14', tM: 15 }) },
       more: { screen: 'more' }, lang: { screen: 'more', sheet: 'lang' }, accounts: { screen: 'more', sheet: 'acc' }, ai: { screen: 'ai', aiChat: [{ id: 1, who: 'me', text: 'Napíš správu o odklone', chip: true }, { id: 2, who: 'ai', kind: 'draft', sit: 'detour' }, { id: 3, who: 'me', text: 'Ktoré miesta majú hlásenie?', chip: true }, { id: 4, who: 'ai', kind: 'prob' }] }
@@ -1574,7 +1616,7 @@ class Component extends DCLogic {
     else if (sc === 'hist') { hdTitle = 'História správ'; hdSub = ''; }
     else if (sc === 'act') { hdTitle = 'Záznam aktivít'; hdSub = ''; }
     else if (sc === 'pd') { hdTitle = pdP.name; hdSub = pdP.n ? DEV[pdP.dev][1] + (pdP.g >= 0 ? ' · ' + GRP[pdP.g] : '') : 'Bez zariadenia'; }
-    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length ? [act('Nová konverzácia', IC.plus, () => { clearTimeout(self._tai); set({ aiChat: [], aiQ: '', aiTyping: false }); })] : []; }
+    else if (sc === 'ai') { hdTitle = 'AI asistent'; hdSub = ''; hdActs = s.aiChat.length || s.aiAtt.length ? [act('Nový chat', IC.newchat, () => aiNew())] : []; }
     else if (sc === 'pv') { hdTitle = 'Náhľad'; hdSub = (plById(s.pvPl) || pl).name; }
 
     // ---------- rýchle správy: kam ----------
@@ -2100,19 +2142,60 @@ class Component extends DCLogic {
       if (words.some((w) => ['ahoj', 'cau', 'hello', 'hallo', 'hi', 'zdravim', 'czesc'].indexOf(w) >= 0) || aiAny(q, ['dobry den', 'dzien dobry', 'guten tag'])) return { kind: 'hi' };
       return { kind: 'fallback' };
     };
-    const aiScroll = () => setTimeout(() => { try { const el = document.getElementById('ai-chat'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40);
-    const aiAsk = (text, chip) => {
-      const t = String(text || '').trim(); if (!t || s.aiTyping) return;
+    // ---------- AI: prílohy z telefónu (fotka, video, zvuk, dokument) – ostávajú len v prehliadači ----------
+    const AIMAX = 10;
+    const fSize = (b) => b >= 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' kB';
+    const AKT = { img: ['Fotka', IC.image], vid: ['Video', IC.film], aud: ['Zvuk', IC.music], doc: ['Dokument', IC.file] };
+    const aiFiles = (e) => {
+      const fl = [].slice.call((e && e.target && e.target.files) || []); try { e.target.value = ''; } catch (x) {}
+      if (!fl.length) return;
+      const ok = fl.filter((f) => (f.size || 0) <= 100 * 1048576); const big = fl.filter((f) => (f.size || 0) > 100 * 1048576);
+      const take = ok.slice(0, Math.max(0, AIMAX - s.aiAtt.length));
+      const add = take.map((f) => { const ty = String(f.type || ''); const kind = /^image\//.test(ty) ? 'img' : /^video\//.test(ty) ? 'vid' : /^audio\//.test(ty) ? 'aud' : 'doc'; let url = ''; if (kind === 'img') { try { url = URL.createObjectURL(f); } catch (x) {} } const m = /\.([a-z0-9]{1,5})$/i.exec(f.name || ''); return { id: 'f' + self.nid(), name: f.name || 'subor', size: fSize(f.size || 0), kind, url, ext: m ? m[1].toUpperCase() : '' }; });
+      if (add.length) set({ aiAtt: s.aiAtt.concat(add), sheet: null });
+      if (big.length) say('Súbor „' + big[0].name + '“ je väčší ako 100 MB.', null, true);
+      else if (ok.length > take.length) say('Naraz sa dá priložiť najviac 10 súborov.', null, true);
+    };
+    const aiRevoke = (list) => list.forEach((a) => { if (a && a.url && /^blob:/.test(a.url) && !s.aiUp[a.id]) { try { URL.revokeObjectURL(a.url); } catch (x) {} } });
+    const aiRm = (a) => () => { aiRevoke([a]); set({ aiAtt: s.aiAtt.filter((x) => x.id !== a.id) }); };
+    const aiNew = () => { clearTimeout(self._tai); aiRevoke(s.aiAtt.concat([].concat.apply([], s.aiChat.map((m) => (m.who === 'me' && m.att) || [])))); set({ aiChat: [], aiQ: '', aiTyping: false, aiAtt: [], sheet: null }); };
+    // výber súboru: ťuknutie otvorí výber telefónu (fotoaparát, fotky alebo súbory)
+    const aiPick = (id) => () => { const el = document.getElementById(id); if (el) { try { el.click(); } catch (x) {} } set({ sheet: null }); };
+    const aiMedia = (att) => att.filter((a) => a.kind === 'img' || a.kind === 'vid');
+    const aiGalable = (att) => att.filter((a) => a.kind !== 'doc');
+    const aiPlsFor = (att) => { const vid = att.some((a) => a.kind === 'vid'); return vPls.filter((p) => p.flow !== 'pending' && !isLedDev(p.dev) && !PARTS[p.dev] && (!vid || !!(DCAP[p.dev] || {}).video)); };
+    // nahratie do galérie (priečinok Z telefónu); súbor nahratý raz sa druhýkrát nenahrá
+    const aiGalPut = (st, att) => { let gal = st.gal.slice(); const up = Object.assign({}, st.aiUp); const added = [], had = [];
+      aiGalable(att).forEach((a) => { if (up[a.id] && gal.some((g) => g.id === up[a.id])) { had.push(a); return; } const n = gal.length + 1; const g = { id: 'g' + n + 'x' + self.nid(), name: a.name, title: a.name.replace(/\.[^.]+$/, ''), type: a.kind, size: a.size, used: 0, usedIn: [], folder: 'Z telefónu', col: a.kind === 'img' && a.url ? a.url : NEWC[n % 4] }; gal = gal.concat([g]); up[a.id] = g.id; added.push(a); });
+      return { gal, aiUp: up, added, had }; };
+    const aiToPl = (m, p) => {
       if (needNet()) return;
-      const ans = aiAnswer(t); const n = s.aiChat.length;
-      set({ aiChat: s.aiChat.concat([{ id: n + 1, who: 'me', text: t, chip: !!chip }]), aiQ: '', aiTyping: true }); aiScroll();
-      clearTimeout(self._tai); self._tai = setTimeout(() => { const c = self.state.aiChat; self.setState({ aiTyping: false, aiChat: c.concat([Object.assign({ id: c.length + 1, who: 'ai' }, ans)]) }); aiScroll(); }, 650);
+      const med = aiMedia(m.att || []); const r = aiGalPut(s, med); let gal = r.gal;
+      const files = med.map((a) => gal.find((g) => g.id === r.aiUp[a.id])).filter(Boolean);
+      const sls = files.map((f) => newSl('photo', f.title, '', 10, '#1A1F1F', { img: f.col, imgName: f.name, isVid: f.type === 'vid' }));
+      files.forEach((f) => { gal = bumpGal(gal, f.id, p.name); });
+      set({ gal, aiUp: r.aiUp, snap: snapFor(p.id), pls: s.pls.map((x) => x.id === p.id ? Object.assign({}, x, { slides: sls.reduce((acc, sl) => insertSl(Object.assign({}, x, { slides: acc }), sl), x.slides), flow: 'draft', log: x.log.concat(sls.map((sl) => ['add', 'Pridaná snímka „' + sl.title + '“ (' + sl.imgName + ')', 'a' + sl.id])) }) : x),
+        aiChat: s.aiChat.map((x) => x.id === m.id ? Object.assign({}, x, { donePl: p.id }) : x) });
+      say('Pridané do playlistu „' + p.name + '“. ' + (ACC.pub ? 'Nezabudnite ho zverejniť.' : 'Nezabudnite ho odoslať na schválenie.'));
+    };
+    const aiAttAnswer = (raw, att) => { const q = aiNorm(raw); return { kind: 'att', att, intent: aiAny(q, ['galer', 'gallery']) ? 'gal' : aiAny(q, ['playlist', 'snimk', 'snimek', 'slide', 'slajd', 'folie']) ? 'pl' : 'any' }; };
+    const aiAttV = (a) => ({ isImg: a.kind === 'img' && !!a.url, notImg: !(a.kind === 'img' && a.url), isImgA: a.kind === 'img' && a.url ? 'true' : 'false', src: a.url || '', d: AKT[a.kind][1], name: a.name, size: a.size + ' · ', typeT: AKT[a.kind][0], rmA: 'Odstrániť prílohu: ' + a.name, rm: aiRm(a) });
+    const aiAttItem = (a) => ({ name: a.name, subD: a.size + ' · ', sub: AKT[a.kind][0], canTap: false, noTap: true, tap: () => {}, aria: '' });
+    const aiScroll = () => setTimeout(() => { try { const el = document.getElementById('ai-chat'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40);
+    // attIn = prílohy z predchádzajúcej správy (tlačidlo v odpovedi AI); inak sa pošlú priložené súbory z poľa na písanie
+    const aiAsk = (text, chip, attIn) => {
+      const att = attIn || (s.aiAtt.length ? s.aiAtt : null);
+      const t = String(text || '').trim(); if ((!t && !att) || s.aiTyping) return;
+      if (needNet()) return;
+      const ans = att ? aiAttAnswer(t, att) : aiAnswer(t); const n = s.aiChat.length;
+      set({ aiChat: s.aiChat.concat([{ id: n + 1, who: 'me', text: t, chip: !!chip, att: att || null, attHid: !!attIn }]), aiQ: '', aiTyping: true, aiAtt: attIn ? s.aiAtt : [] }); aiScroll();
+      clearTimeout(self._tai); self._tai = setTimeout(() => { const st = self.state; const c = st.aiChat; let a2 = ans, patch = {}; if (ans.kind === 'att' && ans.intent === 'gal') { const r = aiGalPut(st, att); a2 = Object.assign({}, ans, { added: r.added, had: r.had }); patch = { gal: r.gal, aiUp: r.aiUp }; } self.setState(Object.assign({ aiTyping: false, aiChat: c.concat([Object.assign({ id: c.length + 1, who: 'ai' }, a2)]) }, patch)); aiScroll(); }, 650);
     };
     const aiUse = (sit, t) => () => set({ sheet: 'quick', qStep: 'main', qSearch: '', qEditId: null, quick: Object.assign({}, s.qEditId || s.quick.one ? QDEF() : s.quick, { text: Tx(t), tpl: null, prio: AIS[sit][1], pos: AIS[sit][1] === 'warn' ? 'top' : 'bottom' }) });
     const aiItemP = (p) => { const ep = p.n ? effPl(p) : null; return { name: p.name, subD: p.n && ep ? ep.name : '', sub: (p.n === 0 ? 'Miesto zatiaľ nemá zariadenie' : ep ? '' : 'Bez playlistu') + (p.n > 0 && !p.on ? ' · offline ' + p.off : ''), canTap: !!ep, noTap: !ep, tap: () => { if (ep) editAtPlace(p.id); }, aria: ep ? 'Upraviť playlist: ' + ep.name : '' }; };
     const aiBuild = (m) => {
-      const base = { id: m.id, who: m.who, me: m.who === 'me', meChip: m.who === 'me' && !!m.chip, meTyped: m.who === 'me' && !m.chip, ai: m.who === 'ai', text: '', items: [], sugg: [], acts: [], note: '' };
-      if (m.who === 'me') return Object.assign(base, { text: m.text });
+      const base = { id: m.id, who: m.who, me: m.who === 'me', meChip: m.who === 'me' && !!m.chip && !!m.text, meTyped: m.who === 'me' && !m.chip && !!m.text, ai: m.who === 'ai', text: '', items: [], sugg: [], acts: [], note: '' };
+      if (m.who === 'me') { const av = !m.attHid && m.att ? m.att.map(aiAttV) : []; return Object.assign(base, { text: m.text, hasAtt: av.length > 0, attV: av, attN: String(av.length) }); }
       const r = base; const A = (label, fn) => r.acts.push({ label, fn });
       if (m.kind === 'draft') { r.text = AIH[m.sit]; r.sugg = AIS[m.sit][2].map((t) => ({ text: t, use: aiUse(m.sit, t), useA: 'Použiť návrh: ' + t })); r.note = 'Tlačidlo Použiť otvorí rýchlu správu s týmto textom. Pred odoslaním ho môžete upraviť.'; }
       else if (m.kind === 'sitask') { r.text = 'O čom má byť správa? Vyberte situáciu.'; Object.keys(AIS).forEach((k) => A(AIS[k][0], () => aiAsk(AIQ[k], true))); }
@@ -2120,6 +2203,27 @@ class Component extends DCLogic {
       else if (m.kind === 'prob') { const ps = vPlaces.filter(pcProb); if (!ps.length) r.text = 'Všetky miesta sú v poriadku.'; else { r.text = 'Tieto miesta majú hlásenie:'; r.items = ps.map((p) => Object.assign(aiItemP(p), { subD: '', sub: p.on ? 'Expirovaný playlist' : 'offline ' + p.off })); A('Zobraziť v Miestach', () => set({ screen: 'plc', stack: [], sheet: null, pcF: 'prob', pq: '' })); } }
       else if (m.kind === 'exp') { const ps = vPls.filter((p) => p.st === 'expirovany'); if (!ps.length) r.text = 'Žiadny playlist neexpiroval.'; else { r.text = 'Tieto playlisty expirovali:'; r.items = ps.map((p) => ({ name: p.name, subD: '', sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => nav('pl', { plId: p.id }), aria: 'Upraviť playlist: ' + p.name })); A('Zobraziť v Playlistoch', () => set({ screen: 'pls', stack: [], sheet: null, filt: 'expirovany', q: '' })); } }
       else if (m.kind === 'play') { r.text = 'Na týchto miestach sa teraz prehráva:'; r.items = m.ids.map(placeById).filter(Boolean).filter((p) => vPlaces.indexOf(p) >= 0).map(aiItemP); }
+      else if (m.kind === 'att') {
+        const att = m.att || []; const med = aiMedia(att); const gl = aiGalable(att); const docs = att.length - gl.length; const pls = aiPlsFor(med);
+        const askGal = () => aiAsk('Nahraj do galérie', true, att); const askPl = () => aiAsk('Pridaj do playlistu', true, att);
+        if (m.intent === 'gal') {
+          if (!gl.length) r.text = 'Galéria prijíma obrázky, videá a zvuky. Dokumenty do nej nenahrám.';
+          else if (!(m.added || []).length) r.text = 'Tieto súbory už sú v galérii.';
+          else { r.text = 'Nahral som do galérie, priečinok Z telefónu:'; r.items = m.added.map(aiAttItem); if (docs) r.note = 'Dokumenty galéria neprijíma, tie som vynechal.'; }
+          if (gl.length) A('Otvoriť galériu', () => nav('gal')); if (med.length && pls.length) A('Pridať do playlistu', askPl);
+        } else if (m.intent === 'pl') {
+          if (!med.length) r.text = 'Do playlistu sa dajú pridať len fotky a videá.';
+          else if (!pls.length) r.text = med.some((a) => a.kind === 'vid') ? 'Nemáte playlist pre zariadenie, ktoré prehráva video.' : 'Nemáte playlist pre displej, do ktorého by sa dala pridať fotka.';
+          else if (m.donePl) { const p = plById(m.donePl); r.text = 'Pridané do playlistu:'; r.items = p ? [{ name: p.name, subD: '', sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => nav('pl', { plId: p.id }), aria: 'Upraviť playlist: ' + p.name }] : []; r.note = ACC.pub ? 'Snímky sú na konci playlistu. Playlist ešte treba zverejniť.' : 'Snímky sú na konci playlistu. Playlist ešte treba odoslať na schválenie.'; }
+          else { r.text = 'Do ktorého playlistu? Snímky pridám na koniec.'; r.items = pls.map((p) => ({ name: p.name, subD: '', sub: DEV[p.dev][1], canTap: true, noTap: false, tap: () => aiToPl(m, p), aria: 'Pridať do playlistu: ' + p.name })); if (att.length > med.length) r.note = 'Do playlistu pridám len fotky a videá.'; }
+        } else if (!gl.length) {
+          r.text = att.length === 1 ? 'Súbor som dostal.' : 'Súbory som dostal.'; r.note = 'Obsah dokumentov prototyp nečíta. V aplikácii z nich AI navrhne text rýchlej správy.';
+          if (canQuick && s.aiOn.a1) A('Napísať správu', () => aiAsk('Napíš správu', true));
+        } else {
+          r.text = att.length === 1 ? 'Čo mám s prílohou urobiť?' : 'Čo mám s prílohami urobiť?'; A('Nahrať do galérie', askGal); if (med.length && pls.length) A('Pridať do playlistu', askPl);
+          if (docs) r.note = 'Galéria prijíma obrázky, videá a zvuky. Obsah dokumentov prototyp nečíta.';
+        }
+      }
       else if (m.kind === 'noplace') r.text = 'Ktoré miesto myslíte? Napíšte jeho názov, napríklad Hlavná stanica alebo Nemocnica.';
       else if (m.kind === 'apv') {
         if (ACC.apv) { if (!pendingOthers.length) r.text = 'Nič nečaká na schválenie.'; else { r.text = 'Na schválenie čaká:'; r.items = pendingOthers.map((a) => ({ name: a.name, subD: a.author, sub: ' · ' + a.when, canTap: true, noTap: false, tap: () => nav('ad', { adId: a.id, apvNote: '' }), aria: a.name })); A('Otvoriť schvaľovanie', () => nav('apv', { apvTab: 'pending' })); } }
@@ -2136,7 +2240,11 @@ class Component extends DCLogic {
     };
     const aiMsgs = s.aiChat.map(aiBuild);
     const aiChipQ = (canQuick ? ['Napíš správu o meškaní', 'Napíš správu o odklone'] : []).concat(['Ktoré miesta majú hlásenie?', ACC.partner ? 'Čo sa hrá na Parkovisku Centrum?' : 'Čo sa hrá na Hlavnej stanici?', 'Ktoré playlisty expirovali?']).concat(ACC.apv || ACC.partner ? ['Čo čaká na schválenie?'] : []).concat(['Ktoré správy sú zobrazené?']);
-    const aiChips = aiChipQ.map((t) => ({ label: t, ask: () => aiAsk(t, true) }));
+    const aiAttQ = s.aiAtt.length ? [].concat(aiGalable(s.aiAtt).length ? ['Nahraj do galérie'] : [], aiMedia(s.aiAtt).length && aiPlsFor(aiMedia(s.aiAtt)).length ? ['Pridaj do playlistu'] : []) : null;
+    const aiChips = (aiAttQ || aiChipQ).map((t) => ({ label: t, ask: () => aiAsk(t, true) }));
+    const aiFull = s.aiAtt.length >= AIMAX;
+    const aiAddOpts = [[IC.camera, 'Odfotiť', 'Otvorí fotoaparát telefónu', 'ai-f-cam'], [IC.image, 'Fotky a videá', 'Z fotiek v telefóne', 'ai-f-ph'], [IC.file, 'Súbory', 'Dokument, zvuk alebo iný súbor z telefónu', 'ai-f-doc']]
+      .map((o) => ({ d: o[0], title: o[1], sub: aiFull ? 'Priložených je už 10 súborov.' : o[2], pick: aiPick(o[3]), off: aiFull }));
 
     // ---------- DETAIL MIESTA ----------
     const pdEp = pdP.n ? effPl(pdP) : null; const pdBase = pdP.n ? plById(pdP.pl) : null; const pdBtn = plBtn(pdEp);
@@ -2290,7 +2398,8 @@ class Component extends DCLogic {
       mapZin: mapZoom(1.6), mapZout: mapZoom(1 / 1.6), mapFit: () => set({ map: { cx: 500, cy: 600, z: 1 }, mapSel: null }), mapZinOff: MG.z >= 5.99, mapZoutOff: MG.z <= 1.01,
       mapHasSel: !!mapSelP, mapNoSel: !mapSelP, mapCard: mapSelP ? pcRowOf(mapSelP) : pcRowOf(s.places[0]), mapUnsel: () => set({ mapSel: null }), pcFootT: 'Zobrazených ' + pcRows.length + ' z ' + vPlaces.length + ' miest',
       notifRows, aiRows,
-      aiHi: ACC.first ? 'Dobrý deň, ' + ACC.first + '. S čím vám pomôžem?' : 'Dobrý deň. S čím vám pomôžem?', aiIntro: canQuick ? 'Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie.' : 'Nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo ste odoslali na schválenie.', canQuick, aiMsgs, aiChips, aiTyping: s.aiTyping, aiQ: s.aiQ, aiNoQ: !s.aiQ.trim() || s.aiTyping, setAiQ: (e) => set({ aiQ: e.target.value }), aiSend: () => aiAsk(s.aiQ, false), aiKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(s.aiQ, false); } },
+aiAttV: s.aiAtt.map(aiAttV), aiHasAtt: s.aiAtt.length > 0, aiHasChips: aiChips.length > 0, aiFiles, aiOpenAdd: () => set({ sheet: 'aiadd' }), sh_aiadd: s.sheet === 'aiadd', aiAddOpts,
+      aiHi: ACC.first ? 'Dobrý deň, ' + ACC.first + '. S čím vám pomôžem?' : 'Dobrý deň. S čím vám pomôžem?', aiIntro: canQuick ? 'Napíšem text rýchlej správy, nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo čaká na schválenie.' : 'Nájdem miesta s hlásením, poviem, čo sa kde prehráva, a ukážem, čo ste odoslali na schválenie.', canQuick, aiMsgs, aiChips, aiTyping: s.aiTyping, aiQ: s.aiQ, aiNoQ: (!s.aiQ.trim() && !s.aiAtt.length) || s.aiTyping, setAiQ: (e) => set({ aiQ: e.target.value }), aiSend: () => aiAsk(s.aiQ, false), aiKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(s.aiQ, false); } },
       // náhľad
       pvHas: pvParts.length > 0, pvNone: pvParts.length === 0, pvParts, pvWrapS: stackS(pvPl), pvDevT: DEV[pvDev][0], pvSegs: pvTot ? [] : pvSegs,
       pvCap: pvTot ? 'Tri displeje sa prehrávajú súčasne' : pvPl.slides.length ? (Math.min(s.pvI, pvPl.slides.length - 1) + 1) + '/' + pvPl.slides.length + ' · ' : '', pvCapD: pvTot || !pvPl.slides.length ? '' : pvObj.title, pvTime: pvTot ? mmss(s.pvE || 0) : pvPl.slides.length ? s.pvT + ' / ' + pvObj.dur + ' s' : '',

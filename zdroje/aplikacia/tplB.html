@@ -255,6 +255,7 @@
         <div class="msg" data-who="ai"><div style="font-weight: 700">{{ aiHi }}</div><div>{{ aiIntro }}</div><div class="mut sm">Prototyp: AI odpovedá z ukážkových údajov aplikácie.</div></div>
         <sc-for list="{{ aiMsgs }}" as="m" hint-placeholder-count="2">
           <div class="msg" data-who="{{ m.who }}">
+            <sc-if value="{{ m.hasAtt }}" hint-placeholder-val="{{ false }}"><div class="msgat" data-n="{{ m.attN }}"><sc-for list="{{ m.attV }}" as="a" hint-placeholder-count="1"><sc-if value="{{ a.isImg }}" hint-placeholder-val="{{ true }}"><img src="{{ a.src }}" alt="{{ a.name }}" translate="no"></sc-if><sc-if value="{{ a.notImg }}" hint-placeholder-val="{{ false }}"><span class="mf"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg><span class="aiat-t"><span class="aiat-n" translate="no">{{ a.name }}</span><span class="aiat-m"><span translate="no">{{ a.size }}</span><span>{{ a.typeT }}</span></span></span></span></sc-if></sc-for></div></sc-if>
             <sc-if value="{{ m.meChip }}" hint-placeholder-val="{{ false }}"><div>{{ m.text }}</div></sc-if>
             <sc-if value="{{ m.meTyped }}" hint-placeholder-val="{{ false }}"><div translate="no">{{ m.text }}</div></sc-if>
             <sc-if value="{{ m.ai }}" hint-placeholder-val="{{ true }}">
@@ -272,8 +273,12 @@
         <sc-if value="{{ aiTyping }}" hint-placeholder-val="{{ false }}"><div class="msg" data-who="ai" role="status"><span class="mut">AI píše…</span></div></sc-if>
       </div>
       <div class="aiq">
-        <div class="chips"><sc-for list="{{ aiChips }}" as="c" hint-placeholder-count="4"><button class="chip" onClick="{{ c.ask }}">{{ c.label }}</button></sc-for></div>
-        <div class="aiq-r"><input class="inp" value="{{ aiQ }}" onInput="{{ setAiQ }}" onKeyDown="{{ aiKey }}" placeholder="Napíšte otázku alebo požiadavku" aria-label="Otázka pre AI asistenta" enterkeyhint="send"><button class="aiq-send" onClick="{{ aiSend }}" disabled="{{ aiNoQ }}" aria-label="Odoslať otázku"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.send }}"></path></svg></button></div>
+        <sc-if value="{{ aiHasChips }}" hint-placeholder-val="{{ true }}"><div class="chips"><sc-for list="{{ aiChips }}" as="c" hint-placeholder-count="4"><button class="chip" onClick="{{ c.ask }}">{{ c.label }}</button></sc-for></div></sc-if>
+        <sc-if value="{{ aiHasAtt }}" hint-placeholder-val="{{ false }}"><div class="aiatt" role="list" aria-label="Prílohy"><sc-for list="{{ aiAttV }}" as="a" hint-placeholder-count="2"><div class="aiat" role="listitem" data-img="{{ a.isImgA }}"><sc-if value="{{ a.isImg }}" hint-placeholder-val="{{ true }}"><img class="aiat-im" src="{{ a.src }}" alt="{{ a.name }}" translate="no"></sc-if><sc-if value="{{ a.notImg }}" hint-placeholder-val="{{ false }}"><span class="aiat-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ a.d }}"></path></svg></span><span class="aiat-t"><span class="aiat-n" translate="no">{{ a.name }}</span><span class="aiat-m"><span translate="no">{{ a.size }}</span><span>{{ a.typeT }}</span></span></span></sc-if><button class="aiat-x" aria-label="{{ a.rmA }}" onClick="{{ a.rm }}"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></span></button></div></sc-for></div></sc-if>
+        <div class="aiq-r"><button class="aiq-add" aria-label="Pridať fotku alebo súbor" aria-haspopup="dialog" onClick="{{ aiOpenAdd }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.plus }}"></path></svg></button><input class="inp" value="{{ aiQ }}" onInput="{{ setAiQ }}" onKeyDown="{{ aiKey }}" placeholder="Napíšte otázku" aria-label="Otázka pre AI asistenta" enterkeyhint="send"><button class="aiq-send" onClick="{{ aiSend }}" disabled="{{ aiNoQ }}" aria-label="Odoslať otázku"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.send }}"></path></svg></button></div>
+        <input type="file" id="ai-f-cam" class="vh" accept="image/*" capture="environment" tabindex="-1" aria-label="Odfotiť" onChange="{{ aiFiles }}">
+        <input type="file" id="ai-f-ph" class="vh" accept="image/*,video/*" multiple="{{ true }}" tabindex="-1" aria-label="Fotky a videá" onChange="{{ aiFiles }}">
+        <input type="file" id="ai-f-doc" class="vh" multiple="{{ true }}" tabindex="-1" aria-label="Súbory" onChange="{{ aiFiles }}">
       </div>
     </sc-if>
 
@@ -415,6 +420,18 @@
         </sc-if>
       </div>
       <div class="sheet-f"><button class="btn" data-k="p" style="flex: 1" disabled="{{ swOff }}" onClick="{{ swNext }}">{{ swBtn }}</button></div>
+    </div></div>
+  </sc-if>
+
+  <!-- ===== AI ASISTENT: + (priložiť fotku alebo súbor, nový chat) ===== -->
+  <sc-if value="{{ sh_aiadd }}" hint-placeholder-val="{{ false }}">
+    <div class="sheetbg" onClick="{{ bgClose }}"><div class="sheet" role="dialog" aria-label="Pridať do chatu">
+      <div class="grab"></div>
+      <div class="sheet-h"><div class="shh">Pridať do chatu</div><button class="ib" onClick="{{ closeSheet }}" aria-label="Zavrieť"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ ic.close }}"></path></svg></button></div>
+      <div class="sheet-b" style="gap: 10px">
+        <sc-for list="{{ aiAddOpts }}" as="o" hint-placeholder-count="3"><button class="opt" onClick="{{ o.pick }}" disabled="{{ o.off }}"><span class="ico" style="width: 44px; height: 44px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ o.d }}"></path></svg></span><span style="flex: 1; text-align: left"><span class="nm">{{ o.title }}</span><span class="mut sm" style="display: block">{{ o.sub }}</span></span></button></sc-for>
+        <div class="mut sm">Prototyp: súbory ostávajú len v tomto prehliadači, nikam sa neodosielajú.</div>
+      </div>
     </div></div>
   </sc-if>
 

@@ -167,7 +167,7 @@ class Component extends DCLogic {
           isText: c.type === 'text', isPhoto: c.type === 'photo', isDeps: c.type === 'deps', text: c.text || '', cap: c.cap || '', hasCap: !!c.cap, rows,
           boxS: 'position:absolute;left:' + c.x + '%;top:' + c.y + '%;width:' + c.w + '%;height:' + c.h + '%;box-sizing:border-box;overflow:hidden;background:' + (['photo', 'video', 'web', 'map', 'weather', 'menu'].indexOf(c.type) >= 0 ? '#1A1F1F' : (c.bg || '#1E2A5A')) + ';box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)',
           txS: 'position:absolute;inset:0;display:flex;align-items:center;padding:0 ' + pad + 'px;box-sizing:border-box;color:#fff;font-weight:700;font-size:' + fs + 'px;line-height:1.15;overflow:hidden',
-          phS: 'position:absolute;inset:0;background:radial-gradient(circle at 72% 30%, rgba(255,255,255,.38), rgba(255,255,255,0) 38%), linear-gradient(135deg,' + (c.img || '#F2A65A') + ',#1A1F1F 160%)',
+          phS: /^(blob:|data:)/.test(String(c.img || '')) ? 'position:absolute;inset:0;background:#1A1F1F url("' + c.img + '") center/cover no-repeat' : 'position:absolute;inset:0;background:radial-gradient(circle at 72% 30%, rgba(255,255,255,.38), rgba(255,255,255,0) 38%), linear-gradient(135deg,' + (c.img || '#F2A65A') + ',#1A1F1F 160%)',
           capS: 'position:absolute;left:0;right:0;bottom:0;padding:' + Math.round(pad * 0.6) + 'px ' + pad + 'px;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:' + Math.round(fs * 0.8) + 'px',
           dpS: 'position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:' + Math.round(rf * 0.4) + 'px;padding:' + pad + 'px;box-sizing:border-box'
         });
@@ -184,7 +184,7 @@ class Component extends DCLogic {
       infoS: 'position:absolute;inset:0;background:' + bg + ';display:flex;flex-direction:column;justify-content:center;gap:10px;padding:' + (port ? '24px' : '28px 36px') + ';box-sizing:border-box',
       tS: 'color:#fff' + ';font-weight:700;font-size:' + (port ? 32 : 40) + 'px;line-height:1.1',
       xS: 'color:rgba(255,255,255,.9)' + ';font-size:' + (port ? 18 : 22) + 'px;line-height:1.25',
-      photoS: 'position:absolute;inset:0;background:radial-gradient(circle at 72% 30%, rgba(255,255,255,.38), rgba(255,255,255,0) 38%), linear-gradient(135deg,' + (p.img || '#F2A65A') + ',#1A1F1F 160%)',
+      photoS: /^(blob:|data:)/.test(String(p.img || '')) ? 'position:absolute;inset:0;background:#1A1F1F url("' + p.img + '") center/cover no-repeat' : 'position:absolute;inset:0;background:radial-gradient(circle at 72% 30%, rgba(255,255,255,.38), rgba(255,255,255,0) 38%), linear-gradient(135deg,' + (p.img || '#F2A65A') + ',#1A1F1F 160%)',
       sunS: 'position:absolute;left:0;right:0;bottom:0;height:38%;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.25))',
       capS: 'position:absolute;left:0;right:0;bottom:0;padding:14px 20px;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:' + (port ? 24 : 28) + 'px',
       depsS: 'position:absolute;inset:0;background:' + bg + ';display:flex;flex-direction:column;gap:' + (port ? 12 : 8) + 'px;padding:' + (port ? '24px 20px' : '22px 30px') + ';box-sizing:border-box',

@@ -20,6 +20,8 @@ Domov má pod tlačidlom rýchlej správy blok Vyžaduje pozornosť: offline mie
 
 Mapa miest: zoznam miest sa prepínačom Zoznam / Mapa nad zoznamom prepne na mapu, kde sú zariadenia umiestnené. Značka ukazuje stav farbou aj tvarom (online, hlásenie, offline, bez zariadenia; vozidlá majú hranatú značku s poslednou polohou), blízke miesta sa spoja do skupiny s počtom a ťuknutím sa mapa priblíži. Mapa sa posúva prstom, približuje dvoma prstami, kolieskom alebo tlačidlami; hľadanie a filtre platia aj pre mapu. Ťuknutie na značku ukáže kartu miesta s odkazom na Detail miesta. Detail miesta má časť Poloha s výrezom mapy, adresou a tlačidlom Zobraziť na mape. Mapa je v prototype ukážkový plán vymysleného mesta nakreslený priamo v stránke (bez mapových podkladov z internetu); v produkcii ju nahradí mapový podklad a skutočné súradnice zariadení.
 
+AI asistent – prílohy: tlačidlo + vľavo od poľa na písanie otvorí panel Pridať do chatu: Odfotiť (otvorí fotoaparát telefónu), Fotky a videá, Súbory (dokument, zvuk alebo iný súbor). Používa sa výber súborov telefónu, takže na Androide aj iPhone sa ukáže ich vlastný výber. Priložené súbory sú nad poľom na písanie (fotka s náhľadom, ostatné ako karta s názvom, veľkosťou a typom) a dajú sa odstrániť; naraz najviac 10 súborov, každý do 100 MB. Odoslať sa dajú aj bez textu. AI ponúkne nahratie do galérie (priečinok Z telefónu; fotky, videá a zvuky) alebo pridanie fotiek a videí ako snímok na koniec playlistu pre displej; playlist potom treba zverejniť alebo odoslať na schválenie. Obsah dokumentov prototyp nečíta, v aplikácii z nich AI navrhne text rýchlej správy. V prototype súbory ostávajú len v prehliadači a nikam sa neodosielajú; nahratá fotka sa však ukáže skutočná v galérii aj v náhľade snímky. Nový chat (vymaže konverzáciu aj prílohy) je ikona vpravo hore v hlavičke AI asistenta; ukáže sa, keď je v chate niečo napísané alebo priložené.
+
 Stav doručenia: po zverejnení alebo nahratí playlistu, po prepnutí a po odoslaní správy ukazuje hlásenie priebeh naživo (napríklad „Zobrazené na 27 z 29 miest, 2 offline – čaká na pripojenie“) a neblokuje ťuknutia. Panel Stav doručenia s priebehom po miestach (zobrazené alebo nahraté, odosiela sa, čaká – offline) sa otvára zo správy na Domove, z bloku Stav doručenia na Domove a z detailu miesta; detail playlistu má stav po miestach v časti Kde sa prehráva. V prototype sa doručenie simuluje: online miesta sú hotové do pár sekúnd, offline miesta čakajú.
 
 Rýchla správa: bežiaca aj naplánovaná správa sa dá upraviť (text, miesta, priorita, poloha, koniec) bez zrušenia a nového odoslania; uložiť sa dá až po zmene. Upraviť ju môže Admin, Director, autor správy alebo účet, ktorému patria všetky jej miesta. Pred odoslaním je náhľad na displeji na šírku, na výšku a na LED tabuli podľa vybraných miest. Šablóny Meškanie a Odklon majú výber linky ťuknutím a meškanie po 5 minútach; vlastný text sa dá uložiť ako šablóna (v prototype len do pamäte).
@@ -30,7 +32,7 @@ Záznam aktivít (Viac › Záznam aktivít) vidí len Admin a Director: kto čo
 
 Ide o prototyp na odsúhlasenie návrhu, nie o produkčnú aplikáciu. Údaje sú ukážkové a držia sa len v pamäti, takže po obnovení stránky sa všetko vráti na začiatok. Fotoaparát, nahrávanie a odoslanie na zariadenia sú simulované.
 
-- **Verzia:** verzia prototypu 52 (číslo je vo Viac úplne dole; artefakt typu Design v claude.ai čísluje zverejnenia samostatne), stav k 24. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
+- **Verzia:** verzia prototypu 53 (číslo je vo Viac úplne dole; artefakt typu Design v claude.ai čísluje zverejnenia samostatne), stav k 26. 11. 2026. Súbory v `project/` sú rovnaké ako v claude.ai.
 - **Jazyky rozhrania:** slovenčina (predvolená), čeština, poľština, angličtina, nemčina.
 - **Veľkosť:** navrhnuté pre telefón 390 × 844 px. Na širšej obrazovke sa aplikácia zobrazí v strede.
 
@@ -60,7 +62,7 @@ index.html                 úvodná stránka: telefón + zoznam obrazoviek
 project/                   samotný prototyp (rovnaké súbory ako v claude.ai)
   Main.dc.html             celá aplikácia: šablóna, štýly a logika v jednom súbore
   Slide.dc.html            pomocný komponent na vykreslenie snímky (displej, kiosk, LED)
-  Obr_*.dc.html            43 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
+  Obr_*.dc.html            45 vstupov priamo do konkrétnej obrazovky (načítajú Main so štartovou obrazovkou, jazykom, účtom alebo vzhľadom)
   i18n.js                  preklady (generované zo zdroje/preklady) a kontrola novej verzie
   ver.js, version.json     číslo verzie a čas zostavenia – podľa nich si telefón načíta novú verziu (generuje build.py)
   canvas.json              rozmiestnenie obrazoviek na plátne v claude.ai (na beh netreba)
@@ -123,6 +125,8 @@ zdroje/
 | `Obr_MiestoNaMape` | miesto na mape – vybrané miesto s kartou a odkazom na detail |
 | `Obr_BezPripojenia` | bez pripojenia – pruh s upozornením, odoslanie je zablokované |
 | `Obr_AI` | AI asistent (záložka dole) – chat: návrh textu správy, miesta s hlásením, čo sa kde hrá, schvaľovanie |
+| `Obr_AIPridat` | AI asistent – tlačidlo +: odfotiť, fotky a videá, súbory z telefónu |
+| `Obr_AIPrilohy` | AI asistent – priložená fotka a súbor pred odoslaním, návrhy čo s nimi urobiť |
 | `Obr_Nastavenia` | nastavenia – vzhľad (svetlý, tmavý, podľa telefónu), upozornenia, AI asistent a úložisko |
 | `Obr_PrepnutieUctu` | prepnutie účtu – Admin, Director, Worker, Partner |
 | `Obr_Partner` | účet Partner – len pridelené miesta, bez rýchlych správ, zmeny idú na schválenie |

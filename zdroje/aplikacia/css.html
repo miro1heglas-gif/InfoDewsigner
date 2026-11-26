@@ -101,6 +101,29 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[role=button]:fo
 .aiq-r .inp{flex:1;min-width:0;height:48px}
 .aiq-send{width:48px;height:48px;border-radius:12px;border:none;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
 .aiq-send:disabled{opacity:.45}
+/* v53: AI – prílohy z telefónu, tlačidlo + */
+.aiq{position:relative}
+.aiq-add{width:48px;height:48px;border-radius:12px;border:1px solid var(--ctl);background:var(--sf);color:var(--tx);display:flex;align-items:center;justify-content:center;flex:none}
+.vh{position:absolute;left:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;border:0;padding:0}
+.aiatt{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:12px 12px 2px 0;margin-top:-8px;scrollbar-width:none}
+.aiatt::-webkit-scrollbar{height:0}
+.aiat{position:relative;flex:none;height:64px;border-radius:12px;border:1px solid var(--ln);background:var(--sf2);display:flex;align-items:center;gap:8px}
+.aiat[data-img="true"]{width:64px}
+.aiat[data-img="false"]{width:176px;padding:0 26px 0 8px}
+.aiat-im{width:62px;height:62px;object-fit:cover;border-radius:11px;display:block}
+.aiat-ic{width:36px;height:36px;border-radius:9px;background:var(--acs);color:var(--act);display:flex;align-items:center;justify-content:center;flex:none}
+.aiat-t{min-width:0;flex:1;display:flex;flex-direction:column;line-height:1.25}
+.aiat-n{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aiat-m{font-size:12.5px;color:var(--mut);white-space:nowrap}
+.aiat-x{position:absolute;top:-14px;right:-14px;width:44px;height:44px;border:0;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;color:#fff}
+.aiat-x>span{width:24px;height:24px;border-radius:50%;background:#1F2323;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--sf)}
+.msgat{display:flex;flex-wrap:wrap;gap:6px}
+.msgat img{width:96px;height:96px;object-fit:cover;border-radius:10px;display:block;background:rgba(255,255,255,.15)}
+.msgat[data-n="1"] img{width:200px;height:150px}
+.msgat .mf{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.24);min-width:0;max-width:100%;flex:1 1 180px}
+.msgat .aiat-m{color:#fff}
+.opt:disabled{opacity:.5}
+
 .plrow{padding-right:4px;gap:4px}
 .plrow .rowmain{align-items:flex-start;padding:2px 0}
 .plact{color:var(--act)}

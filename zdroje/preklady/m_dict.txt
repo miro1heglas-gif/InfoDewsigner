@@ -976,3 +976,42 @@ Poloha ||| Poloha ||| Położenie ||| Location ||| Lage
 Zobraziť na mape ||| Zobrazit na mapě ||| Pokaż na mapie ||| Show on map ||| Auf Karte anzeigen
 Zobraziť na mape: {0} ||| Zobrazit na mapě: {0} ||| Pokaż na mapie: {0} ||| Show on map: {0} ||| Auf Karte anzeigen: {0}
 Posledná poloha vozidla ||| Poslední poloha vozidla ||| Ostatnie położenie pojazdu ||| Last vehicle position ||| Letzte Fahrzeugposition
+# ===== v53: AI asistent – prílohy z telefónu, + a nový chat =====
+Nový chat ||| Nový chat ||| Nowy czat ||| New chat ||| Neuer Chat
+Pridať do chatu ||| Přidat do chatu ||| Dodaj do czatu ||| Add to chat ||| Zum Chat hinzufügen
+Pridať fotku alebo súbor ||| Přidat fotku nebo soubor ||| Dodaj zdjęcie lub plik ||| Add a photo or file ||| Foto oder Datei hinzufügen
+Fotky a videá ||| Fotky a videa ||| Zdjęcia i filmy ||| Photos and videos ||| Fotos und Videos
+Z fotiek v telefóne ||| Z fotek v telefonu ||| Ze zdjęć w telefonie ||| From the photos on your phone ||| Aus den Fotos auf dem Telefon
+Súbory ||| Soubory ||| Pliki ||| Files ||| Dateien
+Dokument, zvuk alebo iný súbor z telefónu ||| Dokument, zvuk nebo jiný soubor z telefonu ||| Dokument, dźwięk lub inny plik z telefonu ||| A document, sound or other file from your phone ||| Ein Dokument, Ton oder eine andere Datei vom Telefon
+Priložených je už 10 súborov. ||| Přiloženo je už 10 souborů. ||| Załączono już 10 plików. ||| 10 files are already attached. ||| Es sind bereits 10 Dateien angehängt.
+Prototyp: súbory ostávajú len v tomto prehliadači, nikam sa neodosielajú. ||| Prototyp: soubory zůstávají jen v tomto prohlížeči, nikam se neodesílají. ||| Prototyp: pliki zostają tylko w tej przeglądarce, nigdzie nie są wysyłane. ||| Prototype: files stay in this browser only and are not sent anywhere. ||| Prototyp: Die Dateien bleiben nur in diesem Browser und werden nirgends gesendet.
+Napíšte otázku ||| Napište otázku ||| Napisz pytanie ||| Type a question ||| Frage eingeben
+Prílohy ||| Přílohy ||| Załączniki ||| Attachments ||| Anhänge
+Odstrániť prílohu: {0} ||| Odebrat přílohu: {0} ||| Usuń załącznik: {0} ||| Remove attachment: {0} ||| Anhang entfernen: {0}
+Dokument ||| Dokument ||| Dokument ||| Document ||| Dokument
+Nahraj do galérie ||| Nahraj do galerie ||| Wgraj do galerii ||| Upload to the gallery ||| In die Galerie hochladen
+Pridaj do playlistu ||| Přidej do playlistu ||| Dodaj do playlisty ||| Add to a playlist ||| Zu einer Playlist hinzufügen
+Otvoriť galériu ||| Otevřít galerii ||| Otwórz galerię ||| Open the gallery ||| Galerie öffnen
+Napísať správu ||| Napsat zprávu ||| Napisz wiadomość ||| Write a message ||| Meldung schreiben
+Čo mám s prílohou urobiť? ||| Co mám s přílohou udělat? ||| Co mam zrobić z załącznikiem? ||| What should I do with the attachment? ||| Was soll ich mit dem Anhang machen?
+Čo mám s prílohami urobiť? ||| Co mám s přílohami udělat? ||| Co mam zrobić z załącznikami? ||| What should I do with the attachments? ||| Was soll ich mit den Anhängen machen?
+Súbor som dostal. ||| Soubor jsem dostal. ||| Otrzymałem plik. ||| I received the file. ||| Ich habe die Datei erhalten.
+Súbory som dostal. ||| Soubory jsem dostal. ||| Otrzymałem pliki. ||| I received the files. ||| Ich habe die Dateien erhalten.
+Obsah dokumentov prototyp nečíta. V aplikácii z nich AI navrhne text rýchlej správy. ||| Obsah dokumentů prototyp nečte. V aplikaci z nich AI navrhne text rychlé zprávy. ||| Prototyp nie czyta treści dokumentów. W aplikacji AI zaproponuje na ich podstawie tekst szybkiej wiadomości. ||| The prototype does not read documents. In the app, the AI will draft a quick message from them. ||| Der Prototyp liest keine Dokumente. In der App schlägt die KI daraus den Text einer Schnellmeldung vor.
+Galéria prijíma obrázky, videá a zvuky. Obsah dokumentov prototyp nečíta. ||| Galerie přijímá obrázky, videa a zvuky. Obsah dokumentů prototyp nečte. ||| Galeria przyjmuje obrazy, filmy i dźwięki. Prototyp nie czyta treści dokumentów. ||| The gallery accepts images, videos and sounds. The prototype does not read documents. ||| Die Galerie nimmt Bilder, Videos und Töne an. Der Prototyp liest keine Dokumente.
+Galéria prijíma obrázky, videá a zvuky. Dokumenty do nej nenahrám. ||| Galerie přijímá obrázky, videa a zvuky. Dokumenty do ní nenahraji. ||| Galeria przyjmuje obrazy, filmy i dźwięki. Dokumentów do niej nie wgram. ||| The gallery accepts images, videos and sounds. I will not upload documents to it. ||| Die Galerie nimmt Bilder, Videos und Töne an. Dokumente lade ich nicht hoch.
+Tieto súbory už sú v galérii. ||| Tyto soubory už jsou v galerii. ||| Te pliki są już w galerii. ||| These files are already in the gallery. ||| Diese Dateien sind bereits in der Galerie.
+Nahral som do galérie, priečinok Z telefónu: ||| Nahrál jsem do galerie, složka Z telefonu: ||| Wgrałem do galerii, folder Z telefonu: ||| Uploaded to the gallery, folder From phone: ||| In die Galerie hochgeladen, Ordner Vom Telefon:
+Dokumenty galéria neprijíma, tie som vynechal. ||| Dokumenty galerie nepřijímá, ty jsem vynechal. ||| Galeria nie przyjmuje dokumentów, pominąłem je. ||| The gallery does not accept documents, so I skipped them. ||| Die Galerie nimmt keine Dokumente an, diese habe ich ausgelassen.
+Do playlistu sa dajú pridať len fotky a videá. ||| Do playlistu lze přidat jen fotky a videa. ||| Do playlisty można dodać tylko zdjęcia i filmy. ||| Only photos and videos can be added to a playlist. ||| Zu einer Playlist lassen sich nur Fotos und Videos hinzufügen.
+Nemáte playlist pre zariadenie, ktoré prehráva video. ||| Nemáte playlist pro zařízení, které přehrává video. ||| Nie masz playlisty dla urządzenia, które odtwarza wideo. ||| You have no playlist for a device that plays video. ||| Sie haben keine Playlist für ein Gerät, das Video abspielt.
+Nemáte playlist pre displej, do ktorého by sa dala pridať fotka. ||| Nemáte playlist pro displej, do kterého by šlo přidat fotku. ||| Nie masz playlisty dla wyświetlacza, do której można dodać zdjęcie. ||| You have no display playlist that a photo can be added to. ||| Sie haben keine Display-Playlist, zu der sich ein Foto hinzufügen lässt.
+Do ktorého playlistu? Snímky pridám na koniec. ||| Do kterého playlistu? Snímky přidám na konec. ||| Do której playlisty? Slajdy dodam na koniec. ||| Which playlist? I will add the slides at the end. ||| In welche Playlist? Ich füge die Folien am Ende hinzu.
+Do playlistu pridám len fotky a videá. ||| Do playlistu přidám jen fotky a videa. ||| Do playlisty dodam tylko zdjęcia i filmy. ||| I will add only photos and videos to the playlist. ||| Zur Playlist füge ich nur Fotos und Videos hinzu.
+Pridané do playlistu: ||| Přidáno do playlistu: ||| Dodano do playlisty: ||| Added to the playlist: ||| Zur Playlist hinzugefügt:
+Snímky sú na konci playlistu. Playlist ešte treba zverejniť. ||| Snímky jsou na konci playlistu. Playlist je ještě potřeba zveřejnit. ||| Slajdy są na końcu playlisty. Playlistę trzeba jeszcze opublikować. ||| The slides are at the end of the playlist. The playlist still needs to be published. ||| Die Folien sind am Ende der Playlist. Die Playlist muss noch veröffentlicht werden.
+Snímky sú na konci playlistu. Playlist ešte treba odoslať na schválenie. ||| Snímky jsou na konci playlistu. Playlist je ještě potřeba odeslat ke schválení. ||| Slajdy są na końcu playlisty. Playlistę trzeba jeszcze wysłać do zatwierdzenia. ||| The slides are at the end of the playlist. The playlist still needs to be sent for approval. ||| Die Folien sind am Ende der Playlist. Die Playlist muss noch zur Freigabe gesendet werden.
+Pridať do playlistu: {0} ||| Přidat do playlistu: {0} ||| Dodaj do playlisty: {0} ||| Add to playlist: {0} ||| Zur Playlist hinzufügen: {0}
+Súbor „{0}“ je väčší ako 100 MB. ||| Soubor „{0}“ je větší než 100 MB. ||| Plik „{0}” jest większy niż 100 MB. ||| The file “{0}” is larger than 100 MB. ||| Die Datei „{0}“ ist größer als 100 MB.
+Naraz sa dá priložiť najviac 10 súborov. ||| Najednou lze přiložit nejvýše 10 souborů. ||| Naraz można załączyć najwyżej 10 plików. ||| You can attach up to 10 files at once. ||| Es lassen sich höchstens 10 Dateien gleichzeitig anhängen.
